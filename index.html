@@ -253,6 +253,7 @@
             margin-top: auto; 
         }
         
+        /* زر الشارة ثابت الحجم ونحيف ومضبوط بكل الأجهزة بدقة */
         .btn-watch { 
            background-color: #10b981; 
            color: white; 
@@ -311,18 +312,23 @@
             margin: 40px auto 20px auto;
             padding: 0 10px;
         }
+        
+        /* تعديل محاذاة عنوان الأسئلة الشائعة لتكون من اليمين كباقي الأقسام */
         .faq-title {
-            text-align: center;
+            max-width: 900px;
+            margin: 0 auto 25px auto;
             color: var(--text-color);
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             font-weight: 900;
-            margin-bottom: 25px;
-            position: relative;
+            border-right: 4px solid var(--accent-cyan);
+            padding-right: 8px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 10px;
+            gap: 8px;
+            justify-content: flex-start;
+            text-align: right;
         }
+
         .faq-container {
             max-width: 900px;
             margin: auto;
@@ -551,8 +557,6 @@
             .card-content { padding: 8px; gap: 6px; }
             .card-title { font-size: 0.85rem; }
             .card-img-container { height: 110px; }
-            .btn-watch { padding: 5px 8px; font-size: 0.7rem; gap: 3px; }
-            .btn-fav { font-size: 1rem; }
             .logo { max-width: 130px; }
             .nav-tab { padding: 8px 12px; font-size: 0.8rem; }
             .section-title { font-size: 0.95rem; margin: 10px 5px; }
@@ -562,7 +566,7 @@
             .ad-title { font-size: 1.05rem; }
             .ad-desc { font-size: 0.78rem; }
 
-            .faq-title { font-size: 1.2rem; }
+            .faq-title { font-size: 1.05rem; margin: 0 5px 20px 5px; }
             summary { font-size: 0.9rem; }
             .answer { font-size: 0.85rem; }
             footer { gap: 12px; margin-top: 35px; }
