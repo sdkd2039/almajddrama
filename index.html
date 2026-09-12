@@ -294,7 +294,7 @@
         .faq-title {
             text-align: center;
             color: var(--text-color);
-            font-size: 1.5px;
+            font-size: 1.2rem; /* تم التصحيح من 1.5px إلى 1.2rem */
             font-weight: 900;
             margin-bottom: 25px;
             position: relative;
@@ -596,7 +596,7 @@
     </div>
 
     <div class="faq-section" id="faqSection" style="display: none;">
-        <div class="section-title"><i class="fa-solid fa-circle-question" style="color: #00d4ff;"></i> الأسئلة الشائعة</div>
+        <div class="faq-title"><i class="fa-solid fa-circle-question" style="color: #00d4ff;"></i> الأسئلة الشائعة</div>
         <div class="faq-container">
             <details>
                 <summary>1- هل الموقع يتبع بشكل رسمي لشبكة المجد؟</summary>
@@ -939,7 +939,7 @@
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            pwaModalOverlay.style.display = 'else'; // fixed syntax
+            pwaModalOverlay.style.display = 'flex'; // تم تصحيح الخطأ البرمجي هنا
         });
 
         installBtn.addEventListener('click', async () => {
