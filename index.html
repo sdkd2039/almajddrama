@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>شارات دراما المجد</title>
     
-<!-- وسوم عامة تدعم جميع المنصات -->
+    <!-- وسوم عامة تدعم جميع المنصات -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="شارات دراما المجد">
     <meta property="og:description" content="أرشفة متكاملة لشارات مسلسلات شبكة المجد.">
@@ -64,6 +64,14 @@
             --accent-gold: #ffd700;
             --accent-cyan: #00d4ff;
         }
+
+        /* فرض الوضع الداكن تماماً ومنع أي تغيير في ألوان المتصفح */
+        html, body {
+            background-color: var(--bg-color) !important;
+            color: var(--text-color) !important;
+            color-scheme: dark !important;
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'MajdCustomFont', sans-serif; }
         
         header { 
@@ -215,8 +223,20 @@
             flex-direction: column; 
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
-        .card-img-container { width: 100%; height: 140px; background-color: #0f172a; }
-        .card img { width: 100%; height: 100% ; object-fit: cover; }
+        
+        /* ضبط وتناسق مربع الصورة (الشارة) ليكون متوازناً ومضبوطاً بالشكل المطلوب */
+        .card-img-container { 
+            width: 100%; 
+            aspect-ratio: 16 / 10; 
+            background-color: #0f172a; 
+            position: relative;
+            overflow: hidden;
+        }
+        .card img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+        }
         
         .card-content { 
             padding: 10px; 
@@ -294,7 +314,7 @@
         .faq-title {
             text-align: center;
             color: var(--text-color);
-            font-size: 1.2rem; /* تم التصحيح من 1.5px إلى 1.2rem */
+            font-size: 1.2rem;
             font-weight: 900;
             margin-bottom: 25px;
             position: relative;
@@ -526,11 +546,11 @@
         @media (max-width: 600px) {
             body { padding: 8px; }
             
-            .series-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .series-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
             
             .card-content { padding: 8px; gap: 6px; }
             .card-title { font-size: 0.85rem; }
-            .card-img-container { height: 95px; }
+            .card-img-container { height: 110px; }
             .btn-watch { padding: 5px 8px; font-size: 0.7rem; gap: 3px; }
             .btn-fav { font-size: 1rem; }
             .logo { max-width: 130px; }
@@ -707,7 +727,6 @@
         let allDataMap = { general: [], kids: [], massa: [], suggestions: [] }; 
         let currentHomeSuggestions = []; 
         
-        // جلب وحماية بيانات المفضلة وتنظيف أي تكرارات
         function loadFavorites() {
             let rawFavs = localStorage.getItem('majd_favs');
             let parsed = [];
@@ -939,7 +958,7 @@
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            pwaModalOverlay.style.display = 'flex'; // تم تصحيح الخطأ البرمجي هنا
+            pwaModalOverlay.style.display = 'flex';
         });
 
         installBtn.addEventListener('click', async () => {
@@ -955,7 +974,6 @@
         closeBtn.addEventListener('click', () => {
             pwaModalOverlay.style.display = 'none';
         });
-
     </script>
 </body>
 </html>
