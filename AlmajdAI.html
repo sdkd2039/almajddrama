@@ -13,7 +13,7 @@
     <meta property="og:title" content="شارات دراما المجد">
     <meta property="og:description" content="أرشفة متكاملة لشارات مسلسلات شبكة المجد.">
     <meta property="og:image" content="https://raw.githubusercontent.com/sdkd2039/almajd-fav/refs/heads/main/unnamed.png">
-    <meta property="og:url" content="https://almajddrama.theworkpc.com/">
+    <meta property="og:url" content="https://almajddrama.giize.com/">
     <meta property="og:site_name" content="شارات دراما المجد">
 
     <!-- وسوم خاصة بمنصة إكس (تويتر) -->
@@ -55,17 +55,17 @@
         }
 
         :root { 
-            --bg-color: #0f172a; 
-            --card-bg: #1e293b; 
+            --bg-color: #101B35; 
+            --card-bg: #1D3155; 
             --text-color: #f8fafc; 
-            --primary-color: #0284c7; 
-            --primary-hover: #0369a1; 
+            --primary-color: #0798CE; 
+            --primary-hover: #087eae; 
             --fav-color: #ef4444; 
             --text-muted: #94a3b8; 
             --ad-bg-1: linear-gradient(135deg, #075985 0%, #0284c7 100%);
             --ad-bg-2: linear-gradient(135deg, #065f46 0%, #10b981 100%);
             --accent-gold: #ffd700;
-            --accent-cyan: #00d4ff;
+            --accent-cyan: #79d7f3;
         }
 
         /* فرض الوضع الداكن تماماً ومنع أي تغيير في ألوان المتصفح */
@@ -624,6 +624,104 @@
             .ai-assistant-form button { padding:0 13px; }
         }
 
+
+        /* واجهة محسّنة - مع الإبقاء على بنية الموقع الحالية */
+        body {
+            background:
+              radial-gradient(ellipse at 50% -15%, rgba(7,152,206,.24), transparent 48%),
+              linear-gradient(180deg, #101B35 0%, #0b1429 100%) !important;
+            min-height: 100vh;
+        }
+        .channel-nav {
+            max-width: 1040px; padding: 10px 14px;
+            background: rgba(29,49,85,.48);
+            border: 1px solid rgba(215,232,245,.10);
+            border-radius: 18px; backdrop-filter: blur(14px);
+        }
+        .nav-tab {
+            border: 1px solid rgba(215,232,245,.12) !important;
+            background: rgba(16,27,53,.78) !important;
+            border-radius: 13px !important; transition: .22s ease;
+        }
+        .nav-tab.active {
+            background: linear-gradient(135deg,#0798CE,#2365a0) !important;
+            box-shadow: 0 8px 22px rgba(7,152,206,.22);
+            border-color: rgba(215,232,245,.32) !important;
+        }
+        .controls { max-width: 850px; margin: 0 auto 18px; }
+        .search-container {
+            border: 1px solid rgba(215,232,245,.18) !important;
+            background: rgba(29,49,85,.76) !important;
+            border-radius: 15px !important; box-shadow: 0 10px 28px rgba(0,0,0,.16);
+        }
+        .search-container input { color:#fff !important; }
+        .series-grid { max-width: 1100px; margin-inline:auto; }
+        .card {
+            border: 1px solid rgba(215,232,245,.10) !important;
+            background: linear-gradient(160deg,rgba(29,49,85,.98),rgba(16,27,53,.98)) !important;
+            border-radius: 17px !important; overflow:hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,.18);
+            transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+        }
+        .card:hover { transform: translateY(-4px); border-color:rgba(7,152,206,.55) !important; box-shadow:0 15px 32px rgba(0,0,0,.25); }
+        .card-img-container img { transition: transform .35s ease; }
+        .card:hover .card-img-container img { transform:scale(1.035); }
+        .card-channel {
+            display:inline-flex; align-items:center; gap:6px; width:max-content;
+            color:#bfeaff; background:rgba(7,152,206,.13);
+            border:1px solid rgba(121,215,243,.20); border-radius:999px;
+            padding:4px 9px; font-size:.72rem; margin-top:5px;
+        }
+        .btn-watch {
+            background:linear-gradient(135deg,#0798CE,#2365a0) !important;
+            border-radius:10px !important; box-shadow:0 5px 14px rgba(7,152,206,.18);
+        }
+        .ai-assistant {
+            max-width:900px; padding:22px;
+            background:linear-gradient(135deg,rgba(16,27,53,.98),rgba(29,49,85,.97) 58%,rgba(13,88,125,.92));
+            border:1px solid rgba(121,215,243,.28);
+            box-shadow:0 18px 45px rgba(0,0,0,.25);
+        }
+        .ai-assistant-form input:focus,.search-container:focus-within {
+            border-color:#79d7f3 !important; box-shadow:0 0 0 3px rgba(7,152,206,.14);
+        }
+        .ai-assistant-form button,.voice-btn,.google-login-btn {
+            min-height:44px; border:0; border-radius:11px; cursor:pointer;
+            font:inherit; font-weight:bold; transition:.2s ease;
+        }
+        .ai-assistant-form button { background:linear-gradient(135deg,#d7e8f5,#79d7f3); color:#10213c; }
+        .ai-assistant-form button:hover,.voice-btn:hover,.google-login-btn:hover { transform:translateY(-1px); filter:brightness(1.06); }
+        .voice-btn {
+            display:inline-flex; align-items:center; justify-content:center; gap:7px;
+            padding:0 13px; color:#eaf8ff; background:rgba(7,152,206,.18);
+            border:1px solid rgba(121,215,243,.3);
+        }
+        .voice-btn.listening { background:#8c3143; border-color:#ff9aa9; }
+        .google-login-bar {
+            max-width:900px; margin:0 auto 18px; display:flex; align-items:center;
+            justify-content:space-between; gap:12px; flex-wrap:wrap;
+            padding:12px 15px; border-radius:15px;
+            background:rgba(29,49,85,.58); border:1px solid rgba(215,232,245,.12);
+        }
+        .google-login-copy { color:#d7e8f5; font-size:.84rem; line-height:1.6; }
+        .google-login-btn {
+            display:inline-flex; align-items:center; gap:9px; padding:0 15px;
+            color:#14233b; background:#f5f8fc; white-space:nowrap;
+        }
+        .google-login-btn img { width:18px; height:18px; }
+        .user-state { color:#bfeaff; font-size:.82rem; }
+        .ai-match { padding:12px 0; }
+        .ai-match-channel { color:#bfeaff; font-size:.78rem; margin:3px 0 7px; }
+        .ai-match a { display:inline-block; margin-top:5px; padding:7px 12px;
+            border-radius:9px; background:rgba(7,152,206,.18); border:1px solid rgba(121,215,243,.22); }
+        @media(max-width:600px) {
+            .google-login-bar { align-items:stretch; }
+            .google-login-btn { justify-content:center; width:100%; }
+            .ai-assistant-form { flex-wrap:wrap; }
+            .ai-assistant-form input { flex-basis:100%; }
+            .ai-assistant-form button,.ai-assistant-form .voice-btn { flex:1; }
+        }
+
     </style>
 </head>
 <body>
@@ -640,10 +738,24 @@
         <button class="nav-tab" onclick="switchChannel('fav')"><i class="fa-solid fa-heart" style="color: var(--fav-color);"></i> المفضلة (<span id="favCount">0</span>)</button>
     </div>
 
+
+    <section class="google-login-bar" aria-label="تسجيل الدخول">
+        <div>
+            <div style="font-weight:bold;color:#fff"><i class="fa-solid fa-user-shield" style="color:#79d7f3"></i> حسابك في شارات دراما المجد</div>
+            <div class="google-login-copy">سجّل الدخول بحساب Google لتجربة شخصية. المفضلة الحالية تظل محفوظة على جهازك.</div>
+            <div class="user-state" id="googleUserState">لم تسجّل الدخول بعد</div>
+        </div>
+        <button type="button" class="google-login-btn" id="googleLoginBtn">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
+            تسجيل الدخول عبر Google
+        </button>
+    </section>
+
     <div class="controls" id="controlsBox">
         <div class="search-container">
             <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" id="searchInput" placeholder="ابحث عن أي مسلسل هنا..." autocomplete="off">
+            <input type="text" id="searchInput" placeholder="ابحث عن اسم المسلسل..." autocomplete="off">
+            <button type="button" class="voice-btn" id="classicVoiceBtn" aria-label="البحث الصوتي"><i class="fa-solid fa-microphone"></i></button>
         </div>
     </div>
 
@@ -658,7 +770,8 @@
         </div>
         <form class="ai-assistant-form" id="aiAssistantForm">
             <input id="aiAssistantInput" type="text" autocomplete="off" placeholder="مثلاً: أتذكر عبارة من شارة مسلسل..." aria-label="اكتب اسم المسلسل أو عبارة من الشارة">
-            <button type="submit" id="aiAssistantSubmit">ابحث</button>
+            <button type="button" class="voice-btn" id="aiVoiceBtn" aria-label="إملاء صوتي"><i class="fa-solid fa-microphone"></i> صوت</button>
+            <button type="submit" id="aiAssistantSubmit">ابحث بالذكاء الاصطناعي</button>
         </form>
         <div class="ai-assistant-result" id="aiAssistantResult" aria-live="polite"></div>
         <div class="ai-note">تظهر نتائج المسلسلات من أرشيف الموقع وروابط المشاهدة الأصلية.</div>
@@ -845,6 +958,52 @@
             return String(value || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
         }
 
+
+        function channelLabel(origin) {
+            return ({general:'قناة المجد العامة', kids:'قناة المجد للأطفال', massa:'قناة ماسة', suggestions:'أرشيف شارات المجد'})[origin] || 'أرشيف شارات المجد';
+        }
+
+        // البحث الصوتي بالعربية عبر Web Speech API؛ يعتمد توفره على المتصفح.
+        function setupVoiceSearch(buttonId, input, submitForm = false) {
+            const button = document.getElementById(buttonId);
+            if (!button) return;
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                button.title = 'البحث الصوتي غير مدعوم في هذا المتصفح';
+                button.addEventListener('click', () => alert('البحث الصوتي غير مدعوم هنا. جرّب متصفحاً يدعم الإملاء الصوتي أو استخدم لوحة المفاتيح الصوتية.'));
+                return;
+            }
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'ar-SA';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+            button.addEventListener('click', () => {
+                try {
+                    recognition.start();
+                    button.classList.add('listening');
+                    button.innerHTML = '<i class="fa-solid fa-microphone-lines"></i> استمع...';
+                } catch (_) {}
+            });
+            recognition.onresult = event => {
+                const spoken = event.results?.[0]?.[0]?.transcript || '';
+                input.value = spoken;
+                if (submitForm) {
+                    document.getElementById('aiAssistantForm').requestSubmit();
+                } else {
+                    input.dispatchEvent(new Event('input', {bubbles:true}));
+                }
+            };
+            recognition.onerror = () => {};
+            recognition.onend = () => {
+                button.classList.remove('listening');
+                button.innerHTML = buttonId === 'aiVoiceBtn'
+                    ? '<i class="fa-solid fa-microphone"></i> صوت'
+                    : '<i class="fa-solid fa-microphone"></i>';
+            };
+        }
+        setupVoiceSearch('classicVoiceBtn', searchInput, false);
+        setupVoiceSearch('aiVoiceBtn', aiAssistantInput, true);
+
         function getAssistantCatalog() {
             const combined = [...allDataMap.general, ...allDataMap.kids, ...allDataMap.massa, ...allDataMap.suggestions];
             const seen = new Set();
@@ -867,8 +1026,9 @@
                     ${item.image && item.image !== '-' ? `<img src="${escapeAssistantHtml(item.image)}" alt="" loading="lazy">` : ''}
                     <div class="ai-match-info">
                         <div class="ai-match-title">${escapeAssistantHtml(item.name)}</div>
+                        <div class="ai-match-channel"><i class="fa-solid fa-tv"></i> على ${escapeAssistantHtml(item.channel || 'قناة المجد')}</div>
                         ${item.reason ? `<div class="ai-note">${escapeAssistantHtml(item.reason)}</div>` : ''}
-                        <a href="${escapeAssistantHtml(item.url)}" target="_blank" rel="noopener noreferrer">فتح صفحة الشارة للمشاهدة</a>
+                        <a href="${escapeAssistantHtml(item.url)}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-circle-play"></i> للمشاهدة الشارة</a>
                     </div>
                 </div>`).join('');
         }
@@ -899,7 +1059,12 @@
                 });
                 const data = await response.json();
                 if (!response.ok || !data.ok) throw new Error(data.error || 'تعذر إكمال البحث.');
-                const matchesHtml = renderAssistantMatches(data.matches);
+                const catalogByUrl = new Map(catalog.map(entry => [entry.url, entry]));
+                const enrichedMatches = (data.matches || []).map(match => ({
+                    ...match,
+                    channel: match.channel || catalogByUrl.get(match.url)?.channel || 'أرشيف شارات المجد'
+                }));
+                const matchesHtml = renderAssistantMatches(enrichedMatches);
                 aiAssistantResult.innerHTML = `<div style="font-weight:bold;margin-bottom:6px">${escapeAssistantHtml(data.answer || 'نتائج البحث:')}</div>` +
                     (matchesHtml || '<div>لم أجد تطابقاً موثوقاً في الأرشيف. جرّب عبارة أخرى أو اكتب اسم المسلسل.</div>');
             } catch (error) {
@@ -909,6 +1074,17 @@
                 aiAssistantSubmit.textContent = 'ابحث';
             }
         });
+
+
+        // ربط Google Sign-In: يلزم إعداد Web App من مشروع Firebase الخاص بهذا الموقع.
+        // لا نستخدم إعدادات مشروع Android أو مفاتيح مشروع آخر حتى لا نربط حسابات المستخدمين بمشروع خاطئ.
+        const googleLoginBtn = document.getElementById('googleLoginBtn');
+        const googleUserState = document.getElementById('googleUserState');
+        googleLoginBtn.addEventListener('click', () => {
+            googleUserState.textContent = 'يلزم ربط إعدادات Firebase Web الخاصة بمشروع شارات دراما المجد لتفعيل تسجيل الدخول.';
+            googleUserState.style.color = '#ffd98a';
+        });
+
 
         async function fetchAllData() {
             const fetchPromises = Object.keys(channels).map(key => {
@@ -959,6 +1135,7 @@
                     <div class="card-img-container"><img src="${finalImg}" alt="${cleanName}" loading="lazy"></div>
                     <div class="card-content">
                         <h3 class="card-title">${cleanName}</h3>
+                        <div class="card-channel"><i class="fa-solid fa-tv"></i> على ${channelLabel(item.origin)}</div>
                         <div class="card-actions">
                             <a href="${item.watchLink}" target="_blank" class="btn-watch"><i class="fa-solid fa-play"></i> الشارة</a>
                             <button class="btn-fav ${isFav ? 'is-fav' : ''}" onclick="toggleFavorite('${cleanName.replace(/'/g, "\\'")}')">
