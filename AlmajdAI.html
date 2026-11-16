@@ -685,12 +685,12 @@
         .ai-assistant-form input:focus,.search-container:focus-within {
             border-color:#79d7f3 !important; box-shadow:0 0 0 3px rgba(7,152,206,.14);
         }
-        .ai-assistant-form button,.voice-btn,.google-login-btn {
+        .ai-assistant-form button,.voice-btn {
             min-height:44px; border:0; border-radius:11px; cursor:pointer;
             font:inherit; font-weight:bold; transition:.2s ease;
         }
         .ai-assistant-form button { background:linear-gradient(135deg,#d7e8f5,#79d7f3); color:#10213c; }
-        .ai-assistant-form button:hover,.voice-btn:hover,.google-login-btn:hover { transform:translateY(-1px); filter:brightness(1.06); }
+        .ai-assistant-form button:hover,.voice-btn:hover,.voice-btn:hover { transform:translateY(-1px); filter:brightness(1.06); }
         .voice-btn {
             display:inline-flex; align-items:center; justify-content:center; gap:7px;
             padding:0 13px; color:#eaf8ff; background:rgba(7,152,206,.18);
@@ -946,21 +946,32 @@
 
 
         function channelLabel(origin) {
-            return ({general:'قناة المجد العامة', kids:'قناة المجد للأطفال', massa:'قناة ماسة', suggestions:'أرشيف شارات المجد'})[origin] || 'أرشيف شارات المجد';
+            return ({general:'قناة المجد العامة', kids:'قناة المجد للأطفال', massa:'قناة ماسة'})[origin] || '';
         }
 
         // البحث الصوتي بالعربية عبر Web Speech API؛ يعتمد توفره على المتصفح.
 
         // البحث الصوتي: زر واحد للمساعد الذكي مع إعادة الزر لحالته دائماً.
+
         function setupVoiceSearch(buttonId, input, submitForm = false) {
             const button = document.getElementById(buttonId);
             if (!button) return;
+
             const idleHtml = '<i class="fa-solid fa-microphone"></i> بحث صوتي';
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) {
-                button.title = 'البحث الصوتي غير مدعوم في هذا المتصفح';
+
+            if (!window.isSecureContext) {
+                button.title = 'يلزم فتح الموقع عبر HTTPS لاستخدام الميكروفون';
                 button.addEventListener('click', () => {
-                    alert('البحث الصوتي غير متاح في هذا المتصفح. يمكنك استخدام الإملاء الصوتي من لوحة المفاتيح.');
+                    aiAssistantResult.textContent = 'البحث الصوتي يحتاج إلى فتح الموقع عبر اتصال آمن HTTPS.';
+                });
+                return;
+            }
+
+            if (!SpeechRecognition) {
+                button.title = 'المتصفح لا يدعم التعرف الصوتي';
+                button.addEventListener('click', () => {
+                    aiAssistantResult.textContent = 'التعرف الصوتي غير مدعوم في هذا المتصفح. جرّب Chrome مع السماح للميكروفون، أو استخدم زر الميكروفون في لوحة مفاتيح الهاتف.';
                 });
                 return;
             }
@@ -969,6 +980,7 @@
             let listening = false;
             recognition.lang = 'ar-SA';
             recognition.interimResults = false;
+            recognition.continuous = false;
             recognition.maxAlternatives = 1;
 
             const resetButton = () => {
@@ -979,38 +991,68 @@
             };
 
             button.innerHTML = idleHtml;
-            button.addEventListener('click', () => {
+            button.addEventListener('click', async () => {
                 if (listening) {
                     try { recognition.stop(); } catch (_) {}
                     resetButton();
                     return;
                 }
+
+                // Ask for microphone permission explicitly first; stop the test stream immediately.
+                if (navigator.mediaDevices?.getUserMedia) {
+                    try {
+                        const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+                        stream.getTracks().forEach(track => track.stop());
+                    } catch (error) {
+                        aiAssistantResult.textContent = error?.name === 'NotAllowedError'
+                            ? 'لم يُسمح للموقع باستخدام الميكروفون. افتح إعدادات الموقع في المتصفح ثم فعّل إذن الميكروفون.'
+                            : 'تعذر الوصول إلى الميكروفون. تحقق من إذن المتصفح ومن عدم استخدام تطبيق آخر له.';
+                        resetButton();
+                        return;
+                    }
+                }
+
                 try {
                     recognition.start();
                     listening = true;
-                    button.disabled = false;
                     button.classList.add('listening');
-                    button.innerHTML = '<i class="fa-solid fa-microphone-lines"></i> أتحدث الآن...';
+                    button.innerHTML = '<i class="fa-solid fa-microphone-lines"></i> أستمع إليك...';
+                    aiAssistantResult.textContent = 'تحدث الآن بوضوح، وسأحوّل كلامك إلى نص للبحث.';
                 } catch (error) {
                     resetButton();
-                    alert('تعذر بدء الاستماع. تحقق من إذن الميكروفون وحاول مرة أخرى.');
+                    aiAssistantResult.textContent = 'تعذر بدء الاستماع. انتظر قليلاً ثم حاول مرة أخرى.';
                 }
             });
 
             recognition.onresult = event => {
                 const spoken = event.results?.[0]?.[0]?.transcript || '';
-                if (!spoken.trim()) return;
+                if (!spoken.trim()) {
+                    aiAssistantResult.textContent = 'لم ألتقط كلاماً واضحاً. حاول مرة أخرى.';
+                    return;
+                }
                 input.value = spoken.trim();
+                aiAssistantResult.textContent = `تم التقاط العبارة: «${spoken.trim()}»`;
                 if (submitForm) {
-                    document.getElementById('aiAssistantForm')?.requestSubmit();
+                    setTimeout(() => document.getElementById('aiAssistantForm')?.requestSubmit(), 250);
                 } else {
                     input.dispatchEvent(new Event('input', {bubbles:true}));
                 }
             };
-            recognition.onerror = () => resetButton();
-            recognition.onend = () => resetButton();
+
+            recognition.onerror = event => {
+                const messages = {
+                    'not-allowed':'إذن الميكروفون مرفوض. فعّله من إعدادات الموقع في المتصفح.',
+                    'service-not-allowed':'خدمة التعرف الصوتي غير متاحة من المتصفح حالياً.',
+                    'audio-capture':'لم يتم العثور على ميكروفون متاح.',
+                    'no-speech':'لم أسمع صوتاً. اضغط بحث صوتي وحاول التحدث مباشرة.',
+                    'network':'تعذر الاتصال بخدمة التعرف الصوتي. تحقق من الإنترنت.',
+                    'aborted':'تم إيقاف الاستماع.'
+                };
+                aiAssistantResult.textContent = messages[event.error] || 'حدثت مشكلة أثناء الاستماع. تحقق من إذن الميكروفون وحاول مجدداً.';
+                resetButton();
+            };
+            recognition.onend = resetButton;
         }
-        setupVoiceSearch('aiVoiceBtn', aiAssistantInput, true);
 
         function getAssistantCatalog() {
             const combined = [...allDataMap.general, ...allDataMap.kids, ...allDataMap.massa, ...allDataMap.suggestions];
@@ -1034,7 +1076,7 @@
                     ${item.image && item.image !== '-' ? `<img src="${escapeAssistantHtml(item.image)}" alt="" loading="lazy">` : ''}
                     <div class="ai-match-info">
                         <div class="ai-match-title">${escapeAssistantHtml(item.name)}</div>
-                        <div class="ai-match-channel"><i class="fa-solid fa-tv"></i> على ${escapeAssistantHtml(item.channel || 'قناة المجد')}</div>
+                        ${item.channel ? `<div class="ai-match-channel"><i class="fa-solid fa-tv"></i> على ${escapeAssistantHtml(item.channel)}</div>` : ""}
                         ${item.reason ? `<div class="ai-note">${escapeAssistantHtml(item.reason)}</div>` : ''}
                         <a href="${escapeAssistantHtml(item.url)}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-circle-play"></i> للمشاهدة الشارة</a>
                     </div>
@@ -1070,7 +1112,7 @@
                 const catalogByUrl = new Map(catalog.map(entry => [entry.url, entry]));
                 const enrichedMatches = (data.matches || []).map(match => ({
                     ...match,
-                    channel: match.channel || catalogByUrl.get(match.url)?.channel || 'أرشيف شارات المجد'
+                    channel: match.channel || catalogByUrl.get(match.url)?.channel || ''
                 }));
                 const matchesHtml = renderAssistantMatches(enrichedMatches);
                 aiAssistantResult.innerHTML = `<div style="font-weight:bold;margin-bottom:6px">${escapeAssistantHtml(data.answer || 'نتائج البحث:')}</div>` +
@@ -1139,7 +1181,7 @@ async function fetchAllData() {
                     <div class="card-img-container"><img src="${finalImg}" alt="${cleanName}" loading="lazy"></div>
                     <div class="card-content">
                         <h3 class="card-title">${safeName}</h3>
-                        <div class="card-channel"><i class="fa-solid fa-tv"></i> على ${channelLabel(item.origin)}</div>
+                        ${item.origin !== "suggestions" ? `<div class="card-channel"><i class="fa-solid fa-tv"></i> على ${channelLabel(item.origin)}</div>` : ""}
                         <div class="card-actions">
                             <a href="${item.watchLink}" target="_blank" class="btn-watch"><i class="fa-solid fa-play"></i> الشارة</a>
                             <button type="button" class="btn-fav ${isFav ? 'is-fav' : ''}" data-favorite-name="${safeName}" aria-label="${isFav ? 'إزالة من المفضلة' : 'إضافة إلى المفضلة'}" aria-pressed="${isFav}">
