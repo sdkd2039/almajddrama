@@ -697,20 +697,7 @@
             border:1px solid rgba(121,215,243,.3);
         }
         .voice-btn.listening { background:#8c3143; border-color:#ff9aa9; }
-        .google-login-bar {
-            max-width:900px; margin:0 auto 18px; display:flex; align-items:center;
-            justify-content:space-between; gap:12px; flex-wrap:wrap;
-            padding:12px 15px; border-radius:15px;
-            background:rgba(29,49,85,.58); border:1px solid rgba(215,232,245,.12);
-        }
-        .google-login-copy { color:#d7e8f5; font-size:.84rem; line-height:1.6; }
-        .google-login-btn {
-            display:inline-flex; align-items:center; gap:9px; padding:0 15px;
-            color:#14233b; background:#f5f8fc; white-space:nowrap;
-        }
-        .google-login-btn img { width:18px; height:18px; }
-        .user-state { color:#bfeaff; font-size:.82rem; }
-        .ai-match { padding:12px 0; }
+.ai-match { padding:12px 0; }
         .ai-match-channel { color:#bfeaff; font-size:.78rem; margin:3px 0 7px; }
         .ai-match a { display:inline-block; margin-top:5px; padding:7px 12px;
             border-radius:9px; background:rgba(7,152,206,.18); border:1px solid rgba(121,215,243,.22); }
@@ -721,6 +708,20 @@
             .ai-assistant-form input { flex-basis:100%; }
             .ai-assistant-form button,.ai-assistant-form .voice-btn { flex:1; }
         }
+
+
+        .card-actions { display:flex !important; align-items:center; justify-content:space-between; gap:10px; }
+        .btn-fav {
+            width:42px !important; height:42px !important; min-width:42px;
+            display:inline-flex !important; align-items:center; justify-content:center;
+            border-radius:50% !important; background:rgba(239,68,68,.12) !important;
+            border:1px solid rgba(239,68,68,.32) !important;
+            color:#ff8290 !important; font-size:1.25rem !important;
+            opacity:1 !important; visibility:visible !important; position:relative; z-index:2;
+        }
+        .btn-fav.is-fav { color:#ff4d67 !important; background:rgba(239,68,68,.22) !important; }
+        .btn-fav:active { transform:scale(.94); }
+        .fav-hint { color:#bfeaff; text-align:center; padding:12px; font-size:.85rem; }
 
     </style>
 </head>
@@ -737,25 +738,10 @@
         <button class="nav-tab" onclick="switchChannel('massa')"><img src="https://file.garden/aoLQp-Z9knG33grX/%D8%B4%D8%B9%D8%A7%D8%B1%D8%A7%D8%AA%20%D8%A7%D9%84%D8%B5%D9%88%D8%B1/Masah.png" alt="ماسة"> ماسة</button>
         <button class="nav-tab" onclick="switchChannel('fav')"><i class="fa-solid fa-heart" style="color: var(--fav-color);"></i> المفضلة (<span id="favCount">0</span>)</button>
     </div>
-
-
-    <section class="google-login-bar" aria-label="تسجيل الدخول">
-        <div>
-            <div style="font-weight:bold;color:#fff"><i class="fa-solid fa-user-shield" style="color:#79d7f3"></i> حسابك في شارات دراما المجد</div>
-            <div class="google-login-copy">سجّل الدخول بحساب Google لتجربة شخصية. المفضلة الحالية تظل محفوظة على جهازك.</div>
-            <div class="user-state" id="googleUserState">لم تسجّل الدخول بعد</div>
-        </div>
-        <button type="button" class="google-login-btn" id="googleLoginBtn">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
-            تسجيل الدخول عبر Google
-        </button>
-    </section>
-
-    <div class="controls" id="controlsBox">
+<div class="controls" id="controlsBox">
         <div class="search-container">
             <i class="fa-solid fa-magnifying-glass"></i>
             <input type="text" id="searchInput" placeholder="ابحث عن اسم المسلسل..." autocomplete="off">
-            <button type="button" class="voice-btn" id="classicVoiceBtn" aria-label="البحث الصوتي"><i class="fa-solid fa-microphone"></i></button>
         </div>
     </div>
 
@@ -770,7 +756,7 @@
         </div>
         <form class="ai-assistant-form" id="aiAssistantForm">
             <input id="aiAssistantInput" type="text" autocomplete="off" placeholder="مثلاً: أتذكر عبارة من شارة مسلسل..." aria-label="اكتب اسم المسلسل أو عبارة من الشارة">
-            <button type="button" class="voice-btn" id="aiVoiceBtn" aria-label="إملاء صوتي"><i class="fa-solid fa-microphone"></i> صوت</button>
+            <button type="button" class="voice-btn" id="aiVoiceBtn" aria-label="إملاء صوتي"><i class="fa-solid fa-microphone"></i> بحث صوتي</button>
             <button type="submit" id="aiAssistantSubmit">ابحث بالذكاء الاصطناعي</button>
         </form>
         <div class="ai-assistant-result" id="aiAssistantResult" aria-live="polite"></div>
@@ -964,44 +950,66 @@
         }
 
         // البحث الصوتي بالعربية عبر Web Speech API؛ يعتمد توفره على المتصفح.
+
+        // البحث الصوتي: زر واحد للمساعد الذكي مع إعادة الزر لحالته دائماً.
         function setupVoiceSearch(buttonId, input, submitForm = false) {
             const button = document.getElementById(buttonId);
             if (!button) return;
+            const idleHtml = '<i class="fa-solid fa-microphone"></i> بحث صوتي';
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) {
                 button.title = 'البحث الصوتي غير مدعوم في هذا المتصفح';
-                button.addEventListener('click', () => alert('البحث الصوتي غير مدعوم هنا. جرّب متصفحاً يدعم الإملاء الصوتي أو استخدم لوحة المفاتيح الصوتية.'));
+                button.addEventListener('click', () => {
+                    alert('البحث الصوتي غير متاح في هذا المتصفح. يمكنك استخدام الإملاء الصوتي من لوحة المفاتيح.');
+                });
                 return;
             }
+
             const recognition = new SpeechRecognition();
+            let listening = false;
             recognition.lang = 'ar-SA';
             recognition.interimResults = false;
             recognition.maxAlternatives = 1;
+
+            const resetButton = () => {
+                listening = false;
+                button.disabled = false;
+                button.classList.remove('listening');
+                button.innerHTML = idleHtml;
+            };
+
+            button.innerHTML = idleHtml;
             button.addEventListener('click', () => {
+                if (listening) {
+                    try { recognition.stop(); } catch (_) {}
+                    resetButton();
+                    return;
+                }
                 try {
                     recognition.start();
+                    listening = true;
+                    button.disabled = false;
                     button.classList.add('listening');
-                    button.innerHTML = '<i class="fa-solid fa-microphone-lines"></i> استمع...';
-                } catch (_) {}
+                    button.innerHTML = '<i class="fa-solid fa-microphone-lines"></i> أتحدث الآن...';
+                } catch (error) {
+                    resetButton();
+                    alert('تعذر بدء الاستماع. تحقق من إذن الميكروفون وحاول مرة أخرى.');
+                }
             });
+
             recognition.onresult = event => {
                 const spoken = event.results?.[0]?.[0]?.transcript || '';
-                input.value = spoken;
+                if (!spoken.trim()) return;
+                input.value = spoken.trim();
                 if (submitForm) {
-                    document.getElementById('aiAssistantForm').requestSubmit();
+                    document.getElementById('aiAssistantForm')?.requestSubmit();
                 } else {
                     input.dispatchEvent(new Event('input', {bubbles:true}));
                 }
             };
-            recognition.onerror = () => {};
-            recognition.onend = () => {
-                button.classList.remove('listening');
-                button.innerHTML = buttonId === 'aiVoiceBtn'
-                    ? '<i class="fa-solid fa-microphone"></i> صوت'
-                    : '<i class="fa-solid fa-microphone"></i>';
-            };
+            recognition.onerror = () => resetButton();
+            recognition.onend = () => resetButton();
         }
-        setupVoiceSearch('classicVoiceBtn', searchInput, false);
         setupVoiceSearch('aiVoiceBtn', aiAssistantInput, true);
 
         function getAssistantCatalog() {
@@ -1074,19 +1082,7 @@
                 aiAssistantSubmit.textContent = 'ابحث';
             }
         });
-
-
-        // ربط Google Sign-In: يلزم إعداد Web App من مشروع Firebase الخاص بهذا الموقع.
-        // لا نستخدم إعدادات مشروع Android أو مفاتيح مشروع آخر حتى لا نربط حسابات المستخدمين بمشروع خاطئ.
-        const googleLoginBtn = document.getElementById('googleLoginBtn');
-        const googleUserState = document.getElementById('googleUserState');
-        googleLoginBtn.addEventListener('click', () => {
-            googleUserState.textContent = 'يلزم ربط إعدادات Firebase Web الخاصة بمشروع شارات دراما المجد لتفعيل تسجيل الدخول.';
-            googleUserState.style.color = '#ffd98a';
-        });
-
-
-        async function fetchAllData() {
+async function fetchAllData() {
             const fetchPromises = Object.keys(channels).map(key => {
                 const encodedSheetName = encodeURIComponent(channels[key].sheetName);
                 const url = `https://docs.google.com/spreadsheets/d/${channels[key].sheetId}/gviz/tq?tqx=out:csv&sheet=${encodedSheetName}`;
@@ -1126,19 +1122,27 @@
             favCountLabel.textContent = favorites.length; 
         }
 
+
+        function escapeCardHtml(value) {
+            return String(value ?? '').replace(/[&<>"']/g, ch => ({
+                '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+            }[ch]));
+        }
+
         function createCardHtml(item) {
             const cleanName = item.name.trim();
+            const safeName = escapeCardHtml(cleanName);
             const isFav = favorites.includes(cleanName);
             const finalImg = item.imgLink && item.imgLink !== '-' ? item.imgLink : 'https://images.unsplash.com/photo-1616469829581-73993eb86b02?q=80&w=300';
             return `
                 <div class="card">
                     <div class="card-img-container"><img src="${finalImg}" alt="${cleanName}" loading="lazy"></div>
                     <div class="card-content">
-                        <h3 class="card-title">${cleanName}</h3>
+                        <h3 class="card-title">${safeName}</h3>
                         <div class="card-channel"><i class="fa-solid fa-tv"></i> على ${channelLabel(item.origin)}</div>
                         <div class="card-actions">
                             <a href="${item.watchLink}" target="_blank" class="btn-watch"><i class="fa-solid fa-play"></i> الشارة</a>
-                            <button class="btn-fav ${isFav ? 'is-fav' : ''}" onclick="toggleFavorite('${cleanName.replace(/'/g, "\\'")}')">
+                            <button type="button" class="btn-fav ${isFav ? 'is-fav' : ''}" data-favorite-name="${safeName}" aria-label="${isFav ? 'إزالة من المفضلة' : 'إضافة إلى المفضلة'}" aria-pressed="${isFav}">
                                 <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
                             </button>
                         </div>
@@ -1209,7 +1213,7 @@
                 }
 
                 if (uniqueFavData.length === 0) {
-                    seriesGrid.innerHTML = '<div class="no-results">قائمة المفضلة فارغة حالياً أو لا تطابق البحث.</div>';
+                    seriesGrid.innerHTML = '<div class="no-results">لم تضف أي مسلسل إلى المفضلة بعد. اضغط ❤️ على بطاقة أي مسلسل لإضافته — لا تحتاج إلى تسجيل الدخول.</div>';
                     return;
                 }
                 uniqueFavData.forEach(item => seriesGrid.innerHTML += createCardHtml(item));
@@ -1266,10 +1270,22 @@
                 favorites.push(cleanName);
             }
             
-            localStorage.setItem('majd_favs', JSON.stringify(favorites));
+            try {
+                localStorage.setItem('majd_favs', JSON.stringify(favorites));
+            } catch (error) {
+                console.warn('تعذر حفظ المفضلة محلياً:', error);
+            }
             updateFavCount();
             renderContent();
         }
+
+
+        seriesGrid.addEventListener('click', event => {
+            const heart = event.target.closest('.btn-fav[data-favorite-name]');
+            if (!heart) return;
+            const name = heart.getAttribute('data-favorite-name');
+            if (name) toggleFavorite(name);
+        });
 
         searchInput.addEventListener('input', renderContent);
         window.addEventListener('DOMContentLoaded', fetchAllData);
