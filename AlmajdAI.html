@@ -733,6 +733,22 @@
             .search-mode-btn { font-size:.84rem; padding:0 8px; }
         }
 
+
+        .smart-open-btn { width:100%; margin-top:12px; min-height:47px; border:0; border-radius:12px;
+            background:linear-gradient(135deg,#0798ce,#2365a0); color:#fff; font-weight:bold; font-size:.95rem; }
+        .smart-search-panel { margin-top:14px; padding:15px; border-radius:14px;
+            background:rgba(7,18,36,.55); border:1px solid rgba(121,215,243,.24); }
+        .smart-search-panel[hidden] { display:none !important; }
+        .smart-panel-title { color:#fff; font-weight:bold; font-size:1rem; }
+        .smart-search-panel p { color:#c5d8e9; font-size:.82rem; line-height:1.7; margin:6px 0 12px; }
+        .smart-panel-actions { display:flex; gap:9px; margin-top:10px; }
+        .smart-run-btn,.smart-close-btn { min-height:44px; border:0; border-radius:10px; font-weight:bold; }
+        .smart-run-btn { flex:1; background:#d7e8f5; color:#10213c; }
+        .smart-close-btn { padding:0 17px; background:rgba(255,255,255,.10); color:#eaf8ff; border:1px solid rgba(255,255,255,.16); }
+        .voice-permission-note { margin-top:10px; color:#bfeaff; font-size:.78rem; line-height:1.7; }
+        .search-inline-icon { color:#a9bed4; padding:0 8px; }
+        @media(max-width:600px) { .smart-search-panel { padding:12px; } }
+
     </style>
 </head>
 <body>
@@ -749,18 +765,28 @@
         <button class="nav-tab" onclick="switchChannel('fav')"><i class="fa-solid fa-heart" style="color: var(--fav-color);"></i> المفضلة (<span id="favCount">0</span>)</button>
     </div>
 
+    
     <section class="unified-search" id="controlsBox" aria-label="البحث عن الشارات">
-        <div class="unified-search-title"><i class="fa-solid fa-magnifying-glass"></i> ابحث عن شارة</div>
+        <div class="unified-search-title"><i class="fa-solid fa-magnifying-glass"></i> ابحث عن مسلسل أو شارة</div>
         <div class="unified-search-box">
-            <input type="search" id="searchInput" placeholder="اسم المسلسل أو كلمات تتذكرها من الشارة..." autocomplete="off" aria-label="اسم المسلسل أو كلمات من الشارة">
-            <button type="button" class="unified-voice" id="aiVoiceBtn" aria-label="البحث بالصوت" title="تحدث للبحث"><i class="fa-solid fa-microphone"></i></button>
+            <input type="search" id="searchInput" placeholder="اكتب اسم المسلسل وستظهر النتائج تلقائياً..." autocomplete="off" aria-label="بحث فوري باسم المسلسل">
+            <i class="fa-solid fa-magnifying-glass search-inline-icon"></i>
         </div>
-        <div class="unified-search-actions">
-            <button type="button" class="search-mode-btn active" id="normalSearchBtn"><i class="fa-solid fa-magnifying-glass"></i> بحث عادي</button>
-            <button type="button" class="search-mode-btn" id="aiAssistantSubmit"><i class="fa-solid fa-wand-magic-sparkles"></i> بحث ذكي</button>
+        <button type="button" class="smart-open-btn" id="smartOpenBtn"><i class="fa-solid fa-wand-magic-sparkles"></i> البحث بالذكاء الاصطناعي</button>
+        <div class="smart-search-panel" id="smartSearchPanel" hidden>
+            <div class="smart-panel-title">محادثة شارات دراما المجد</div>
+            <p>اسأل عن عبارة تتذكرها من الشارة، أو عن سنة العرض الهجرية أو الميلادية، أو الموسم. المساعد هنا مخصص لشارات ومسلسلات المجد.</p>
+            <div class="unified-search-box smart-query-box">
+                <input type="search" id="smartSearchInput" placeholder="اكتب سؤالك أو العبارة التي تتذكرها..." autocomplete="off" aria-label="اكتب سؤالاً عن شارات ومسلسلات المجد">
+                <button type="button" class="unified-voice" id="aiVoiceBtn" aria-label="إملاء صوتي" title="استخدم الميكروفون"><i class="fa-solid fa-microphone"></i></button>
+            </div>
+            <div class="smart-panel-actions">
+                <button type="button" class="smart-run-btn" id="aiAssistantSubmit"><i class="fa-solid fa-sparkles"></i> إرسال</button>
+                <button type="button" class="smart-close-btn" id="smartCloseBtn">إنهاء المحادثة</button>
+            </div>
+            <div class="voice-permission-note" id="voicePermissionNote" aria-live="polite">عند الضغط على الميكروفون سيطلب المتصفح إذناً لاستخدامه. اختر «سماح».</div>
+            <div class="ai-assistant-result" id="aiAssistantResult" aria-live="polite"></div>
         </div>
-        <div class="unified-search-hint">اكتب اسم المسلسل للبحث الفوري، أو عبارة تتذكرها ثم اختر «بحث ذكي»، أو استخدم الميكروفون.</div>
-        <div class="ai-assistant-result" id="aiAssistantResult" aria-live="polite"></div>
     </section>
 <div id="homeTitles" style="display:none;">
         <div class="section-title"><i class="fa-solid fa-wand-magic-sparkles" style="color: #f59e0b;"></i> شارات مقترحة لك</div>
@@ -934,7 +960,9 @@
         // مساعد شارات دراما المجد — يرسل السؤال وأرشيف المسلسلات إلى Cloudflare Worker.
         const aiAssistantResult = document.getElementById('aiAssistantResult');
         const aiAssistantSubmit = document.getElementById('aiAssistantSubmit');
-        const normalSearchBtn = document.getElementById('normalSearchBtn');
+        const smartSearchInput = document.getElementById('smartSearchInput');
+        const smartSearchPanel = document.getElementById('smartSearchPanel');
+        const voicePermissionNote = document.getElementById('voicePermissionNote');
         const AI_WORKER_URL = 'https://majd-drama-ai.sultan2021alamoudi.workers.dev/chat';
 
         function escapeAssistantHtml(value) {
@@ -972,11 +1000,11 @@
         }
 
         async function runSmartSearch() {
-            const query = searchInput.value.trim();
+            const query = smartSearchInput.value.trim();
             if (query.length < 2) {
                 aiAssistantResult.style.display = 'block';
-                aiAssistantResult.textContent = 'اكتب اسم المسلسل أو بعض الكلمات التي تتذكرها من الشارة.';
-                searchInput.focus();
+                aiAssistantResult.textContent = 'اكتب كلمات تتذكرها من الشارة، أو وصفاً لها، أو سنة عرض المسلسل.';
+                smartSearchInput.focus();
                 return;
             }
             const catalog = getAssistantCatalog();
@@ -986,7 +1014,7 @@
                 return;
             }
             aiAssistantResult.style.display = 'block';
-            aiAssistantResult.textContent = 'جارٍ البحث الذكي في أسماء المسلسلات...';
+            aiAssistantResult.textContent = 'جارٍ تحليل الكلمات أو الفترة الزمنية ومقارنتها بأرشيف المسلسلات...';
             aiAssistantSubmit.disabled = true;
             aiAssistantSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> يبحث...';
             try {
@@ -999,8 +1027,8 @@
                 if (!response.ok || !data.ok) throw new Error(data.error || 'تعذر إكمال البحث.');
                 const matchesHtml = renderAssistantMatches(data.matches || []);
                 aiAssistantResult.innerHTML =
-                    `<div class="smart-answer">${escapeAssistantHtml(data.answer || 'نتائج البحث:')}</div>` +
-                    (matchesHtml || '<div class="smart-empty">لم أجد تطابقاً مؤكداً. جرّب كلمات أخرى أو اكتب اسم المسلسل للبحث العادي.</div>');
+                    `<div class="smart-answer">${matchesHtml ? 'هذه المسلسلات المطابقة لما تبحث عنه:' : 'لم أجد نتائج مطابقة حالياً. جرّب صياغة أخرى أو اسأل عن سنة العرض أو الموسم.'}</div>` +
+                    (matchesHtml || '<div class="smart-empty">لم تظهر نتائج في الأرشيف.</div>');
             } catch (error) {
                 aiAssistantResult.textContent = 'تعذر الاتصال بالبحث الذكي حالياً. تحقق من الإنترنت وحاول مرة أخرى.';
             } finally {
@@ -1010,88 +1038,100 @@
         }
 
         aiAssistantSubmit.addEventListener('click', runSmartSearch);
-        normalSearchBtn.addEventListener('click', () => {
-            aiAssistantResult.style.display = 'none';
-            searchInput.dispatchEvent(new Event('input', {bubbles:true}));
-            searchInput.focus();
+        smartSearchInput.addEventListener('keydown', event => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                runSmartSearch();
+            }
         });
 
-        // Voice input uses the same search box. After speech, regular results update immediately.
+        document.getElementById('smartOpenBtn').addEventListener('click', () => {
+            smartSearchPanel.hidden = false;
+            smartSearchInput.focus();
+        });
+        document.getElementById('smartCloseBtn').addEventListener('click', () => {
+            smartSearchPanel.hidden = true;
+            aiAssistantResult.style.display = 'none';
+        });
+
+
+
+        // الميكروفون مخصص لحقل البحث الذكي ويطلب الإذن صراحةً.
         function setupUnifiedVoice() {
             const button = document.getElementById('aiVoiceBtn');
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const idle = '<i class="fa-solid fa-microphone"></i>';
             const reset = () => {
                 button.classList.remove('listening');
                 button.disabled = false;
-                button.innerHTML = '<i class="fa-solid fa-microphone"></i>';
+                button.innerHTML = idle;
             };
-            if (!window.isSecureContext || !SpeechRecognition) {
-                button.addEventListener('click', () => {
-                    aiAssistantResult.style.display = 'block';
-                    aiAssistantResult.textContent = !window.isSecureContext
-                        ? 'البحث الصوتي يحتاج إلى فتح الموقع عبر HTTPS.'
-                        : 'التعرف الصوتي غير مدعوم في هذا المتصفح. استخدم ميكروفون لوحة مفاتيح الهاتف لتحويل كلامك إلى نص داخل مربع البحث.';
-                    searchInput.focus();
-                });
-                return;
-            }
-            const recognition = new SpeechRecognition();
-            recognition.lang = 'ar-SA';
-            recognition.interimResults = false;
-            recognition.continuous = false;
-            recognition.maxAlternatives = 1;
-            let active = false;
             button.addEventListener('click', async () => {
-                if (active) {
-                    try { recognition.stop(); } catch (_) {}
-                    reset();
+                if (!window.isSecureContext) {
+                    voicePermissionNote.textContent = 'الميكروفون يحتاج إلى اتصال آمن HTTPS. افتح الموقع بعنوان https.';
                     return;
                 }
-                if (navigator.mediaDevices?.getUserMedia) {
-                    try {
-                        const stream = await navigator.mediaDevices.getUserMedia({audio:true});
-                        stream.getTracks().forEach(track => track.stop());
-                    } catch (err) {
-                        aiAssistantResult.style.display = 'block';
-                        aiAssistantResult.textContent = 'اسمح للمتصفح باستخدام الميكروفون من إعدادات الموقع، ثم حاول مجدداً.';
-                        reset();
-                        return;
-                    }
+                if (!navigator.mediaDevices?.getUserMedia) {
+                    voicePermissionNote.textContent = 'المتصفح لا يتيح طلب إذن الميكروفون. فعّله من إعدادات الموقع أو استخدم ميكروفون لوحة المفاتيح.';
+                    return;
                 }
+                button.disabled = true;
+                voicePermissionNote.textContent = 'سيظهر طلب إذن الميكروفون الآن. اختر «سماح» للمتابعة.';
+                let stream;
                 try {
-                    recognition.start();
-                    active = true;
+                    stream = await navigator.mediaDevices.getUserMedia({audio:true});
+                    stream.getTracks().forEach(track => track.stop());
+                } catch (err) {
+                    reset();
+                    voicePermissionNote.textContent = err?.name === 'NotAllowedError'
+                        ? 'لم تسمح باستخدام الميكروفون. افتح إعدادات الموقع في المتصفح، وغيّر إذن الميكروفون إلى «سماح»، ثم حاول مجدداً.'
+                        : 'تعذر الوصول إلى الميكروفون. تحقق من إذن الموقع ومن عدم استخدام تطبيق آخر له.';
+                    return;
+                }
+                if (!SpeechRecognition) {
+                    reset();
+                    voicePermissionNote.textContent = 'تم السماح بالميكروفون، لكن متصفحك لا يدعم تحويل الكلام إلى نص. استخدم ميكروفون لوحة مفاتيح الهاتف أو جرّب Chrome.';
+                    return;
+                }
+                const recognition = new SpeechRecognition();
+                recognition.lang = 'ar-SA';
+                recognition.interimResults = false;
+                recognition.continuous = false;
+                recognition.maxAlternatives = 1;
+                recognition.onstart = () => {
+                    button.disabled = false;
                     button.classList.add('listening');
                     button.innerHTML = '<i class="fa-solid fa-microphone-lines"></i>';
-                    aiAssistantResult.style.display = 'block';
-                    aiAssistantResult.textContent = 'أستمع الآن... قل اسم المسلسل أو العبارة التي تتذكرها.';
-                } catch (_) {
+                    voicePermissionNote.textContent = 'أستمع إليك الآن... قل كلمات الشارة أو وصفها أو سنة عرضها.';
+                };
+                recognition.onresult = event => {
+                    const spoken = event.results?.[0]?.[0]?.transcript?.trim();
+                    if (!spoken) {
+                        voicePermissionNote.textContent = 'لم ألتقط كلاماً واضحاً. حاول مرة أخرى.';
+                        return;
+                    }
+                    smartSearchInput.value = spoken;
+                    voicePermissionNote.textContent = `تم تحويل كلامك إلى نص: «${spoken}». اضغط «ابحث عن الشارة».`;
+                };
+                recognition.onerror = event => {
+                    const messages = {
+                        'not-allowed':'رفض المتصفح إذن التعرف الصوتي. اسمح بالميكروفون من إعدادات الموقع.',
+                        'service-not-allowed':'خدمة التعرف الصوتي غير متاحة في المتصفح.',
+                        'audio-capture':'لم يتم العثور على ميكروفون متاح.',
+                        'no-speech':'لم أسمع كلاماً. تحدث مباشرة بعد الضغط على الميكروفون.',
+                        'network':'تعذر الاتصال بخدمة التعرف الصوتي. تحقق من الإنترنت.',
+                        'aborted':'تم إيقاف الاستماع.'
+                    };
+                    voicePermissionNote.textContent = messages[event.error] || 'حدث خطأ أثناء تشغيل الميكروفون. حاول مجدداً.';
                     reset();
-                    aiAssistantResult.textContent = 'تعذر تشغيل الميكروفون. حاول مرة أخرى أو استخدم ميكروفون لوحة المفاتيح.';
+                };
+                recognition.onend = reset;
+                try { recognition.start(); }
+                catch (_) {
+                    reset();
+                    voicePermissionNote.textContent = 'تعذر بدء التعرف الصوتي. انتظر لحظة ثم حاول مجدداً.';
                 }
             });
-            recognition.onresult = event => {
-                const spoken = event.results?.[0]?.[0]?.transcript?.trim();
-                if (!spoken) return;
-                searchInput.value = spoken;
-                searchInput.dispatchEvent(new Event('input', {bubbles:true}));
-                aiAssistantResult.style.display = 'block';
-                aiAssistantResult.textContent = `تم تحويل صوتك إلى نص: «${spoken}». ظهرت نتائج البحث العادي؛ اضغط «بحث ذكي» للبحث بالعبارة.`;
-            };
-            recognition.onerror = event => {
-                const msg = event.error === 'not-allowed'
-                    ? 'إذن الميكروفون مرفوض. فعّله من إعدادات الموقع في المتصفح.'
-                    : event.error === 'no-speech'
-                    ? 'لم أسمع كلاماً. اضغط الميكروفون وتحدث مباشرة.'
-                    : event.error === 'network'
-                    ? 'خدمة التعرف الصوتي لم تتصل. تحقق من الإنترنت.'
-                    : 'تعذر التعرف على الصوت. يمكنك استخدام ميكروفون لوحة المفاتيح.';
-                aiAssistantResult.style.display = 'block';
-                aiAssistantResult.textContent = msg;
-                active = false;
-                reset();
-            };
-            recognition.onend = () => { active = false; reset(); };
         }
         setupUnifiedVoice();
 
@@ -1299,10 +1339,7 @@ async function fetchAllData() {
             if (name) toggleFavorite(name);
         });
 
-        searchInput.addEventListener('input', () => {
-            aiAssistantResult.style.display = 'none';
-            renderContent();
-        });
+        searchInput.addEventListener('input', renderContent);
         window.addEventListener('DOMContentLoaded', fetchAllData);
 
         /* --- PWA Logic Integration --- */
