@@ -578,27 +578,7 @@
         }
     
         /* مساعد شارات دراما المجد */
-        .ai-assistant {
-            width: 100%;
-            max-width: 850px;
-            margin: 0 auto 22px;
-            padding: 18px;
-            border: 1px solid rgba(125, 190, 235, .28);
-            border-radius: 18px;
-            background: linear-gradient(135deg, #101b35 0%, #1d3155 58%, #164b70 100%);
-            box-shadow: 0 12px 30px rgba(0,0,0,.22);
-        }
-        .ai-assistant-head { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
-        .ai-assistant-icon {
-            width:42px; height:42px; flex:0 0 42px; border-radius:13px;
-            display:grid; place-items:center; color:#fff;
-            background:linear-gradient(135deg,#0798ce,#4bb9df);
-            font-size:19px;
-        }
-        .ai-assistant h2 { font-size:1.08rem; color:#fff; margin-bottom:3px; }
-        .ai-assistant-sub { color:#d7e8f5; font-size:.82rem; line-height:1.6; }
-        .ai-assistant-form { display:flex; gap:8px; }
-        .ai-assistant-form input {
+.ai-assistant-form input {
             min-width:0; flex:1; padding:12px 14px; border-radius:11px;
             border:1px solid rgba(215,232,245,.3); background:rgba(8,20,42,.72);
             color:#fff; font:inherit; outline:none;
@@ -666,13 +646,7 @@
         .card:hover { transform: translateY(-4px); border-color:rgba(7,152,206,.55) !important; box-shadow:0 15px 32px rgba(0,0,0,.25); }
         .card-img-container img { transition: transform .35s ease; }
         .card:hover .card-img-container img { transform:scale(1.035); }
-        .card-channel {
-            display:inline-flex; align-items:center; gap:6px; width:max-content;
-            color:#bfeaff; background:rgba(7,152,206,.13);
-            border:1px solid rgba(121,215,243,.20); border-radius:999px;
-            padding:4px 9px; font-size:.72rem; margin-top:5px;
-        }
-        .btn-watch {
+.btn-watch {
             background:linear-gradient(135deg,#0798CE,#2365a0) !important;
             border-radius:10px !important; box-shadow:0 5px 14px rgba(7,152,206,.18);
         }
@@ -698,8 +672,7 @@
         }
         .voice-btn.listening { background:#8c3143; border-color:#ff9aa9; }
 .ai-match { padding:12px 0; }
-        .ai-match-channel { color:#bfeaff; font-size:.78rem; margin:3px 0 7px; }
-        .ai-match a { display:inline-block; margin-top:5px; padding:7px 12px;
+.ai-match a { display:inline-block; margin-top:5px; padding:7px 12px;
             border-radius:9px; background:rgba(7,152,206,.18); border:1px solid rgba(121,215,243,.22); }
         @media(max-width:600px) {
             .google-login-bar { align-items:stretch; }
@@ -723,6 +696,43 @@
         .btn-fav:active { transform:scale(.94); }
         .fav-hint { color:#bfeaff; text-align:center; padding:12px; font-size:.85rem; }
 
+
+        .unified-search {
+            max-width: 900px; margin: 0 auto 24px; padding: 18px;
+            border-radius: 18px; background:linear-gradient(145deg,#1d3155,#142440);
+            border:1px solid rgba(121,215,243,.22); box-shadow:0 12px 30px rgba(0,0,0,.18);
+        }
+        .unified-search-title { color:#f5fbff; font-weight:bold; margin-bottom:12px; font-size:1.05rem; }
+        .unified-search-title i { color:#79d7f3; margin-left:7px; }
+        .unified-search-box { display:flex; align-items:center; gap:8px; padding:5px 8px 5px 12px;
+            border-radius:14px; background:#0e1b33; border:1px solid rgba(215,232,245,.2); }
+        .unified-search-box input { flex:1; min-width:0; border:0; outline:0; color:#fff; background:transparent;
+            padding:13px 8px; font-size:1rem; }
+        .unified-search-box input::placeholder { color:#a9bed4; }
+        .unified-voice { width:44px; height:44px; flex:none; border:0; border-radius:12px;
+            color:#eaf8ff; background:linear-gradient(135deg,#0798ce,#2365a0); font-size:1.1rem; }
+        .unified-voice.listening { background:#a3314b; animation:voicePulse 1.1s infinite; }
+        .unified-search-actions { display:flex; gap:10px; margin-top:11px; }
+        .search-mode-btn { flex:1; min-height:46px; border:1px solid rgba(121,215,243,.22);
+            border-radius:12px; background:#d7e8f5; color:#10213c; font-weight:bold; font-size:.92rem; }
+        .search-mode-btn.active { background:linear-gradient(135deg,#0798ce,#2365a0); color:white; }
+        .unified-search-hint { color:#bcd0e3; font-size:.78rem; line-height:1.6; margin-top:10px; }
+        .ai-assistant-result { display:none; margin-top:13px; padding:13px; border-radius:12px;
+            color:#eff8ff; background:rgba(8,20,39,.72); line-height:1.8; }
+        .smart-answer { font-weight:bold; margin-bottom:8px; }
+        .smart-empty { color:#c6d8e8; }
+        .ai-match { display:flex; gap:12px; align-items:center; padding:10px 0; border-top:1px solid rgba(255,255,255,.1); }
+        .ai-match img { width:86px; height:68px; object-fit:cover; border-radius:9px; }
+        .ai-match-title { font-weight:bold; color:white; }
+        .ai-match a { display:inline-block; margin-top:7px; padding:7px 12px; border-radius:9px;
+            background:#0798ce; color:white; text-decoration:none; }
+        @keyframes voicePulse { 50% { box-shadow:0 0 0 6px rgba(163,49,75,.2); } }
+        @media(max-width:600px) {
+            .unified-search { padding:14px; margin-inline:12px; }
+            .unified-search-actions { gap:8px; }
+            .search-mode-btn { font-size:.84rem; padding:0 8px; }
+        }
+
     </style>
 </head>
 <body>
@@ -738,32 +748,21 @@
         <button class="nav-tab" onclick="switchChannel('massa')"><img src="https://file.garden/aoLQp-Z9knG33grX/%D8%B4%D8%B9%D8%A7%D8%B1%D8%A7%D8%AA%20%D8%A7%D9%84%D8%B5%D9%88%D8%B1/Masah.png" alt="ماسة"> ماسة</button>
         <button class="nav-tab" onclick="switchChannel('fav')"><i class="fa-solid fa-heart" style="color: var(--fav-color);"></i> المفضلة (<span id="favCount">0</span>)</button>
     </div>
-<div class="controls" id="controlsBox">
-        <div class="search-container">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" id="searchInput" placeholder="ابحث عن اسم المسلسل..." autocomplete="off">
-        </div>
-    </div>
 
-
-    <section class="ai-assistant" id="aiAssistant" aria-label="مساعد شارات دراما المجد">
-        <div class="ai-assistant-head">
-            <div class="ai-assistant-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
-            <div>
-                <h2>مساعد شارات دراما المجد</h2>
-                <div class="ai-assistant-sub">اكتب اسم مسلسل أو عبارة تتذكرها من شارة البداية، وسنساعدك في العثور عليه.</div>
-            </div>
+    <section class="unified-search" id="controlsBox" aria-label="البحث عن الشارات">
+        <div class="unified-search-title"><i class="fa-solid fa-magnifying-glass"></i> ابحث عن شارة</div>
+        <div class="unified-search-box">
+            <input type="search" id="searchInput" placeholder="اسم المسلسل أو كلمات تتذكرها من الشارة..." autocomplete="off" aria-label="اسم المسلسل أو كلمات من الشارة">
+            <button type="button" class="unified-voice" id="aiVoiceBtn" aria-label="البحث بالصوت" title="تحدث للبحث"><i class="fa-solid fa-microphone"></i></button>
         </div>
-        <form class="ai-assistant-form" id="aiAssistantForm">
-            <input id="aiAssistantInput" type="text" autocomplete="off" placeholder="مثلاً: أتذكر عبارة من شارة مسلسل..." aria-label="اكتب اسم المسلسل أو عبارة من الشارة">
-            <button type="button" class="voice-btn" id="aiVoiceBtn" aria-label="إملاء صوتي"><i class="fa-solid fa-microphone"></i> بحث صوتي</button>
-            <button type="submit" id="aiAssistantSubmit">ابحث بالذكاء الاصطناعي</button>
-        </form>
+        <div class="unified-search-actions">
+            <button type="button" class="search-mode-btn active" id="normalSearchBtn"><i class="fa-solid fa-magnifying-glass"></i> بحث عادي</button>
+            <button type="button" class="search-mode-btn" id="aiAssistantSubmit"><i class="fa-solid fa-wand-magic-sparkles"></i> بحث ذكي</button>
+        </div>
+        <div class="unified-search-hint">اكتب اسم المسلسل للبحث الفوري، أو عبارة تتذكرها ثم اختر «بحث ذكي»، أو استخدم الميكروفون.</div>
         <div class="ai-assistant-result" id="aiAssistantResult" aria-live="polite"></div>
-        <div class="ai-note">تظهر نتائج المسلسلات من أرشيف الموقع وروابط المشاهدة الأصلية.</div>
     </section>
-
-    <div id="homeTitles" style="display:none;">
+<div id="homeTitles" style="display:none;">
         <div class="section-title"><i class="fa-solid fa-wand-magic-sparkles" style="color: #f59e0b;"></i> شارات مقترحة لك</div>
     </div>
 
@@ -933,11 +932,9 @@
 
 
         // مساعد شارات دراما المجد — يرسل السؤال وأرشيف المسلسلات إلى Cloudflare Worker.
-        const aiAssistant = document.getElementById('aiAssistant');
-        const aiAssistantForm = document.getElementById('aiAssistantForm');
-        const aiAssistantInput = document.getElementById('aiAssistantInput');
         const aiAssistantResult = document.getElementById('aiAssistantResult');
         const aiAssistantSubmit = document.getElementById('aiAssistantSubmit');
+        const normalSearchBtn = document.getElementById('normalSearchBtn');
         const AI_WORKER_URL = 'https://majd-drama-ai.sultan2021alamoudi.workers.dev/chat';
 
         function escapeAssistantHtml(value) {
@@ -949,110 +946,6 @@
             return ({general:'قناة المجد العامة', kids:'قناة المجد للأطفال', massa:'قناة ماسة'})[origin] || '';
         }
 
-        // البحث الصوتي بالعربية عبر Web Speech API؛ يعتمد توفره على المتصفح.
-
-        // البحث الصوتي: زر واحد للمساعد الذكي مع إعادة الزر لحالته دائماً.
-
-        function setupVoiceSearch(buttonId, input, submitForm = false) {
-            const button = document.getElementById(buttonId);
-            if (!button) return;
-
-            const idleHtml = '<i class="fa-solid fa-microphone"></i> بحث صوتي';
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-            if (!window.isSecureContext) {
-                button.title = 'يلزم فتح الموقع عبر HTTPS لاستخدام الميكروفون';
-                button.addEventListener('click', () => {
-                    aiAssistantResult.textContent = 'البحث الصوتي يحتاج إلى فتح الموقع عبر اتصال آمن HTTPS.';
-                });
-                return;
-            }
-
-            if (!SpeechRecognition) {
-                button.title = 'المتصفح لا يدعم التعرف الصوتي';
-                button.addEventListener('click', () => {
-                    aiAssistantResult.textContent = 'التعرف الصوتي غير مدعوم في هذا المتصفح. جرّب Chrome مع السماح للميكروفون، أو استخدم زر الميكروفون في لوحة مفاتيح الهاتف.';
-                });
-                return;
-            }
-
-            const recognition = new SpeechRecognition();
-            let listening = false;
-            recognition.lang = 'ar-SA';
-            recognition.interimResults = false;
-            recognition.continuous = false;
-            recognition.maxAlternatives = 1;
-
-            const resetButton = () => {
-                listening = false;
-                button.disabled = false;
-                button.classList.remove('listening');
-                button.innerHTML = idleHtml;
-            };
-
-            button.innerHTML = idleHtml;
-            button.addEventListener('click', async () => {
-                if (listening) {
-                    try { recognition.stop(); } catch (_) {}
-                    resetButton();
-                    return;
-                }
-
-                // Ask for microphone permission explicitly first; stop the test stream immediately.
-                if (navigator.mediaDevices?.getUserMedia) {
-                    try {
-                        const stream = await navigator.mediaDevices.getUserMedia({audio:true});
-                        stream.getTracks().forEach(track => track.stop());
-                    } catch (error) {
-                        aiAssistantResult.textContent = error?.name === 'NotAllowedError'
-                            ? 'لم يُسمح للموقع باستخدام الميكروفون. افتح إعدادات الموقع في المتصفح ثم فعّل إذن الميكروفون.'
-                            : 'تعذر الوصول إلى الميكروفون. تحقق من إذن المتصفح ومن عدم استخدام تطبيق آخر له.';
-                        resetButton();
-                        return;
-                    }
-                }
-
-                try {
-                    recognition.start();
-                    listening = true;
-                    button.classList.add('listening');
-                    button.innerHTML = '<i class="fa-solid fa-microphone-lines"></i> أستمع إليك...';
-                    aiAssistantResult.textContent = 'تحدث الآن بوضوح، وسأحوّل كلامك إلى نص للبحث.';
-                } catch (error) {
-                    resetButton();
-                    aiAssistantResult.textContent = 'تعذر بدء الاستماع. انتظر قليلاً ثم حاول مرة أخرى.';
-                }
-            });
-
-            recognition.onresult = event => {
-                const spoken = event.results?.[0]?.[0]?.transcript || '';
-                if (!spoken.trim()) {
-                    aiAssistantResult.textContent = 'لم ألتقط كلاماً واضحاً. حاول مرة أخرى.';
-                    return;
-                }
-                input.value = spoken.trim();
-                aiAssistantResult.textContent = `تم التقاط العبارة: «${spoken.trim()}»`;
-                if (submitForm) {
-                    setTimeout(() => document.getElementById('aiAssistantForm')?.requestSubmit(), 250);
-                } else {
-                    input.dispatchEvent(new Event('input', {bubbles:true}));
-                }
-            };
-
-            recognition.onerror = event => {
-                const messages = {
-                    'not-allowed':'إذن الميكروفون مرفوض. فعّله من إعدادات الموقع في المتصفح.',
-                    'service-not-allowed':'خدمة التعرف الصوتي غير متاحة من المتصفح حالياً.',
-                    'audio-capture':'لم يتم العثور على ميكروفون متاح.',
-                    'no-speech':'لم أسمع صوتاً. اضغط بحث صوتي وحاول التحدث مباشرة.',
-                    'network':'تعذر الاتصال بخدمة التعرف الصوتي. تحقق من الإنترنت.',
-                    'aborted':'تم إيقاف الاستماع.'
-                };
-                aiAssistantResult.textContent = messages[event.error] || 'حدثت مشكلة أثناء الاستماع. تحقق من إذن الميكروفون وحاول مجدداً.';
-                resetButton();
-            };
-            recognition.onend = resetButton;
-        }
 
         function getAssistantCatalog() {
             const combined = [...allDataMap.general, ...allDataMap.kids, ...allDataMap.massa, ...allDataMap.suggestions];
@@ -1062,11 +955,7 @@
                 if (!key || seen.has(key)) return false;
                 seen.add(key);
                 return true;
-            }).map(item => ({
-                name: item.name,
-                url: item.watchLink,
-                image: item.imgLink
-            }));
+            }).map(item => ({ name:item.name, url:item.watchLink, image:item.imgLink }));
         }
 
         function renderAssistantMatches(matches) {
@@ -1076,54 +965,136 @@
                     ${item.image && item.image !== '-' ? `<img src="${escapeAssistantHtml(item.image)}" alt="" loading="lazy">` : ''}
                     <div class="ai-match-info">
                         <div class="ai-match-title">${escapeAssistantHtml(item.name)}</div>
-                        ${item.channel ? `<div class="ai-match-channel"><i class="fa-solid fa-tv"></i> على ${escapeAssistantHtml(item.channel)}</div>` : ""}
                         ${item.reason ? `<div class="ai-note">${escapeAssistantHtml(item.reason)}</div>` : ''}
                         <a href="${escapeAssistantHtml(item.url)}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-circle-play"></i> للمشاهدة الشارة</a>
                     </div>
                 </div>`).join('');
         }
 
-        aiAssistantForm.addEventListener('submit', async function(event) {
-            event.preventDefault();
-            const query = aiAssistantInput.value.trim();
-            if (!query) {
+        async function runSmartSearch() {
+            const query = searchInput.value.trim();
+            if (query.length < 2) {
                 aiAssistantResult.style.display = 'block';
-                aiAssistantResult.textContent = 'اكتب اسم مسلسل أو عبارة تتذكرها أولاً.';
+                aiAssistantResult.textContent = 'اكتب اسم المسلسل أو بعض الكلمات التي تتذكرها من الشارة.';
+                searchInput.focus();
                 return;
             }
             const catalog = getAssistantCatalog();
             if (!catalog.length) {
                 aiAssistantResult.style.display = 'block';
-                aiAssistantResult.textContent = 'انتظر حتى يكتمل تحميل أرشيف المسلسلات ثم أعد المحاولة.';
+                aiAssistantResult.textContent = 'انتظر حتى يكتمل تحميل قائمة المسلسلات ثم أعد المحاولة.';
                 return;
             }
             aiAssistantResult.style.display = 'block';
-            aiAssistantResult.textContent = 'جارٍ البحث في أرشيف شارات دراما المجد...';
+            aiAssistantResult.textContent = 'جارٍ البحث الذكي في أسماء المسلسلات...';
             aiAssistantSubmit.disabled = true;
-            aiAssistantSubmit.textContent = 'يبحث...';
+            aiAssistantSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> يبحث...';
             try {
                 const response = await fetch(AI_WORKER_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ query, catalog })
+                    method:'POST',
+                    headers:{'Content-Type':'application/json'},
+                    body:JSON.stringify({query, catalog})
                 });
                 const data = await response.json();
                 if (!response.ok || !data.ok) throw new Error(data.error || 'تعذر إكمال البحث.');
-                const catalogByUrl = new Map(catalog.map(entry => [entry.url, entry]));
-                const enrichedMatches = (data.matches || []).map(match => ({
-                    ...match,
-                    channel: match.channel || catalogByUrl.get(match.url)?.channel || ''
-                }));
-                const matchesHtml = renderAssistantMatches(enrichedMatches);
-                aiAssistantResult.innerHTML = `<div style="font-weight:bold;margin-bottom:6px">${escapeAssistantHtml(data.answer || 'نتائج البحث:')}</div>` +
-                    (matchesHtml || '<div>لم أجد تطابقاً موثوقاً في الأرشيف. جرّب عبارة أخرى أو اكتب اسم المسلسل.</div>');
+                const matchesHtml = renderAssistantMatches(data.matches || []);
+                aiAssistantResult.innerHTML =
+                    `<div class="smart-answer">${escapeAssistantHtml(data.answer || 'نتائج البحث:')}</div>` +
+                    (matchesHtml || '<div class="smart-empty">لم أجد تطابقاً مؤكداً. جرّب كلمات أخرى أو اكتب اسم المسلسل للبحث العادي.</div>');
             } catch (error) {
-                aiAssistantResult.textContent = 'تعذر الاتصال بالمساعد حالياً: ' + (error.message || 'تحقق من الاتصال وحاول مجدداً.');
+                aiAssistantResult.textContent = 'تعذر الاتصال بالبحث الذكي حالياً. تحقق من الإنترنت وحاول مرة أخرى.';
             } finally {
                 aiAssistantSubmit.disabled = false;
-                aiAssistantSubmit.textContent = 'ابحث';
+                aiAssistantSubmit.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> بحث ذكي';
             }
+        }
+
+        aiAssistantSubmit.addEventListener('click', runSmartSearch);
+        normalSearchBtn.addEventListener('click', () => {
+            aiAssistantResult.style.display = 'none';
+            searchInput.dispatchEvent(new Event('input', {bubbles:true}));
+            searchInput.focus();
         });
+
+        // Voice input uses the same search box. After speech, regular results update immediately.
+        function setupUnifiedVoice() {
+            const button = document.getElementById('aiVoiceBtn');
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const reset = () => {
+                button.classList.remove('listening');
+                button.disabled = false;
+                button.innerHTML = '<i class="fa-solid fa-microphone"></i>';
+            };
+            if (!window.isSecureContext || !SpeechRecognition) {
+                button.addEventListener('click', () => {
+                    aiAssistantResult.style.display = 'block';
+                    aiAssistantResult.textContent = !window.isSecureContext
+                        ? 'البحث الصوتي يحتاج إلى فتح الموقع عبر HTTPS.'
+                        : 'التعرف الصوتي غير مدعوم في هذا المتصفح. استخدم ميكروفون لوحة مفاتيح الهاتف لتحويل كلامك إلى نص داخل مربع البحث.';
+                    searchInput.focus();
+                });
+                return;
+            }
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'ar-SA';
+            recognition.interimResults = false;
+            recognition.continuous = false;
+            recognition.maxAlternatives = 1;
+            let active = false;
+            button.addEventListener('click', async () => {
+                if (active) {
+                    try { recognition.stop(); } catch (_) {}
+                    reset();
+                    return;
+                }
+                if (navigator.mediaDevices?.getUserMedia) {
+                    try {
+                        const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+                        stream.getTracks().forEach(track => track.stop());
+                    } catch (err) {
+                        aiAssistantResult.style.display = 'block';
+                        aiAssistantResult.textContent = 'اسمح للمتصفح باستخدام الميكروفون من إعدادات الموقع، ثم حاول مجدداً.';
+                        reset();
+                        return;
+                    }
+                }
+                try {
+                    recognition.start();
+                    active = true;
+                    button.classList.add('listening');
+                    button.innerHTML = '<i class="fa-solid fa-microphone-lines"></i>';
+                    aiAssistantResult.style.display = 'block';
+                    aiAssistantResult.textContent = 'أستمع الآن... قل اسم المسلسل أو العبارة التي تتذكرها.';
+                } catch (_) {
+                    reset();
+                    aiAssistantResult.textContent = 'تعذر تشغيل الميكروفون. حاول مرة أخرى أو استخدم ميكروفون لوحة المفاتيح.';
+                }
+            });
+            recognition.onresult = event => {
+                const spoken = event.results?.[0]?.[0]?.transcript?.trim();
+                if (!spoken) return;
+                searchInput.value = spoken;
+                searchInput.dispatchEvent(new Event('input', {bubbles:true}));
+                aiAssistantResult.style.display = 'block';
+                aiAssistantResult.textContent = `تم تحويل صوتك إلى نص: «${spoken}». ظهرت نتائج البحث العادي؛ اضغط «بحث ذكي» للبحث بالعبارة.`;
+            };
+            recognition.onerror = event => {
+                const msg = event.error === 'not-allowed'
+                    ? 'إذن الميكروفون مرفوض. فعّله من إعدادات الموقع في المتصفح.'
+                    : event.error === 'no-speech'
+                    ? 'لم أسمع كلاماً. اضغط الميكروفون وتحدث مباشرة.'
+                    : event.error === 'network'
+                    ? 'خدمة التعرف الصوتي لم تتصل. تحقق من الإنترنت.'
+                    : 'تعذر التعرف على الصوت. يمكنك استخدام ميكروفون لوحة المفاتيح.';
+                aiAssistantResult.style.display = 'block';
+                aiAssistantResult.textContent = msg;
+                active = false;
+                reset();
+            };
+            recognition.onend = () => { active = false; reset(); };
+        }
+        setupUnifiedVoice();
+
 async function fetchAllData() {
             const fetchPromises = Object.keys(channels).map(key => {
                 const encodedSheetName = encodeURIComponent(channels[key].sheetName);
@@ -1181,7 +1152,6 @@ async function fetchAllData() {
                     <div class="card-img-container"><img src="${finalImg}" alt="${cleanName}" loading="lazy"></div>
                     <div class="card-content">
                         <h3 class="card-title">${safeName}</h3>
-                        ${item.origin !== "suggestions" ? `<div class="card-channel"><i class="fa-solid fa-tv"></i> على ${channelLabel(item.origin)}</div>` : ""}
                         <div class="card-actions">
                             <a href="${item.watchLink}" target="_blank" class="btn-watch"><i class="fa-solid fa-play"></i> الشارة</a>
                             <button type="button" class="btn-fav ${isFav ? 'is-fav' : ''}" data-favorite-name="${safeName}" aria-label="${isFav ? 'إزالة من المفضلة' : 'إضافة إلى المفضلة'}" aria-pressed="${isFav}">
@@ -1195,11 +1165,14 @@ async function fetchAllData() {
         function renderContent() {
             favorites = loadFavorites();
             seriesGrid.innerHTML = '';
-            const searchTerm = searchInput.value.trim().toLowerCase();
+            const normalizeSearch = value => String(value || '').toLowerCase()
+                .replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه')
+                .replace(/[ًٌٍَُِّْـ]/g,'').replace(/[^\u0600-\u06FFa-z0-9\s]/g,' ')
+                .replace(/\s+/g,' ').trim();
+            const searchTerm = normalizeSearch(searchInput.value);
 
             if (activeTab === 'home') {
-                controlsBox.style.display = 'flex'; 
-                aiAssistant.style.display = 'block';
+                controlsBox.style.display = 'block'; 
                 telegramSchedule.style.display = 'none';
                 
                 if (searchTerm !== '') {
@@ -1208,7 +1181,7 @@ async function fetchAllData() {
                     faqSection.style.display = 'none';
                     
                     let combinedData = [...allDataMap.general, ...allDataMap.kids, ...allDataMap.massa, ...allDataMap.suggestions];
-                    let searchResults = combinedData.filter(item => item.name.trim().toLowerCase().includes(searchTerm));
+                    let searchResults = combinedData.filter(item => normalizeSearch(item.name).includes(searchTerm));
                     
                     let uniqueSearch = searchResults.filter((v, i, s) => s.findIndex(t => t.name.trim() === v.name.trim()) === i);
                     
@@ -1228,7 +1201,6 @@ async function fetchAllData() {
                 }
             } 
             else if (activeTab === 'schedule') {
-                aiAssistant.style.display = 'none';
                 controlsBox.style.display = 'none'; 
                 homeTitles.style.display = 'none';
                 marketingContainer.style.display = 'none';
@@ -1237,8 +1209,7 @@ async function fetchAllData() {
                 telegramSchedule.style.display = 'flex';
             }
             else if (activeTab === 'fav') {
-                aiAssistant.style.display = 'none';
-                controlsBox.style.display = 'flex'; 
+                controlsBox.style.display = 'block'; 
                 telegramSchedule.style.display = 'none';
                 homeTitles.style.display = 'none';
                 marketingContainer.style.display = 'none';
@@ -1251,7 +1222,7 @@ async function fetchAllData() {
                 uniqueFavData.sort((a, b) => favorites.indexOf(b.name.trim()) - favorites.indexOf(a.name.trim()));
 
                 if (searchTerm !== '') {
-                    uniqueFavData = uniqueFavData.filter(item => item.name.trim().toLowerCase().includes(searchTerm));
+                    uniqueFavData = uniqueFavData.filter(item => normalizeSearch(item.name).includes(searchTerm));
                 }
 
                 if (uniqueFavData.length === 0) {
@@ -1261,8 +1232,7 @@ async function fetchAllData() {
                 uniqueFavData.forEach(item => seriesGrid.innerHTML += createCardHtml(item));
             } 
             else {
-                aiAssistant.style.display = 'none';
-                controlsBox.style.display = 'flex'; 
+                controlsBox.style.display = 'block'; 
                 telegramSchedule.style.display = 'none';
                 homeTitles.style.display = 'none';
                 marketingContainer.style.display = 'none';
@@ -1270,7 +1240,7 @@ async function fetchAllData() {
                 let channelData = allDataMap[activeTab] || [];
                 
                 if (searchTerm !== '') {
-                    channelData = channelData.filter(item => item.name.trim().toLowerCase().includes(searchTerm));
+                    channelData = channelData.filter(item => normalizeSearch(item.name).includes(searchTerm));
                 }
 
                 if (channelData.length === 0) {
@@ -1329,7 +1299,10 @@ async function fetchAllData() {
             if (name) toggleFavorite(name);
         });
 
-        searchInput.addEventListener('input', renderContent);
+        searchInput.addEventListener('input', () => {
+            aiAssistantResult.style.display = 'none';
+            renderContent();
+        });
         window.addEventListener('DOMContentLoaded', fetchAllData);
 
         /* --- PWA Logic Integration --- */
