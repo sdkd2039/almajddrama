@@ -1080,10 +1080,13 @@
         }
         normalModeBtn.addEventListener('click', () => setHomeSearchMode('normal'));
         aiModeBtn.addEventListener('click', () => setHomeSearchMode('ai'));
-        document.getElementById('smartCloseBtn').addEventListener('click', () => {
-            setHomeSearchMode('normal');
-        });
+        const smartCloseBtn = document.getElementById('smartCloseBtn');
 
+        if (smartCloseBtn) {
+        smartCloseBtn.addEventListener('click', () => {
+        setHomeSearchMode('normal');
+        });
+      }
 
 
         // الميكروفون مخصص لحقل البحث الذكي ويطلب الإذن صراحةً.
