@@ -725,6 +725,17 @@
         .ai-match { display:flex; gap:12px; align-items:center; padding:10px 0; border-top:1px solid rgba(255,255,255,.1); }
         .ai-match img { width:86px; height:68px; object-fit:cover; border-radius:9px; }
         .ai-match-title { font-weight:bold; color:white; }
+        .ai-match-type {
+            display:inline-block;
+            margin-top:5px;
+            padding:2px 9px;
+            border-radius:7px;
+            background:rgba(7,152,206,.18);
+            border:1px solid rgba(142,220,255,.35);
+            color:#a9e6ff;
+            font-size:.78rem;
+            font-weight:bold;
+        }
         .ai-match a { display:inline-block; margin-top:7px; padding:7px 12px; border-radius:9px;
             background:#0798ce; color:white; text-decoration:none; }
         @keyframes voicePulse { 50% { box-shadow:0 0 0 6px rgba(163,49,75,.2); } }
@@ -1016,6 +1027,7 @@
                     ${item.image && item.image !== '-' ? `<img src="${escapeAssistantHtml(item.image)}" alt="" loading="lazy">` : ''}
                     <div class="ai-match-info">
                         <div class="ai-match-title">${escapeAssistantHtml(item.name)}</div>
+                        ${item.type ? `<div class="ai-match-type">${escapeAssistantHtml(item.type)}</div>` : ''}
                         <a href="${escapeAssistantHtml(item.url)}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-circle-play"></i> للمشاهدة الشارة</a>
                     </div>
                 </div>`).join('');
