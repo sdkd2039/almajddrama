@@ -761,6 +761,77 @@
         .search-inline-icon { color:#a9bed4; padding:0 8px; }
         @media(max-width:600px) { .smart-search-panel { padding:12px; } }
 
+    
+        /* ترتيب نتيجة المساعد: اسم المسلسل ونوع الشارة في سطر واحد */
+        .ai-match {
+            display:flex;
+            align-items:center;
+            gap:12px;
+            direction:rtl;
+        }
+        .ai-match-info {
+            flex:1;
+            min-width:0;
+            display:flex;
+            flex-direction:column;
+            align-items:flex-start;
+            gap:9px;
+        }
+        .ai-match-heading {
+            display:flex;
+            align-items:center;
+            justify-content:flex-start;
+            flex-wrap:wrap;
+            gap:8px;
+            width:100%;
+            min-width:0;
+        }
+        .ai-match-title {
+            display:inline-block;
+            font-size:1rem;
+            line-height:1.5;
+            overflow-wrap:anywhere;
+        }
+        .ai-match-type {
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            flex:none;
+            margin:0;
+            padding:3px 10px;
+            border-radius:8px;
+            background:#d7e8f5;
+            border:1px solid rgba(215,232,245,.8);
+            color:#12304a;
+            font-size:.78rem;
+            line-height:1.5;
+            font-weight:bold;
+            white-space:nowrap;
+        }
+        .ai-match-watch {
+            display:inline-flex !important;
+            align-items:center;
+            gap:6px;
+            width:max-content;
+            max-width:100%;
+            margin:0 !important;
+            padding:8px 13px !important;
+            border-radius:9px;
+            background:linear-gradient(135deg,#0798ce,#2365a0) !important;
+            color:#fff !important;
+            text-decoration:none;
+            font-size:.84rem;
+            line-height:1.4;
+        }
+        @media(max-width:600px) {
+            .ai-match { gap:10px; }
+            .ai-match img { width:82px; height:66px; flex:none; }
+            .ai-match-heading { gap:7px; }
+            .ai-match-title { font-size:.96rem; }
+            .ai-match-type { font-size:.75rem; padding:3px 8px; }
+            .ai-match-watch { font-size:.8rem; padding:7px 10px !important; }
+        }
+
     </style>
 </head>
 <body>
@@ -1026,9 +1097,11 @@
                 <div class="ai-match">
                     ${item.image && item.image !== '-' ? `<img src="${escapeAssistantHtml(item.image)}" alt="" loading="lazy">` : ''}
                     <div class="ai-match-info">
-                        <div class="ai-match-title">${escapeAssistantHtml(item.name)}</div>
-                        ${item.type ? `<div class="ai-match-type">${escapeAssistantHtml(item.type)}</div>` : ''}
-                        <a href="${escapeAssistantHtml(item.url)}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-circle-play"></i> للمشاهدة الشارة</a>
+                        <div class="ai-match-heading">
+                            <span class="ai-match-title">${escapeAssistantHtml(item.name)}</span>
+                            ${item.type ? `<span class="ai-match-type">${escapeAssistantHtml(item.type)}</span>` : ''}
+                        </div>
+                        <a class="ai-match-watch" href="${escapeAssistantHtml(item.url)}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-circle-play"></i> لمشاهدة الشارة</a>
                     </div>
                 </div>`).join('');
         }
