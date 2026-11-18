@@ -733,20 +733,25 @@
             color:#bdefff; background:rgba(7,152,206,.16);
             border:1px solid rgba(121,215,243,.35);
         }
-        .smart-suggestions { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 10px; }
-        .smart-suggestion {
-            display:inline-flex; align-items:center; gap:7px; min-height:38px;
-            padding:7px 12px; border-radius:999px; cursor:pointer; font:inherit;
-            font-size:.82rem; font-weight:bold; color:#dff5ff;
-            background:rgba(7,152,206,.13);
-            border:1px solid rgba(121,215,243,.28); transition:.18s ease;
+        .smart-suggestions {
+            display:grid; grid-template-columns:repeat(3,minmax(0,1fr));
+            gap:8px; margin:14px 0 12px; width:100%; direction:rtl;
         }
-        .smart-suggestion:hover { background:rgba(7,152,206,.28); transform:translateY(-1px); }
-        .smart-suggestion i { color:#79d7f3; }
+        .smart-suggestion {
+            display:flex; align-items:center; justify-content:center; gap:6px;
+            min-width:0; min-height:48px; padding:8px 5px; border-radius:14px;
+            cursor:pointer; font:inherit; font-size:.78rem; line-height:1.35;
+            white-space:nowrap; color:#dff5ff; font-weight:bold;
+            background:linear-gradient(145deg,rgba(7,152,206,.18),rgba(7,152,206,.08));
+            border:1px solid rgba(121,215,243,.30); transition:background .18s ease;
+        }
+        .smart-suggestion:hover { background:rgba(7,152,206,.28); }
+        .smart-suggestion i { color:#79d7f3; flex:0 0 auto; }
         .smart-suggestion:focus-visible { outline:2px solid #79d7f3; outline-offset:2px; }
         @media(max-width:600px) {
-            .smart-suggestions { gap:7px; }
-            .smart-suggestion { font-size:.77rem; padding:7px 10px; }
+            .smart-suggestions { gap:6px; }
+            .smart-suggestion { font-size:.70rem; padding:7px 3px; min-height:46px; }
+            .smart-suggestion i { font-size:.82rem; }
         }
 
         .ai-match a { display:inline-block; margin-top:7px; padding:7px 12px; border-radius:9px;
@@ -810,7 +815,6 @@
                 <button type="button" class="smart-suggestion" data-prompt="ابحث عن الشارة من كلماتها"><i class="fa-solid fa-music"></i> ابحث بكلمات الشارة</button>
                 <button type="button" class="smart-suggestion" data-prompt="ما سنة عرض مسلسل "><i class="fa-solid fa-calendar-days"></i> سنة عرض مسلسل</button>
                 <button type="button" class="smart-suggestion" data-prompt="ما قصة مسلسل "><i class="fa-solid fa-film"></i> قصة مسلسل</button>
-                <button type="button" class="smart-suggestion" data-prompt="هل هذه شارة البداية أم النهاية لمسلسل "><i class="fa-solid fa-list"></i> بداية أم نهاية؟</button>
             </div>
             <div class="unified-search-box smart-query-box">
                 <input type="search" id="smartSearchInput" placeholder="اكتب سؤالك أو العبارة التي تتذكرها..." autocomplete="off" aria-label="اكتب سؤالاً عن شارات ومسلسلات المجد">
@@ -1071,11 +1075,6 @@
                 return;
             }
             const catalog = getAssistantCatalog();
-            if (!catalog.length) {
-                aiAssistantResult.style.display = 'block';
-                aiAssistantResult.textContent = 'انتظر حتى يكتمل تحميل قائمة المسلسلات ثم أعد المحاولة.';
-                return;
-            }
             aiAssistantResult.style.display = 'block';
             aiAssistantResult.textContent = 'جارٍ تحليل الكلمات أو الفترة الزمنية ومقارنتها بأرشيف المسلسلات...';
             aiAssistantSubmit.disabled = true;
@@ -1095,7 +1094,10 @@
                 aiAssistantResult.innerHTML = answerHtml +
                     (matchesHtml || '<div class="smart-empty">لم تظهر نتائج في الأرشيف.</div>');
             } catch (error) {
-                aiAssistantResult.textContent = 'تعذر الاتصال بالبحث الذكي حالياً. تحقق من الإنترنت وحاول مرة أخرى.';
+                console.error('Majd AI search error:', error);
+                aiAssistantResult.textContent = error && error.message
+                    ? 'تعذر إكمال البحث: ' + error.message
+                    : 'تعذر الاتصال بالبحث الذكي حالياً. تحقق من الإنترنت وحاول مرة أخرى.';
             } finally {
                 aiAssistantSubmit.disabled = false;
                 aiAssistantSubmit.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> بحث ذكي';
