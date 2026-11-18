@@ -725,34 +725,66 @@
         /* بطاقة بيانات العرض: فصل السنوات ومنع التفافها داخل فقرة طويلة */
         .smart-year-card {
             margin: 4px 0 12px;
-            padding: 16px;
-            border-radius: 14px;
-            background: linear-gradient(145deg, #0b1b32, #102844);
-            border: 1px solid rgba(121,215,243,.25);
+            padding: 18px;
+            border-radius: 16px;
+            background: linear-gradient(145deg, #0b1b32, #102b49);
+            border: 1px solid rgba(121,215,243,.30);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.035), 0 10px 24px rgba(0,0,0,.16);
         }
         .smart-year-heading {
             color: #f4faff;
-            font-size: 1rem;
+            font-size: 1.08rem;
             font-weight: 900;
             line-height: 1.6;
-            margin-bottom: 13px;
+            margin-bottom: 15px;
+            text-align: right;
         }
+        /* ترتيب بصري ثابت: الهجري يميناً والميلادي يساراً */
         .smart-year-grid {
             display: grid;
-            grid-template-columns: repeat(2, minmax(0,1fr));
-            gap: 10px;
+            grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+            grid-template-areas: "gregorian hijri";
+            gap: 12px;
+            direction: ltr;
+        }
+        .smart-year-item {
+            min-width: 0;
+            min-height: 112px;
+            padding: 15px 10px;
+            border-radius: 13px;
+            background: linear-gradient(160deg, rgba(121,215,243,.13), rgba(121,215,243,.055));
+            border: 1px solid rgba(121,215,243,.24);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .smart-year-gregorian { grid-area: gregorian; }
+        .smart-year-hijri { grid-area: hijri; }
+        .smart-year-label {
+            display: block;
+            color: #b9d5e8;
+            font-size: .86rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+        .smart-year-value {
+            display: block;
+            color: #fff;
+            font-size: clamp(1.25rem, 4.8vw, 1.65rem);
+            font-weight: 900;
             direction: rtl;
+            unicode-bidi: isolate;
+            white-space: nowrap;
+            font-variant-numeric: tabular-nums;
         }
-        .smart-year-description {
-            margin-top: 12px; padding: 10px 12px; border-radius: 10px;
-            background: rgba(5,17,34,.48); border-right: 3px solid #0798ce;
-        }
-        .smart-year-description span {
-            display:block; color:#8cdef7; font-size:.8rem; font-weight:900; margin-bottom:5px;
-        }
-        .smart-year-description p {
-            margin:0; color:#dceaf6; font-size:.84rem; line-height:1.75;
-            display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:3; overflow:hidden;
+        .smart-year-value bdi { unicode-bidi: isolate; }
+        .smart-year-season {
+            margin-top: 12px;
+            color: #c8e9f7;
+            font-size: .88rem;
+            text-align: right;
         }
         .ai-match-title-row { display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:5px; }
         .ai-match-title-row .ai-match-type { margin-top:0; }
@@ -813,11 +845,7 @@
             -webkit-line-clamp: 5;
             overflow: hidden;
         }
-        @media(max-width:380px) {
-            .smart-year-grid { grid-template-columns:1fr 1fr; gap:7px; }
-            .smart-year-value { font-size:1.15rem; }
-            .smart-year-item { padding:10px 5px; }
-        }
+        @media(max-width:380px) { .smart-year-card { padding:13px; } .smart-year-grid { gap:7px; } .smart-year-item { min-height:100px; padding:11px 5px; } .smart-year-label { font-size:.75rem; } .smart-year-value { font-size:1.18rem; } }
 
         .ai-match { display:flex; gap:12px; align-items:center; padding:10px 0; border-top:1px solid rgba(255,255,255,.1); }
         .ai-match img { width:86px; height:68px; object-fit:cover; border-radius:9px; }
@@ -1164,7 +1192,8 @@
 
         function renderAssistantMatches(matches, mode = '') {
     if (!Array.isArray(matches) || !matches.length) return '';
-    const hideTypes = mode === 'year-filter' || mode === 'series-year-details';
+
+    const hideTypes = ['year-filter', 'series-year-details', 'series-description'].includes(mode);
     const seen = new Set();
     const unique = matches.filter(item => {
         const key = String(item.name || '').trim().toLowerCase()
@@ -1173,6 +1202,7 @@
         seen.add(key);
         return true;
     });
+
     const orderedTypes = item => {
         const values = Array.isArray(item.types) && item.types.length ? item.types : [item.type || ''];
         const raw = values.join(' ');
@@ -1181,11 +1211,14 @@
         if (/نهاي/.test(raw)) found.push('النهاية');
         return found;
     };
+
     return unique.map(item => {
         const types = hideTypes ? [] : orderedTypes(item);
-        const typeHtml = types.length ? `<span class="ai-match-type">${types.join(' / ')}</span>` : '';
-        const descriptionHtml = item.description && !hideTypes
-            ? `<div class="ai-match-description">${escapeAssistantHtml(item.description)}</div>` : '';
+        const typeHtml = types.length
+            ? `<span class="ai-match-type">${types.join(' / ')}</span>` : '';
+
+        // لا نكرر وصف المسلسل داخل بطاقة المطابقة؛ الوصف يظهر مرة واحدة فقط
+        // في وضع "قصة/نبذة المسلسل"، ولا يظهر إطلاقاً في بحث كلمات الشارة.
         return `
         <div class="ai-match">
             ${item.image && item.image !== '-' ? `<img src="${escapeAssistantHtml(item.image)}" alt="" loading="lazy">` : ''}
@@ -1194,12 +1227,12 @@
                     <div class="ai-match-title">${escapeAssistantHtml(item.name)}</div>
                     ${typeHtml}
                 </div>
-                ${descriptionHtml}
                 <a href="${escapeAssistantHtml(item.url)}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-circle-play"></i> مشاهدة الشارة</a>
             </div>
         </div>`;
     }).join('');
 }
+
 function renderAssistantAnswer(answer, matches = [], mode = '') {
     const raw = String(answer || '').trim();
     if (!raw) return '';
@@ -1212,28 +1245,35 @@ function renderAssistantAnswer(answer, matches = [], mode = '') {
     if (mode === 'year-filter') {
         return `<div class="smart-answer">${escapeAssistantHtml(raw)}</div>`;
     }
+
     if (mode === 'series-year-details' || gregorian || hijri) {
         const title = firstMatch.name || (titleMatch ? titleMatch[1].trim() : 'بيانات سنة العرض');
-        const yearCell = (label, match, suffix) => match
-            ? `<div class="smart-year-item"><span class="smart-year-label">${label}</span><strong class="smart-year-value">${escapeAssistantHtml(match[1])} ${suffix}</strong></div>` : '';
-        const description = String(firstMatch.description || '').trim();
+        const yearCell = (label, match, suffix, positionClass) => match
+            ? `<div class="smart-year-item ${positionClass}">
+                    <span class="smart-year-label">${label}</span>
+                    <strong class="smart-year-value"><bdi>${escapeAssistantHtml(match[1])} ${suffix}</bdi></strong>
+               </div>` : '';
+
         return `<section class="smart-year-card">
             <div class="smart-year-heading">${escapeAssistantHtml(title)}</div>
             <div class="smart-year-grid">
-                ${yearCell('السنة الهجرية', hijri, 'هـ')}
-                ${yearCell('السنة الميلادية', gregorian, 'م')}
+                ${yearCell('السنة الميلادية', gregorian, 'م', 'smart-year-gregorian')}
+                ${yearCell('السنة الهجرية', hijri, 'هـ', 'smart-year-hijri')}
             </div>
             ${season ? `<div class="smart-year-season">الموسم: ${escapeAssistantHtml(season[1].trim())}</div>` : ''}
-            ${description ? `<div class="smart-year-description"><span>نبذة عن المسلسل</span><p>${escapeAssistantHtml(description)}</p></div>` : ''}
         </section>`;
     }
+
     if (mode === 'series-description') {
         const heading = firstMatch.name ? `نبذة عن مسلسل ${firstMatch.name}` : 'قصة المسلسل';
+        // نستخدم الوصف من السجل المطابق مرة واحدة، ونرجع لإجابة Worker عند غيابه.
+        const description = String(firstMatch.description || raw).trim();
         return `<section class="smart-description-card">
             <div class="smart-description-title">${escapeAssistantHtml(heading)}</div>
-            <div class="smart-description-text">${escapeAssistantHtml(raw)}</div>
+            <div class="smart-description-text">${escapeAssistantHtml(description)}</div>
         </section>`;
     }
+
     return `<div class="smart-answer-text">${escapeAssistantHtml(raw).replace(/\n/g, '<br>')}</div>`;
 }
 async function runSmartSearch() {
