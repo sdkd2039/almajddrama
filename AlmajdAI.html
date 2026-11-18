@@ -722,62 +722,6 @@
             color:#eff8ff; background:rgba(8,20,39,.72); line-height:1.8; }
         .smart-answer { font-weight:bold; margin-bottom:8px; }
         .smart-empty { color:#c6d8e8; }
-        /* بطاقة بيانات العرض: فصل السنوات ومنع التفافها داخل فقرة طويلة */
-        .smart-year-card {
-            margin: 4px 0 12px;
-            padding: 16px;
-            border-radius: 14px;
-            background: linear-gradient(145deg, #0b1b32, #102844);
-            border: 1px solid rgba(121,215,243,.25);
-        }
-        .smart-year-heading {
-            color: #f4faff;
-            font-size: 1rem;
-            font-weight: 900;
-            line-height: 1.6;
-            margin-bottom: 13px;
-        }
-        .smart-year-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0,1fr));
-            gap: 10px;
-        }
-        .smart-year-item {
-            min-width: 0;
-            padding: 12px 9px;
-            border-radius: 11px;
-            background: rgba(121,215,243,.09);
-            border: 1px solid rgba(121,215,243,.2);
-            text-align: center;
-        }
-        .smart-year-label {
-            display: block;
-            color: #b9d5e8;
-            font-size: .78rem;
-            margin-bottom: 5px;
-        }
-        .smart-year-value {
-            display: block;
-            color: #fff;
-            font-size: 1.35rem;
-            font-weight: 900;
-            direction: ltr;
-            unicode-bidi: isolate;
-            white-space: nowrap;
-            font-variant-numeric: tabular-nums;
-        }
-        .smart-year-season {
-            margin-top: 10px;
-            color: #c8e9f7;
-            font-size: .86rem;
-        }
-        .smart-answer-text { color:#eaf5ff; line-height:1.8; }
-        @media(max-width:380px) {
-            .smart-year-grid { grid-template-columns:1fr 1fr; gap:7px; }
-            .smart-year-value { font-size:1.15rem; }
-            .smart-year-item { padding:10px 5px; }
-        }
-
         .ai-match { display:flex; gap:12px; align-items:center; padding:10px 0; border-top:1px solid rgba(255,255,255,.1); }
         .ai-match img { width:86px; height:68px; object-fit:cover; border-radius:9px; }
         .ai-match-title { font-weight:bold; color:white; }
@@ -835,36 +779,34 @@
         .search-inline-icon { color:#a9bed4; padding:0 8px; }
         @media(max-width:600px) { .smart-search-panel { padding:12px; } }
 
+    
+        /* تحسين موحد لبطاقات نتائج مساعد الشارات */
+        .ai-match-info { min-width:0; flex:1 1 auto; }
+        .ai-match-title { line-height:1.8; overflow-wrap:anywhere; }
+        .ai-year-grid {
+            display:grid; grid-template-columns:repeat(2,minmax(0,1fr));
+            gap:10px; margin-top:12px; width:100%;
+        }
+        .ai-year-cell {
+            min-width:0; display:flex; flex-direction:column; align-items:center;
+            justify-content:center; gap:8px; padding:12px 8px; border-radius:13px;
+            background:rgba(70,125,165,.18); border:1px solid rgba(121,215,243,.24);
+            text-align:center;
+        }
+        .ai-year-cell span { color:#c6dced; font-weight:700; font-size:.88rem; }
+        .ai-year-cell strong {
+            color:#fff; font-size:1.35rem; white-space:nowrap;
+            direction:ltr; unicode-bidi:isolate; font-variant-numeric:tabular-nums;
+        }
+        @media(max-width:380px) {
+            .smart-suggestions { grid-template-columns:repeat(2,minmax(0,1fr)); }
+            .smart-suggestion { white-space:normal; overflow-wrap:normal; font-size:.76rem; }
+            .ai-year-grid { gap:7px; }
+            .ai-year-cell { padding:10px 5px; }
+            .ai-year-cell span { font-size:.78rem; }
+            .ai-year-cell strong { font-size:1.15rem; }
+        }
 
-        /* ===== إصلاحات نتائج البحث الذكي والاقتراحات ===== */
-        .sr-list { display:flex; flex-direction:column; gap:12px; }
-        .sr-card { padding:14px; border-radius:14px; background:linear-gradient(145deg,#0b1b32,#102844); border:1px solid rgba(121,215,243,.22); }
-        .sr-main { display:flex; align-items:center; gap:12px; }
-        .sr-img { width:86px; height:68px; flex:none; object-fit:cover; border-radius:9px; }
-        .sr-info { flex:1; min-width:0; display:flex; flex-direction:column; align-items:flex-start; gap:8px; }
-        .sr-head { display:flex; flex-wrap:wrap; align-items:center; gap:6px 8px; min-width:0; }
-        .sr-head .ai-match-title { font-weight:900; color:#fff; font-size:1.02rem; line-height:1.5; }
-        .sr-dash { color:#79d7f3; font-weight:900; }
-        .sr-head .ai-match-types { display:inline-flex; flex-wrap:wrap; gap:6px; margin:0; }
-        .sr-watch, .sr-actions a { display:inline-flex; align-items:center; gap:6px; padding:7px 14px; border-radius:9px; background:#0798ce; color:#fff; text-decoration:none; font-size:.85rem; font-weight:bold; }
-        .sr-actions { margin-top:12px; }
-        .sr-years { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:12px; direction:rtl; }
-        .sr-year-box { min-width:0; padding:12px 6px; border-radius:11px; text-align:center; background:rgba(121,215,243,.09); border:1px solid rgba(121,215,243,.22); }
-        .sr-year-label { display:block; color:#b9d5e8; font-size:.78rem; margin-bottom:6px; white-space:nowrap; }
-        .sr-year-value { display:flex; align-items:baseline; justify-content:center; gap:6px; direction:rtl; white-space:nowrap; color:#fff; font-weight:900; }
-        .sr-year-num { font-size:1.35rem; direction:ltr; unicode-bidi:isolate; font-variant-numeric:tabular-nums; }
-        .sr-year-unit { font-size:.95rem; color:#bdefff; }
-        .sr-season { margin-top:10px; color:#c8e9f7; font-size:.86rem; }
-        .sr-desc { margin-top:12px; color:#eaf5ff; line-height:1.9; font-size:.92rem; }
-        .sr-note { margin-top:10px; color:#c6d8e8; font-size:.84rem; }
-        @media(max-width:380px) { .sr-year-num { font-size:1.15rem; } .sr-img { width:70px; height:56px; } }
-
-        /* مربعات الاقتراحات: ثلاثة أعمدة متساوية، الأيقونة فوق النص، التفاف على حدود الكلمات فقط */
-        .smart-suggestions { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; direction:rtl; }
-        .smart-suggestion { flex-direction:column; gap:5px; white-space:normal; word-break:keep-all; overflow-wrap:normal; text-align:center; padding:9px 4px; min-height:62px; font-size:.8rem; line-height:1.35; }
-        .smart-suggestion i { font-size:1rem; }
-        @media(max-width:600px) { .smart-suggestions { gap:6px; } .smart-suggestion { font-size:.74rem; padding:8px 3px; min-height:60px; } }
-        @media(max-width:330px) { .smart-suggestions { grid-template-columns:1fr; } .smart-suggestion { flex-direction:row; min-height:44px; font-size:.82rem; } }
     </style>
 </head>
 <body>
@@ -898,7 +840,7 @@
             <div class="smart-panel-title">محادثة شارات دراما المجد</div>
             <p>يمكنكم الاستفسار عن كلمات الشارة، سنة العرض، أو موسم المسلسل، فالمساعد مخصص لإجابة كل ما يتعلق بشارات ومسلسلات المجد.</p>
             <div class="smart-suggestions" id="smartSuggestions" aria-label="أسئلة مقترحة">
-                <button type="button" class="smart-suggestion" data-prompt="ابحث عن الشارة من كلماتها"><i class="fa-solid fa-music"></i> كلمات الشارة</button>
+                <button type="button" class="smart-suggestion" data-prompt="ابحث عن الشارة من كلماتها"><i class="fa-solid fa-music"></i> ابحث بكلمات الشارة</button>
                 <button type="button" class="smart-suggestion" data-prompt="ما سنة عرض مسلسل "><i class="fa-solid fa-calendar-days"></i> سنة عرض مسلسل</button>
                 <button type="button" class="smart-suggestion" data-prompt="ما قصة مسلسل "><i class="fa-solid fa-film"></i> قصة مسلسل</button>
             </div>
@@ -1073,42 +1015,12 @@
         const faqSection = document.getElementById('faqSection');
 
         function parseCSV(text) {
-            const rows = [];
-            let row = [];
-            let field = '';
-            let quoted = false;
-            const input = String(text || '').replace(/^\uFEFF/, '');
-
-            for (let i = 0; i < input.length; i++) {
-                const ch = input[i];
-                if (quoted) {
-                    if (ch === '"' && input[i + 1] === '"') {
-                        field += '"';
-                        i++;
-                    } else if (ch === '"') {
-                        quoted = false;
-                    } else {
-                        field += ch;
-                    }
-                } else if (ch === '"' && field.length === 0) {
-                    quoted = true;
-                } else if (ch === ',') {
-                    row.push(field.trim());
-                    field = '';
-                } else if (ch === '\n' || ch === '\r') {
-                    if (ch === '\r' && input[i + 1] === '\n') i++;
-                    row.push(field.trim());
-                    if (row.some(value => value !== '')) rows.push(row);
-                    row = [];
-                    field = '';
-                } else {
-                    field += ch;
-                }
-            }
-
-            row.push(field.trim());
-            if (row.some(value => value !== '')) rows.push(row);
-            return rows;
+            let lines = text.split('\n');
+            return lines.map(line => {
+                let result = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+                if (!result) return null;
+                return result.map(val => val.replace(/^"|"$/g, '').trim());
+            }).filter(row => row !== null);
         }
 
 
@@ -1145,423 +1057,79 @@
             }).map(item => ({ name:item.name, url:item.watchLink, image:item.imgLink }));
         }
 
-        // BEGIN SMART ENGINE
-        // ===== البحث الذكي: يقرأ ورقة Ai (الأعمدة A..G) مباشرة، ويستعين بـ Worker عند تعذّر ذلك =====
-        const AI_SHEET_NAME = 'Ai';
-        let aiRows = [];            // {name, lyrics, type, desc, hijri, gregorian, season}
-        let aiSheetState = 'idle';  // idle | ok | failed
-        let aiSheetPromise = null;
-
-        // تطبيع عربي: التشكيل، التطويل، الألف، الياء، التاء المربوطة، الأرقام الهندية، علامات الترقيم، المسافات
-        function normAr(value) {
-            return String(value == null ? '' : value)
-                .replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d))
-                .replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d))
-                .toLowerCase()
-                .replace(/[ؐ-ًؚ-ٰٟۖ-ۭـ]/g, '')
-                .replace(/[أإآٱ]/g, 'ا')
-                .replace(/ى/g, 'ي')
-                .replace(/ة/g, 'ه')
-                .replace(/ؤ/g, 'و')
-                .replace(/ئ/g, 'ي')
-                .replace(/[^ء-يa-z0-9\s]/g, ' ')
-                .replace(/\s+/g, ' ')
-                .trim();
-        }
-
-        function yearDigits(value) {
-            const m = normAr(value).match(/\d{3,4}/);
-            return m ? m[0] : '';
-        }
-
-        function parseAiSheetRows(csvText) {
-            return parseCSV(csvText).map(r => ({
-                name: (r[0] || '').trim(),
-                lyrics: (r[1] || '').trim(),
-                type: (r[2] || '').trim(),
-                desc: (r[3] || '').trim(),
-                hijri: yearDigits(r[4]),
-                gregorian: yearDigits(r[5]),
-                season: (r[6] || '').trim()
-            })).filter(r => r.name && normAr(r.name) !== normAr('اسم المسلسل'));
-        }
-
-        function loadAiSheet() {
-            if (aiSheetPromise) return aiSheetPromise;
-            const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(AI_SHEET_NAME)}`;
-            aiSheetPromise = fetch(url, { cache: 'no-store' })
-                .then(res => {
-                    if (!res.ok) throw new Error('HTTP ' + res.status);
-                    return res.text();
-                })
-                .then(csv => {
-                    if (!csv || /<html[\s>]/i.test(csv.slice(0, 500))) throw new Error('لم تُرجع Google Sheets ملف CSV للورقة Ai.');
-                    aiRows = parseAiSheetRows(csv);
-                    aiSheetState = aiRows.length ? 'ok' : 'failed';
-                })
-                .catch(err => {
-                    console.error('Ai sheet load error:', err);
-                    aiRows = [];
-                    aiSheetState = 'failed';
-                    aiSheetPromise = null; // يسمح بإعادة المحاولة في البحث التالي
-                });
-            return aiSheetPromise;
-        }
-
-        // ---- إزالة العبارات التوجيهية من بداية السؤال فقط (حتى لا تُحذف كلمات الشارة الحقيقية) ----
-        const DIRECTIVE_LEADS = [
-            'ابحث عن الشارة من كلماتها', 'ابحث عن الشارة من كلمات', 'ابحث عن الشارة التي كلماتها',
-            'ابحث عن الشارة اللي كلماتها', 'ابحث عن الشارة التي تقول', 'ابحث عن الشارة التي فيها',
-            'ابحث عن شارة من كلماتها', 'ابحث عن شارة كلماتها', 'ابحث عن كلمات الشارة', 'ابحث عن كلمات شارة',
-            'ابحث لي عن الشارة من كلماتها', 'ابحث لي عن الشارة', 'ابحث لي عن شارة',
-            'ابحث عن الشارة', 'ابحث عن شارة', 'ابحث عن كلمات', 'ابحث عن مسلسل', 'ابحث عن', 'ابحث',
-            'دور على الشارة من كلماتها', 'دور لي على الشارة', 'جد لي الشارة من كلماتها',
-            'وش الشارة اللي كلماتها', 'وش الشارة التي كلماتها', 'ما هي الشارة التي كلماتها',
-            'ما الشارة التي كلماتها', 'ما الشارة اللي كلماتها',
-            'كلمات الشارة هي', 'كلمات الشارة', 'كلمات شارة', 'كلمات الشارات',
-            'الشارة من كلماتها', 'الشارة التي كلماتها', 'الشارة اللي كلماتها', 'الشارة الي كلماتها',
-            'شارة من كلماتها', 'شارة كلماتها', 'شارة مسلسل', 'الشارة', 'شارة',
-            'من كلماتها', 'من كلمات', 'كلماتها', 'كلماته', 'مسلسل',
-            'لو سمحت', 'من فضلك'
-        ].map(normAr).sort((a, b) => b.length - a.length);
-
-        function stripDirectives(norm) {
-            let t = norm;
-            let changed = true;
-            while (changed && t) {
-                changed = false;
-                for (const p of DIRECTIVE_LEADS) {
-                    if (t === p) { t = ''; changed = true; break; }
-                    if (t.startsWith(p + ' ')) { t = t.slice(p.length + 1).trim(); changed = true; break; }
-                }
-            }
-            return t.replace(/\s+(?:لو سمحت|من فضلك|شكرا)$/, '').trim();
-        }
-
-        // ---- نوايا السؤال: سنة العرض / القصة ----
-        const YEAR_RE = new RegExp('(?:^|\\s)(?:' + ['سنة', 'عام', 'تاريخ', 'موعد', 'متى'].map(normAr).join('|') + ')\\s+(?:' + ['عرض', 'بث', 'ظهور', 'صدور', 'إنتاج', 'مسلسل'].map(normAr).join('|') + ')'
-            + '|(?:^|\\s)(?:' + ['ما', 'ماهي', 'ماهو', 'كم', 'وش', 'ايش', 'متى'].map(normAr).join('|') + ')\\s+(?:' + ['سنة', 'عام'].map(normAr).join('|') + ')(?:\\s|$)'
-            + '|(?:^|\\s)(?:' + ['هجري', 'هجرية', 'ميلادي', 'ميلادية', 'موسم', 'الموسم'].map(normAr).join('|') + ')(?:\\s|$)');
-        const STORY_RE = new RegExp('(?:^|\\s)(?:' + ['قصة', 'حكاية', 'ملخص', 'نبذة', 'وصف', 'موضوع'].map(normAr).join('|') + ')(?:\\s|$)'
-            + '|(?:^|\\s)عن\\s+(?:' + ['ماذا', 'ايش', 'وش'].map(normAr).join('|') + ')(?:\\s|$)');
-        const INTENT_WORDS = new Set(['ما', 'ماهي', 'ماهو', 'كم', 'وش', 'ايش', 'متى', 'سنة', 'عام', 'تاريخ', 'موعد', 'عرض', 'بث', 'ظهور', 'صدور', 'انتاج',
-            'مسلسل', 'لمسلسل', 'هجري', 'هجرية', 'ميلادي', 'ميلادية', 'موسم', 'الموسم', 'قصة', 'حكاية', 'ملخص', 'نبذة', 'وصف', 'موضوع', 'عن', 'ماذا', 'هي', 'هو',
-            'لو', 'سمحت', 'من', 'فضلك', 'ابحث', 'لي', 'اخبرني', 'قل', 'اعطني', 'هل', 'تعرف'].map(normAr));
-
-        function extractSeriesPhrase(norm) {
-            const words = norm.split(' ').filter(Boolean);
-            let s = 0, e = words.length;
-            while (s < e && INTENT_WORDS.has(words[s])) s++;
-            while (e > s && INTENT_WORDS.has(words[e - 1])) e--;
-            return words.slice(s, e).join(' ');
-        }
-
-        // ---- مطابقة الكلمات ----
-        function stripAl(w) { return w.length > 3 && w.startsWith('ال') ? w.slice(2) : w; }
-        function tokenMatches(t, w) {
-            if (t === w) return 1;
-            if (stripAl(t) === stripAl(w)) return 0.95;
-            const a = stripAl(t), b = stripAl(w);
-            if (a.length >= 3 && b.length >= 3) {
-                if (b.startsWith(a) && b.length - a.length <= 2) return 0.8;
-                if (a.startsWith(b) && a.length - b.length <= 2) return 0.8;
-            }
-            return 0;
-        }
-        function hasWordSeq(hay, needle) { return needle !== '' && (' ' + hay + ' ').includes(' ' + needle + ' '); }
-
-        // درجة تطابق عبارة (كلمات الشارة) مع نص كلمات: 0 = لا تطابق
-        function lyricsScore(query, lyricsNorm) {
-            if (!query || !lyricsNorm) return 0;
-            const qt = Array.from(new Set(query.split(' ').filter(Boolean)));
-            if (!qt.length) return 0;
-            if (hasWordSeq(lyricsNorm, query)) {
-                return 1000 + (lyricsNorm === query ? 50 : 0) + (lyricsNorm.startsWith(query + ' ') ? 20 : 0);
-            }
-            const lw = lyricsNorm.split(' ');
-            let matched = 0, quality = 0;
-            const pos = [];
-            for (const t of qt) {
-                let best = 0, bestIdx = -1;
-                for (let i = 0; i < lw.length; i++) {
-                    const m = tokenMatches(t, lw[i]);
-                    if (m > best) { best = m; bestIdx = i; if (m === 1) break; }
-                }
-                if (best > 0) { matched++; quality += best; pos.push(bestIdx); }
-            }
-            const n = qt.length;
-            const need = n <= 2 ? n : (n === 3 ? 2 : Math.ceil(n * 0.6));
-            if (matched < need) return 0;
-            if (n === 1 && qt[0].length < 3 && quality < 1) return 0;
-            let adjacent = 0;
-            for (let i = 1; i < pos.length; i++) if (pos[i] === pos[i - 1] + 1) adjacent++;
-            return (matched / n) * 400 + (quality / n) * 100 + adjacent * 40;
-        }
-
-        // درجة تطابق اسم مسلسل مع عبارة
-        function nameScore(query, nameNorm) {
-            if (!query || !nameNorm) return 0;
-            if (nameNorm === query) return 900;
-            if (query.length >= 2 && hasWordSeq(nameNorm, query)) return 700;
-            if (nameNorm.length >= 2 && hasWordSeq(query, nameNorm)) return 650;
-            const qt = query.split(' ').filter(Boolean);
-            const nw = nameNorm.split(' ').filter(Boolean);
-            if (!qt.length || !nw.length) return 0;
-            let hit = 0;
-            for (const t of qt) if (nw.some(w => tokenMatches(t, w) >= 0.95)) hit++;
-            const cov = hit / qt.length;
-            return cov >= 0.75 && hit >= 1 ? 300 + cov * 100 : 0;
-        }
-
-        function typesOf(rows) {
-            const set = new Set();
-            rows.forEach(r => {
-                const t = normAr(r.type);
-                if (/بداي/.test(t)) set.add('البداية');
-                if (/نهاي/.test(t)) set.add('النهاية');
+        function renderAssistantMatches(matches) {
+            if (!Array.isArray(matches) || !matches.length) return '';
+            const seen = new Set();
+            const unique = matches.filter(item => {
+                const key = String(item.name || '').trim().toLowerCase()
+                    .replace(/[أإآٱ]/g, 'ا').replace(/ى/g, 'ي')
+                    .replace(/ة/g, 'ه').replace(/\s+/g, ' ');
+                if (!key || seen.has(key)) return false;
+                seen.add(key);
+                return true;
             });
-            return ['البداية', 'النهاية'].filter(t => set.has(t)); // البداية دائماً أولاً
-        }
-
-        function buildCatalogIndex() {
-            const map = new Map();
-            [...allDataMap.general, ...allDataMap.kids, ...allDataMap.massa, ...allDataMap.suggestions].forEach(it => {
-                const k = normAr(it.name);
-                if (k && !map.has(k)) map.set(k, { url: it.watchLink, image: it.imgLink });
-            });
-            return map;
-        }
-        function lookupCatalog(index, name) {
-            const k = normAr(name);
-            if (index.has(k)) return index.get(k);
-            for (const [key, val] of index) if (key && (hasWordSeq(key, k) || hasWordSeq(k, key))) return val;
-            return { url: '', image: '' };
-        }
-
-        function firstFilled(rows, field) {
-            for (const r of rows) if (r[field]) return r[field];
-            return '';
-        }
-
-        function makeItem(group, rowsForTypes, catalog, score) {
-            const media = lookupCatalog(catalog, group.name);
-            return {
-                name: group.name,
-                types: typesOf(rowsForTypes),
-                hijri: firstFilled(group.rows, 'hijri'),
-                gregorian: firstFilled(group.rows, 'gregorian'),
-                season: firstFilled(group.rows, 'season'),
-                desc: firstFilled(group.rows, 'desc'),
-                url: media.url, image: media.image, score
+            const orderedTypes = item => {
+                const values = Array.isArray(item.types) ? item.types : String(item.type || '').split(/[،,]/);
+                const raw = values.map(value => String(value || '').trim());
+                const found = [];
+                if (raw.some(value => /بداي/.test(value))) found.push('البداية');
+                if (raw.some(value => /نهاي/.test(value))) found.push('النهاية');
+                return found;
             };
-        }
-
-        function groupAiRows(rows) {
-            const map = new Map();
-            rows.forEach(r => {
-                const k = normAr(r.name);
-                if (!k) return;
-                if (!map.has(k)) map.set(k, { key: k, name: r.name, rows: [] });
-                map.get(k).rows.push(r);
-            });
-            return Array.from(map.values());
-        }
-
-        // البحث المحلي في ورقة Ai. يعيد { mode, query, items } أو { mode:'empty' } إن لم يبقَ نص للبحث
-        function localSmartSearch(rawQuery, rows, catalog) {
-            const norm = normAr(rawQuery);
-            const groups = groupAiRows(rows);
-            let mode = 'lyrics';
-            let query = stripDirectives(norm);
-
-            const wantsYear = YEAR_RE.test(norm);
-            const wantsStory = !wantsYear && STORY_RE.test(norm);
-            if (wantsYear || wantsStory) {
-                const phrase = extractSeriesPhrase(norm);
-                const found = groups.map(g => ({ g, s: nameScore(phrase, normAr(g.name)) })).filter(x => x.s >= 300).sort((a, b) => b.s - a.s);
-                if (found.length) {
-                    const top = found[0].s;
-                    const picked = found.filter(x => x.s >= top - 100).slice(0, 3);
-                    return {
-                        mode: wantsYear ? 'year' : 'story', query: phrase,
-                        items: picked.map(x => makeItem(x.g, x.g.rows, catalog, x.s))
-                    };
-                }
-                // لا يوجد مسلسل بهذا الاسم: يُعامل النص كبحث عادي عن كلمات
-            }
-
-            if (!query) return { mode: 'empty', query: '', items: [] };
-
-            const scored = [];
-            groups.forEach(g => {
-                let best = 0;
-                const hitRows = [];
-                g.rows.forEach(r => {
-                    const s = lyricsScore(query, normAr(r.lyrics));
-                    if (s > 0) { hitRows.push(r); if (s > best) best = s; }
-                });
-                const ns = nameScore(query, normAr(g.name));
-                if (!best && !ns) return;
-                // عند تطابق اسم المسلسل نفسه تُعرض كل أنواع شاراته؛ وعند تطابق الكلمات فقط يُعرض نوع الصف المطابق
-                const useRows = hitRows.length && ns < 650 ? hitRows : g.rows;
-                scored.push(makeItem(g, useRows, catalog, Math.max(best, ns)));
-            });
-            scored.sort((a, b) => b.score - a.score || a.name.localeCompare(b.name, 'ar'));
-            const top = scored.length ? scored[0].score : 0;
-            // استبعاد النتائج الضعيفة مقارنة بأقوى نتيجة
-            const items = scored.filter(x => x.score >= top * 0.6).slice(0, 6);
-            return { mode, query, items };
-        }
-
-        // ---- العرض الموحد للنتائج ----
-        function isHttpUrl(u) { return /^https?:\/\//i.test(String(u || '').trim()); }
-
-        function renderSeriesCard(item, mode) {
-            const e = escapeAssistantHtml;
-            const hasImg = item.image && item.image !== '-' && isHttpUrl(item.image);
-            const typeHtml = item.types.length
-                ? `<span class="sr-dash" aria-hidden="true">—</span><span class="ai-match-types">${item.types.map(t => `<span class="ai-match-type">${t}</span>`).join('')}</span>`
-                : '';
-            const link = isHttpUrl(item.url)
-                ? `<a class="sr-watch" href="${e(item.url)}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-circle-play"></i> مشاهدة الشارة</a>`
-                : '';
-            let extra = '';
-            if (mode === 'year' || item.hijri || item.gregorian) {
-                if (item.hijri || item.gregorian) {
-                    // الترتيب في DOM: الهجري أولاً، وبما أن الاتجاه rtl فيظهر يميناً، والميلادي يساراً
-                    const box = (label, num, unit) => `<div class="sr-year-box"><span class="sr-year-label">${label}</span><span class="sr-year-value"><span class="sr-year-num">${e(num)}</span><span class="sr-year-unit">${unit}</span></span></div>`;
-                    extra += `<div class="sr-years" dir="rtl">${item.hijri ? box('السنة الهجرية', item.hijri, 'هـ') : ''}${item.gregorian ? box('السنة الميلادية', item.gregorian, 'م') : ''}</div>`;
-                } else {
-                    extra += '<div class="sr-note">لم تُسجَّل سنة العرض لهذا المسلسل في الأرشيف.</div>';
-                }
-                if (mode === 'year' && item.season) extra += `<div class="sr-season">الموسم: ${e(item.season)}</div>`;
-            }
-            if (mode === 'story') {
-                extra += item.desc
-                    ? `<div class="sr-desc">${e(item.desc).replace(/\n/g, '<br>')}</div>`
-                    : '<div class="sr-note">لا يوجد وصف مسجَّل لهذا المسلسل في الأرشيف.</div>';
-            }
-            return `<article class="sr-card">
-                <div class="sr-main">
-                    ${hasImg ? `<img class="sr-img" src="${e(item.image)}" alt="" loading="lazy">` : ''}
-                    <div class="sr-info">
-                        <div class="sr-head"><span class="ai-match-title">${e(item.name)}</span>${typeHtml}</div>
-                        ${mode === 'story' || mode === 'year' ? '' : link}
+            const yearValue = (value, suffix) => {
+                const raw = String(value || '').trim();
+                if (!raw) return '';
+                return escapeAssistantHtml(raw.replace(/\s*[هـهمم]\s*$/, '')) + ' ' + suffix;
+            };
+            return unique.map(item => {
+                const types = orderedTypes(item);
+                const typeText = types.length ? ' — ' + types.join(' — ') : '';
+                const hasHijri = String(item.hijri || '').trim() !== '';
+                const hasGregorian = String(item.gregorian || '').trim() !== '';
+                const yearsHtml = (hasHijri || hasGregorian) ? `
+                    <div class="ai-year-grid" dir="rtl">
+                        ${hasHijri ? `<div class="ai-year-cell"><span>السنة الهجرية</span><strong>${yearValue(item.hijri, 'هـ')}</strong></div>` : ''}
+                        ${hasGregorian ? `<div class="ai-year-cell"><span>السنة الميلادية</span><strong>${yearValue(item.gregorian, 'م')}</strong></div>` : ''}
+                    </div>` : '';
+                return `
+                <div class="ai-match">
+                    ${item.image && item.image !== '-' ? `<img src="${escapeAssistantHtml(item.image)}" alt="" loading="lazy">` : ''}
+                    <div class="ai-match-info">
+                        <div class="ai-match-title">${escapeAssistantHtml(item.name)}${escapeAssistantHtml(typeText)}</div>
+                        ${yearsHtml}
+                        <a href="${escapeAssistantHtml(item.url)}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-circle-play"></i> مشاهدة الشارة</a>
                     </div>
-                </div>
-                ${extra}
-                ${mode === 'story' || mode === 'year' ? (link ? `<div class="sr-actions">${link}</div>` : '') : ''}
-            </article>`;
+                </div>`;
+            }).join('');
         }
-
-        function renderSearchResult(result) {
-            const e = escapeAssistantHtml;
-            if (result.mode === 'empty') return '<div class="smart-empty">اكتب الكلمات التي تتذكرها من الشارة بعد عبارة «كلمات الشارة»، أو اسم المسلسل.</div>';
-            if (!result.items.length) return '<div class="smart-empty">لم أجد نتيجة مطابقة في الأرشيف. جرّب كلمات أخرى من الشارة أو اسم المسلسل.</div>';
-            const heading = ({
-                lyrics: result.items.length > 1 ? 'وجدت هذه النتائج المطابقة في أرشيف الشارات:' : 'وجدت نتيجة مطابقة في أرشيف الشارات:',
-                year: 'بيانات سنة العرض:',
-                story: 'قصة المسلسل:'
-            })[result.mode] || 'نتائج البحث:';
-            return `<div class="smart-answer">${heading}</div><div class="sr-list">${result.items.map(i => renderSeriesCard(i, result.mode)).join('')}</div>`;
-        }
-
-        // ---- تحويل استجابة Worker (عند الحاجة فقط) إلى نفس شكل العرض ----
-        function workerToResult(data, catalog) {
-            const answer = String(data.answer || '').trim();
-            const orderTypes = value => {
-                const raw = normAr(value);
-                const f = [];
-                if (/بداي/.test(raw)) f.push('البداية');
-                if (/نهاي/.test(raw)) f.push('النهاية');
-                return f;
-            };
-            const seen = new Map();
-            (Array.isArray(data.matches) ? data.matches : []).forEach(m => {
-                const k = normAr(m.name);
-                if (!k) return;
-                if (!seen.has(k)) seen.set(k, { name: m.name, types: [], hijri: '', gregorian: '', season: '', desc: '', url: m.url, image: m.image, score: 0 });
-                const it = seen.get(k);
-                orderTypes(m.type).forEach(t => { if (!it.types.includes(t)) it.types.push(t); });
-                it.types.sort((a, b) => (a === 'البداية' ? 0 : 1) - (b === 'البداية' ? 0 : 1));
-            });
-            const num = re => { const m = answer.match(re); return m ? yearDigits(m[1]) : ''; };
-            const hijri = num(/السنة\s+الهجرية\s*:\s*([0-9٠-٩۰-۹]{3,4})/);
-            const gregorian = num(/السنة\s+الميلادية\s*:\s*([0-9٠-٩۰-۹]{3,4})/);
-            const seasonM = answer.match(/الموسم\s*:\s*([^\n]+)/);
-            const titleM = answer.match(/مسلسل\s+([^—\n:]+)/);
-            let mode = 'lyrics';
-            let textAnswer = '';
-            if (hijri || gregorian) {
-                mode = 'year';
-                const title = titleM ? titleM[1].trim() : '';
-                const tk = normAr(title);
-                let target = null;
-                for (const [k, it] of seen) if (tk && (k === tk || hasWordSeq(k, tk) || hasWordSeq(tk, k))) target = it;
-                if (!target && title) {
-                    const media = lookupCatalog(catalog, title);
-                    target = { name: title, types: [], hijri: '', gregorian: '', season: '', desc: '', url: media.url, image: media.image, score: 0 };
-                    seen.set(tk, target);
-                }
-                if (target) {
-                    target.hijri = hijri; target.gregorian = gregorian;
-                    target.season = seasonM ? seasonM[1].trim() : '';
-                }
-            } else if (answer) {
-                textAnswer = answer;
-            }
-            return { mode, items: Array.from(seen.values()), textAnswer };
-        }
-
-        async function askWorker(queryForWorker, rawQuery) {
-            const catalogForWorker = getAssistantCatalog();
-            const response = await fetch(AI_WORKER_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ query: queryForWorker, rawQuery, catalog: catalogForWorker })
-            });
-            const data = await response.json();
-            if (!response.ok || !data.ok) throw new Error(data.error || 'تعذر إكمال البحث.');
-            return data;
-        }
-        // END SMART ENGINE
-
         async function runSmartSearch() {
-            const query = smartSearchInput.value.replace(/\s+/g, ' ').trim();
+            const query = smartSearchInput.value.trim();
             if (query.length < 2) {
                 aiAssistantResult.style.display = 'block';
                 aiAssistantResult.textContent = 'اكتب كلمات تتذكرها من الشارة، أو وصفاً لها، أو سنة عرض المسلسل.';
                 smartSearchInput.focus();
                 return;
             }
+            const catalog = getAssistantCatalog();
             aiAssistantResult.style.display = 'block';
-            aiAssistantResult.textContent = 'جارٍ مقارنة سؤالك بأرشيف المسلسلات...';
+            aiAssistantResult.textContent = 'جارٍ تحليل الكلمات أو الفترة الزمنية ومقارنتها بأرشيف المسلسلات...';
             aiAssistantSubmit.disabled = true;
             aiAssistantSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> يبحث...';
             try {
-                await loadAiSheet();
-                const catalog = buildCatalogIndex();
-                let result = null;
-                if (aiSheetState === 'ok') {
-                    result = localSmartSearch(query, aiRows, catalog);
-                    if (result.mode === 'empty' || result.items.length) {
-                        aiAssistantResult.innerHTML = renderSearchResult(result);
-                        return;
-                    }
-                }
-                // لم تُحمَّل ورقة Ai أو لم تُوجد نتيجة محلية: نسأل Worker بالنص بعد إزالة العبارات التوجيهية
-                const cleaned = stripDirectives(normAr(query));
-                const hasIntent = YEAR_RE.test(normAr(query)) || STORY_RE.test(normAr(query));
-                const data = await askWorker(hasIntent ? query : (cleaned || query), query);
-                const wr = workerToResult(data, catalog);
-                if (!wr.items.length && !wr.textAnswer) {
-                    aiAssistantResult.innerHTML = '<div class="smart-empty">لم أجد نتيجة مطابقة في الأرشيف. جرّب كلمات أخرى من الشارة أو اسم المسلسل.</div>';
-                } else if (wr.textAnswer) {
-                    aiAssistantResult.innerHTML = `<div class="smart-answer-text">${escapeAssistantHtml(wr.textAnswer).replace(/\n/g, '<br>')}</div>`
-                        + (wr.items.length ? `<div class="sr-list">${wr.items.map(i => renderSeriesCard(i, 'lyrics')).join('')}</div>` : '');
-                } else {
-                    aiAssistantResult.innerHTML = renderSearchResult({ mode: wr.mode, items: wr.items });
-                }
+                const response = await fetch(AI_WORKER_URL, {
+                    method:'POST',
+                    headers:{'Content-Type':'application/json'},
+                    body:JSON.stringify({query, catalog})
+                });
+                const data = await response.json();
+                if (!response.ok || !data.ok) throw new Error(data.error || 'تعذر إكمال البحث.');
+                const matchesHtml = renderAssistantMatches(data.matches || []);
+                const suppressAnswer = ['series-year-details', 'series-title'].includes(data.mode);
+                const answerHtml = (!suppressAnswer && data.answer)
+                    ? `<div class="smart-answer">${escapeAssistantHtml(data.answer).replace(/\n/g, '<br>')}</div>`
+                    : (matchesHtml ? '' : `<div class="smart-answer">لم أجد نتائج مطابقة حالياً.</div>`);
+                aiAssistantResult.innerHTML = answerHtml +
+                    (matchesHtml || '<div class="smart-empty">لم تظهر نتائج في الأرشيف.</div>');
             } catch (error) {
                 console.error('Majd AI search error:', error);
                 aiAssistantResult.textContent = error && error.message
@@ -1602,10 +1170,9 @@
         }
         normalModeBtn.addEventListener('click', () => setHomeSearchMode('normal'));
         aiModeBtn.addEventListener('click', () => setHomeSearchMode('ai'));
-        const smartCloseBtn = document.getElementById('smartCloseBtn');
-        if (smartCloseBtn) {
-            smartCloseBtn.addEventListener('click', () => setHomeSearchMode('normal'));
-        }
+        document.getElementById('smartCloseBtn').addEventListener('click', () => {
+            setHomeSearchMode('normal');
+        });
 
 
 
@@ -1693,17 +1260,10 @@ async function fetchAllData() {
                 const encodedSheetName = encodeURIComponent(channels[key].sheetName);
                 const url = `https://docs.google.com/spreadsheets/d/${channels[key].sheetId}/gviz/tq?tqx=out:csv&sheet=${encodedSheetName}`;
                 
-                return fetch(url, { cache: 'no-store' })
-                    .then(res => {
-                        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                        return res.text();
-                    })
+                return fetch(url)
+                    .then(res => res.text())
                     .then(csvText => {
-                        if (!csvText || /<html[\s>]/i.test(csvText.slice(0, 500))) {
-                            throw new Error('لم تُرجع Google Sheets ملف CSV. تحقق من مشاركة الورقة واسم التبويب.');
-                        }
                         const parsedRows = parseCSV(csvText);
-                        if (!parsedRows.length) throw new Error('ورقة البيانات فارغة أو تعذر قراءتها.');
                         
                         const rows = parsedRows.slice(0).map(row => ({
                             name: row[0] ? row[0].trim() : '',
@@ -1717,10 +1277,7 @@ async function fetchAllData() {
                         } else {
                             allDataMap[key] = rows;
                         }
-                    }).catch(err => {
-                        console.error("Error loading Google Sheet tab " + channels[key].sheetName, err);
-                        allDataMap[key] = [];
-                    });
+                    }).catch(err => console.error("Error loading " + key, err));
             });
 
             await Promise.all(fetchPromises);
@@ -1729,12 +1286,8 @@ async function fetchAllData() {
             const shuffled = uniqueSuggestions.sort(() => 0.5 - Math.random());
             currentHomeSuggestions = shuffled.slice(0, 8);
 
-            const loadedCount = Object.values(allDataMap).reduce((sum, rows) => sum + rows.length, 0);
-            renderContent();
+            renderContent(); 
             updateFavCount();
-            if (loadedCount === 0) {
-                seriesGrid.innerHTML = '<div class="no-results">تعذر تحميل المسلسلات من Google Sheets. تحقق من صلاحية عرض الأوراق وأسماء التبويبات، ثم أعد تحميل الصفحة.</div>';
-            }
         }
 
         function updateFavCount() { 
@@ -1917,7 +1470,7 @@ async function fetchAllData() {
         });
 
         searchInput.addEventListener('input', renderContent);
-        window.addEventListener('DOMContentLoaded', () => { fetchAllData(); loadAiSheet(); });
+        window.addEventListener('DOMContentLoaded', fetchAllData);
 
         /* --- PWA Logic Integration --- */
         if ('serviceWorker' in navigator) {
