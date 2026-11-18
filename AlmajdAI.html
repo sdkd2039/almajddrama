@@ -722,6 +722,62 @@
             color:#eff8ff; background:rgba(8,20,39,.72); line-height:1.8; }
         .smart-answer { font-weight:bold; margin-bottom:8px; }
         .smart-empty { color:#c6d8e8; }
+        /* بطاقة بيانات العرض: فصل السنوات ومنع التفافها داخل فقرة طويلة */
+        .smart-year-card {
+            margin: 4px 0 12px;
+            padding: 16px;
+            border-radius: 14px;
+            background: linear-gradient(145deg, #0b1b32, #102844);
+            border: 1px solid rgba(121,215,243,.25);
+        }
+        .smart-year-heading {
+            color: #f4faff;
+            font-size: 1rem;
+            font-weight: 900;
+            line-height: 1.6;
+            margin-bottom: 13px;
+        }
+        .smart-year-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0,1fr));
+            gap: 10px;
+        }
+        .smart-year-item {
+            min-width: 0;
+            padding: 12px 9px;
+            border-radius: 11px;
+            background: rgba(121,215,243,.09);
+            border: 1px solid rgba(121,215,243,.2);
+            text-align: center;
+        }
+        .smart-year-label {
+            display: block;
+            color: #b9d5e8;
+            font-size: .78rem;
+            margin-bottom: 5px;
+        }
+        .smart-year-value {
+            display: block;
+            color: #fff;
+            font-size: 1.35rem;
+            font-weight: 900;
+            direction: ltr;
+            unicode-bidi: isolate;
+            white-space: nowrap;
+            font-variant-numeric: tabular-nums;
+        }
+        .smart-year-season {
+            margin-top: 10px;
+            color: #c8e9f7;
+            font-size: .86rem;
+        }
+        .smart-answer-text { color:#eaf5ff; line-height:1.8; }
+        @media(max-width:380px) {
+            .smart-year-grid { grid-template-columns:1fr 1fr; gap:7px; }
+            .smart-year-value { font-size:1.15rem; }
+            .smart-year-item { padding:10px 5px; }
+        }
+
         .ai-match { display:flex; gap:12px; align-items:center; padding:10px 0; border-top:1px solid rgba(255,255,255,.1); }
         .ai-match img { width:86px; height:68px; object-fit:cover; border-radius:9px; }
         .ai-match-title { font-weight:bold; color:white; }
@@ -779,32 +835,10 @@
         .search-inline-icon { color:#a9bed4; padding:0 8px; }
         @media(max-width:600px) { .smart-search-panel { padding:12px; } }
 
-    
-        /* تحسين موحد لبطاقات نتائج مساعد الشارات */
-        .ai-match-info { min-width:0; flex:1 1 auto; }
-        .ai-match-title { line-height:1.8; overflow-wrap:anywhere; }
-        .ai-year-grid {
-            display:grid; grid-template-columns:repeat(2,minmax(0,1fr));
-            gap:10px; margin-top:12px; width:100%;
-        }
-        .ai-year-cell {
-            min-width:0; display:flex; flex-direction:column; align-items:center;
-            justify-content:center; gap:8px; padding:12px 8px; border-radius:13px;
-            background:rgba(70,125,165,.18); border:1px solid rgba(121,215,243,.24);
-            text-align:center;
-        }
-        .ai-year-cell span { color:#c6dced; font-weight:700; font-size:.88rem; }
-        .ai-year-cell strong {
-            color:#fff; font-size:1.35rem; white-space:nowrap;
-            direction:ltr; unicode-bidi:isolate; font-variant-numeric:tabular-nums;
-        }
-        @media(max-width:380px) {
-            .smart-suggestions { grid-template-columns:repeat(2,minmax(0,1fr)); }
-            .smart-suggestion { white-space:normal; overflow-wrap:normal; font-size:.76rem; }
-            .ai-year-grid { gap:7px; }
-            .ai-year-cell { padding:10px 5px; }
-            .ai-year-cell span { font-size:.78rem; }
-            .ai-year-cell strong { font-size:1.15rem; }
+        .sheet-retry-btn {
+            margin-top:12px; padding:10px 18px; border:1px solid rgba(121,215,243,.35);
+            border-radius:10px; background:#0798ce; color:#fff; font:inherit;
+            font-weight:bold; cursor:pointer;
         }
 
     </style>
@@ -840,7 +874,7 @@
             <div class="smart-panel-title">محادثة شارات دراما المجد</div>
             <p>يمكنكم الاستفسار عن كلمات الشارة، سنة العرض، أو موسم المسلسل، فالمساعد مخصص لإجابة كل ما يتعلق بشارات ومسلسلات المجد.</p>
             <div class="smart-suggestions" id="smartSuggestions" aria-label="أسئلة مقترحة">
-                <button type="button" class="smart-suggestion" data-prompt="ابحث عن الشارة من كلماتها"><i class="fa-solid fa-music"></i> ابحث بكلمات الشارة</button>
+                <button type="button" class="smart-suggestion" data-prompt="ابحث عن الشارة من كلماتها"><i class="fa-solid fa-music"></i> كلمات الشارة</button>
                 <button type="button" class="smart-suggestion" data-prompt="ما سنة عرض مسلسل "><i class="fa-solid fa-calendar-days"></i> سنة عرض مسلسل</button>
                 <button type="button" class="smart-suggestion" data-prompt="ما قصة مسلسل "><i class="fa-solid fa-film"></i> قصة مسلسل</button>
             </div>
@@ -1015,12 +1049,42 @@
         const faqSection = document.getElementById('faqSection');
 
         function parseCSV(text) {
-            let lines = text.split('\n');
-            return lines.map(line => {
-                let result = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
-                if (!result) return null;
-                return result.map(val => val.replace(/^"|"$/g, '').trim());
-            }).filter(row => row !== null);
+            const rows = [];
+            let row = [];
+            let field = '';
+            let quoted = false;
+            const input = String(text || '').replace(/^\uFEFF/, '');
+
+            for (let i = 0; i < input.length; i++) {
+                const ch = input[i];
+                if (quoted) {
+                    if (ch === '"' && input[i + 1] === '"') {
+                        field += '"';
+                        i++;
+                    } else if (ch === '"') {
+                        quoted = false;
+                    } else {
+                        field += ch;
+                    }
+                } else if (ch === '"' && field.length === 0) {
+                    quoted = true;
+                } else if (ch === ',') {
+                    row.push(field.trim());
+                    field = '';
+                } else if (ch === '\n' || ch === '\r') {
+                    if (ch === '\r' && input[i + 1] === '\n') i++;
+                    row.push(field.trim());
+                    if (row.some(value => value !== '')) rows.push(row);
+                    row = [];
+                    field = '';
+                } else {
+                    field += ch;
+                }
+            }
+
+            row.push(field.trim());
+            if (row.some(value => value !== '')) rows.push(row);
+            return rows;
         }
 
 
@@ -1061,49 +1125,65 @@
             if (!Array.isArray(matches) || !matches.length) return '';
             const seen = new Set();
             const unique = matches.filter(item => {
-                const key = String(item.name || '').trim().toLowerCase()
-                    .replace(/[أإآٱ]/g, 'ا').replace(/ى/g, 'ي')
-                    .replace(/ة/g, 'ه').replace(/\s+/g, ' ');
+                const key = String(item.name || '').trim()
+                    .toLowerCase()
+                    .replace(/[أإآ]/g, 'ا')
+                    .replace(/ى/g, 'ي')
+                    .replace(/ة/g, 'ه')
+                    .replace(/\s+/g, ' ');
                 if (!key || seen.has(key)) return false;
                 seen.add(key);
                 return true;
             });
-            const orderedTypes = item => {
-                const values = Array.isArray(item.types) ? item.types : String(item.type || '').split(/[،,]/);
-                const raw = values.map(value => String(value || '').trim());
+            const orderedTypes = value => {
+                const raw = String(value || '');
                 const found = [];
-                if (raw.some(value => /بداي/.test(value))) found.push('البداية');
-                if (raw.some(value => /نهاي/.test(value))) found.push('النهاية');
+                if (/بداي/.test(raw)) found.push('البداية');
+                if (/نهاي/.test(raw)) found.push('النهاية');
                 return found;
             };
-            const yearValue = (value, suffix) => {
-                const raw = String(value || '').trim();
-                if (!raw) return '';
-                return escapeAssistantHtml(raw.replace(/\s*[هـهمم]\s*$/, '')) + ' ' + suffix;
-            };
             return unique.map(item => {
-                const types = orderedTypes(item);
-                const typeText = types.length ? ' — ' + types.join(' — ') : '';
-                const hasHijri = String(item.hijri || '').trim() !== '';
-                const hasGregorian = String(item.gregorian || '').trim() !== '';
-                const yearsHtml = (hasHijri || hasGregorian) ? `
-                    <div class="ai-year-grid" dir="rtl">
-                        ${hasHijri ? `<div class="ai-year-cell"><span>السنة الهجرية</span><strong>${yearValue(item.hijri, 'هـ')}</strong></div>` : ''}
-                        ${hasGregorian ? `<div class="ai-year-cell"><span>السنة الميلادية</span><strong>${yearValue(item.gregorian, 'م')}</strong></div>` : ''}
-                    </div>` : '';
+                const types = orderedTypes(item.type);
+                const typeHtml = types.length
+                    ? `<div class="ai-match-types">${types.map(type => `<span class="ai-match-type">${type}</span>`).join('')}</div>`
+                    : '';
                 return `
                 <div class="ai-match">
                     ${item.image && item.image !== '-' ? `<img src="${escapeAssistantHtml(item.image)}" alt="" loading="lazy">` : ''}
                     <div class="ai-match-info">
-                        <div class="ai-match-title">${escapeAssistantHtml(item.name)}${escapeAssistantHtml(typeText)}</div>
-                        ${yearsHtml}
+                        <div class="ai-match-title">${escapeAssistantHtml(item.name)}</div>
+                        ${typeHtml}
                         <a href="${escapeAssistantHtml(item.url)}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-circle-play"></i> مشاهدة الشارة</a>
                     </div>
                 </div>`;
             }).join('');
         }
+        function renderAssistantAnswer(answer) {
+            const raw = String(answer || '').trim();
+            if (!raw) return '';
+            const titleMatch = raw.match(/مسلسل\s+([^—\n:]+)/);
+            const gregorian = raw.match(/السنة\s+الميلادية\s*:\s*([0-9٠-٩۰-۹]{4})/);
+            const hijri = raw.match(/السنة\s+الهجرية\s*:\s*([0-9٠-٩۰-۹]{4})/);
+            const season = raw.match(/الموسم\s*:\s*([^\n]+)/);
+            if (gregorian || hijri) {
+                const title = titleMatch ? titleMatch[1].trim() : 'بيانات سنة العرض';
+                const yearCell = (label, match) => match
+                    ? `<div class="smart-year-item"><span class="smart-year-label">${label}</span><strong class="smart-year-value">${escapeAssistantHtml(match[1])}</strong></div>`
+                    : '';
+                return `<section class="smart-year-card">
+                    <div class="smart-year-heading">${escapeAssistantHtml(title)}</div>
+                    <div class="smart-year-grid">
+                        ${yearCell('السنة الميلادية', gregorian)}
+                        ${yearCell('السنة الهجرية', hijri)}
+                    </div>
+                    ${season ? `<div class="smart-year-season">الموسم: ${escapeAssistantHtml(season[1].trim())}</div>` : ''}
+                </section>`;
+            }
+            return `<div class="smart-answer-text">${escapeAssistantHtml(raw).replace(/\n/g, '<br>')}</div>`;
+        }
+
         async function runSmartSearch() {
-            const query = smartSearchInput.value.trim();
+            const query = smartSearchInput.value.replace(/\s+/g, ' ').trim();
             if (query.length < 2) {
                 aiAssistantResult.style.display = 'block';
                 aiAssistantResult.textContent = 'اكتب كلمات تتذكرها من الشارة، أو وصفاً لها، أو سنة عرض المسلسل.';
@@ -1124,10 +1204,9 @@
                 const data = await response.json();
                 if (!response.ok || !data.ok) throw new Error(data.error || 'تعذر إكمال البحث.');
                 const matchesHtml = renderAssistantMatches(data.matches || []);
-                const suppressAnswer = ['series-year-details', 'series-title'].includes(data.mode);
-                const answerHtml = (!suppressAnswer && data.answer)
-                    ? `<div class="smart-answer">${escapeAssistantHtml(data.answer).replace(/\n/g, '<br>')}</div>`
-                    : (matchesHtml ? '' : `<div class="smart-answer">لم أجد نتائج مطابقة حالياً.</div>`);
+                const answerHtml = data.answer
+                    ? renderAssistantAnswer(data.answer)
+                    : `<div class="smart-answer">${matchesHtml ? 'هذه المسلسلات المطابقة لما تبحث عنه:' : 'لم أجد نتائج مطابقة حالياً.'}</div>`;
                 aiAssistantResult.innerHTML = answerHtml +
                     (matchesHtml || '<div class="smart-empty">لم تظهر نتائج في الأرشيف.</div>');
             } catch (error) {
@@ -1170,9 +1249,10 @@
         }
         normalModeBtn.addEventListener('click', () => setHomeSearchMode('normal'));
         aiModeBtn.addEventListener('click', () => setHomeSearchMode('ai'));
-        document.getElementById('smartCloseBtn').addEventListener('click', () => {
-            setHomeSearchMode('normal');
-        });
+        const smartCloseBtn = document.getElementById('smartCloseBtn');
+        if (smartCloseBtn) {
+            smartCloseBtn.addEventListener('click', () => setHomeSearchMode('normal'));
+        }
 
 
 
@@ -1255,39 +1335,101 @@
         }
         setupUnifiedVoice();
 
-async function fetchAllData() {
-            const fetchPromises = Object.keys(channels).map(key => {
-                const encodedSheetName = encodeURIComponent(channels[key].sheetName);
-                const url = `https://docs.google.com/spreadsheets/d/${channels[key].sheetId}/gviz/tq?tqx=out:csv&sheet=${encodedSheetName}`;
-                
-                return fetch(url)
-                    .then(res => res.text())
-                    .then(csvText => {
-                        const parsedRows = parseCSV(csvText);
-                        
-                        const rows = parsedRows.slice(0).map(row => ({
-                            name: row[0] ? row[0].trim() : '',
-                            watchLink: row[1] ? row[1].trim() : '#',
-                            imgLink: row[2] ? row[2].trim() : '',
-                            origin: key
-                        })).filter(item => item.name !== '' && item.name !== 'اسم المسلسل');
-                        
-                        if (key !== 'suggestions') {
-                            allDataMap[key] = rows.reverse(); 
-                        } else {
-                            allDataMap[key] = rows;
-                        }
-                    }).catch(err => console.error("Error loading " + key, err));
+// حالة تحميل كل تبويب حتى لا يتحول فشل الاتصال إلى رسالة مضللة بأن الأرشيف فارغ.
+        const sheetLoadState = { general: 'idle', kids: 'idle', massa: 'idle', suggestions: 'idle' };
+        const sheetLoadErrors = {};
+
+        async function fetchSheetCsv(sheetConfig) {
+            const encodedSheetName = encodeURIComponent(sheetConfig.sheetName);
+            const baseUrl = `https://docs.google.com/spreadsheets/d/${sheetConfig.sheetId}/gviz/tq`;
+            let lastError = null;
+
+            for (let attempt = 1; attempt <= 2; attempt++) {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 18000);
+                try {
+                    const url = `${baseUrl}?tqx=out:csv&sheet=${encodedSheetName}&_=${Date.now()}`;
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        cache: 'no-store',
+                        redirect: 'follow',
+                        signal: controller.signal
+                    });
+
+                    if (!response.ok) throw new Error(`Google Sheets أعاد HTTP ${response.status}`);
+
+                    const csvText = await response.text();
+                    const trimmed = csvText.trim();
+                    if (!trimmed) throw new Error('استجابة Google Sheets فارغة.');
+                    if (/<(!doctype\s+html|html[\s>])/i.test(trimmed.slice(0, 600))) {
+                        throw new Error('وصلت صفحة HTML بدلاً من CSV. تحقق من صلاحية عرض الجدول.');
+                    }
+                    if (/google\.visualization\.Query\.setResponse/i.test(trimmed)) {
+                        throw new Error('أعاد Google Sheets استجابة خطأ بدلاً من بيانات CSV.');
+                    }
+
+                    const parsedRows = parseCSV(csvText);
+                    if (!parsedRows.length) throw new Error('لم يتم العثور على صفوف في التبويب.');
+                    return parsedRows;
+                } catch (error) {
+                    lastError = error?.name === 'AbortError'
+                        ? new Error('انتهت مهلة الاتصال بـ Google Sheets بعد 18 ثانية.')
+                        : error;
+                    if (attempt < 2) await new Promise(resolve => setTimeout(resolve, 700));
+                } finally {
+                    clearTimeout(timeoutId);
+                }
+            }
+            throw new Error(`تعذر تحميل تبويب "${sheetConfig.sheetName}": ${lastError?.message || 'خطأ اتصال غير معروف'}`);
+        }
+
+        async function fetchAllData() {
+            Object.keys(channels).forEach(key => {
+                sheetLoadState[key] = 'loading';
+                delete sheetLoadErrors[key];
+            });
+
+            const fetchPromises = Object.keys(channels).map(async key => {
+                try {
+                    const parsedRows = await fetchSheetCsv(channels[key]);
+                    const rows = parsedRows.map(row => ({
+                        name: row[0] ? row[0].trim() : '',
+                        watchLink: row[1] ? row[1].trim() : '#',
+                        imgLink: row[2] ? row[2].trim() : '',
+                        origin: key
+                    })).filter(item => item.name !== '' && item.name !== 'اسم المسلسل');
+
+                    allDataMap[key] = key !== 'suggestions' ? rows.reverse() : rows;
+                    sheetLoadState[key] = 'loaded';
+                } catch (err) {
+                    console.error(`Error loading Google Sheet tab "${channels[key].sheetName}":`, err);
+                    sheetLoadState[key] = 'error';
+                    sheetLoadErrors[key] = err?.message || 'تعذر الاتصال بالجدول.';
+                    if (!Array.isArray(allDataMap[key])) allDataMap[key] = [];
+                }
             });
 
             await Promise.all(fetchPromises);
-            
-            let uniqueSuggestions = allDataMap.suggestions.filter((v, i, s) => s.findIndex(t => t.name === v.name) === i);
-            const shuffled = uniqueSuggestions.sort(() => 0.5 - Math.random());
-            currentHomeSuggestions = shuffled.slice(0, 8);
 
-            renderContent(); 
+            const uniqueSuggestions = allDataMap.suggestions.filter((v, i, rows) =>
+                rows.findIndex(t => t.name === v.name) === i
+            );
+            currentHomeSuggestions = uniqueSuggestions
+                .slice()
+                .sort(() => 0.5 - Math.random())
+                .slice(0, 8);
+
+            renderContent();
             updateFavCount();
+
+            const loadedCount = Object.values(allDataMap).reduce((sum, rows) => sum + rows.length, 0);
+            if (loadedCount === 0 && Object.keys(sheetLoadErrors).length) {
+                seriesGrid.innerHTML = `
+                    <div class="no-results">
+                        تعذر الاتصال بجدول Google Sheets. لم تُحذف بياناتك؛ تحقق من الاتصال ثم أعد المحاولة.
+                        <br><button type="button" class="sheet-retry-btn" data-retry-sheets>إعادة تحميل البيانات</button>
+                    </div>`;
+            }
         }
 
         function updateFavCount() { 
@@ -1413,7 +1555,17 @@ async function fetchAllData() {
                 }
 
                 if (channelData.length === 0) {
-                    seriesGrid.innerHTML = '<div class="no-results">لا توجد مسلسلات متوفرة تطابق البحث.</div>';
+                    if (sheetLoadState[activeTab] === 'loading' || sheetLoadState[activeTab] === 'idle') {
+                        seriesGrid.innerHTML = '<div class="loading"><i class="fa-solid fa-spinner fa-spin"></i> جارٍ تحميل مسلسلات هذا القسم من Google Sheets...</div>';
+                    } else if (sheetLoadState[activeTab] === 'error') {
+                        seriesGrid.innerHTML = `<div class="no-results">
+                            تعذر تحميل بيانات هذا القسم من Google Sheets.<br>
+                            <span>${escapeCardHtml(sheetLoadErrors[activeTab] || 'تحقق من الاتصال وصلاحية قراءة التبويب.')}</span><br>
+                            <button type="button" class="sheet-retry-btn" data-retry-sheets>إعادة تحميل البيانات</button>
+                        </div>`;
+                    } else {
+                        seriesGrid.innerHTML = '<div class="no-results">لا توجد مسلسلات في هذا القسم حالياً.</div>';
+                    }
                     return;
                 }
                 channelData.forEach(item => seriesGrid.innerHTML += createCardHtml(item));
@@ -1463,6 +1615,13 @@ async function fetchAllData() {
 
 
         seriesGrid.addEventListener('click', event => {
+            const retry = event.target.closest('[data-retry-sheets]');
+            if (retry) {
+                retry.disabled = true;
+                retry.textContent = 'جارٍ إعادة التحميل...';
+                fetchAllData();
+                return;
+            }
             const heart = event.target.closest('.btn-fav[data-favorite-name]');
             if (!heart) return;
             const name = heart.getAttribute('data-favorite-name');
