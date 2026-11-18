@@ -1282,7 +1282,7 @@
         function renderAssistantMatches(matches, mode = '') {
     if (!Array.isArray(matches) || !matches.length) return '';
 
-    const hideTypes = ['year-filter', 'series-year-details', 'series-description'].includes(mode);
+    const hideTypes = ['year-filter', 'season-filter', 'series-year-details', 'series-description'].includes(mode);
     const seen = new Set();
     const unique = matches.filter(item => {
         const key = String(item.name || '').trim().toLowerCase()
@@ -1331,7 +1331,7 @@ function renderAssistantAnswer(answer, matches = [], mode = '') {
     const hijri = raw.match(/السنة\s+الهجرية\s*:\s*([0-9٠-٩۰-۹]{4})/);
     const season = raw.match(/الموسم\s*:\s*([^\n]+)/);
 
-    if (mode === 'year-filter') {
+    if (mode === 'year-filter' || mode === 'season-filter') {
         return `<div class="smart-answer">${escapeAssistantHtml(raw)}</div>`;
     }
 
