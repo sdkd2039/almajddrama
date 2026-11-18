@@ -812,7 +812,7 @@
             <div class="smart-panel-title">محادثة شارات دراما المجد</div>
             <p>يمكنكم الاستفسار عن كلمات الشارة، سنة العرض، أو موسم المسلسل، فالمساعد مخصص لإجابة كل ما يتعلق بشارات ومسلسلات المجد.</p>
             <div class="smart-suggestions" id="smartSuggestions" aria-label="أسئلة مقترحة">
-                <button type="button" class="smart-suggestion" data-prompt="ابحث عن الشارة من كلماتها"><i class="fa-solid fa-music"></i> ابحث بكلمات الشارة</button>
+                <button type="button" class="smart-suggestion" data-prompt="ابحث عن الشارة من كلماتها"><i class="fa-solid fa-music"></i> كلمات الشارة</button>
                 <button type="button" class="smart-suggestion" data-prompt="ما سنة عرض مسلسل "><i class="fa-solid fa-calendar-days"></i> سنة عرض مسلسل</button>
                 <button type="button" class="smart-suggestion" data-prompt="ما قصة مسلسل "><i class="fa-solid fa-film"></i> قصة مسلسل</button>
             </div>
@@ -987,12 +987,42 @@
         const faqSection = document.getElementById('faqSection');
 
         function parseCSV(text) {
-            let lines = text.split('\n');
-            return lines.map(line => {
-                let result = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
-                if (!result) return null;
-                return result.map(val => val.replace(/^"|"$/g, '').trim());
-            }).filter(row => row !== null);
+            const rows = [];
+            let row = [];
+            let field = '';
+            let quoted = false;
+            const input = String(text || '').replace(/^\uFEFF/, '');
+
+            for (let i = 0; i < input.length; i++) {
+                const ch = input[i];
+                if (quoted) {
+                    if (ch === '"' && input[i + 1] === '"') {
+                        field += '"';
+                        i++;
+                    } else if (ch === '"') {
+                        quoted = false;
+                    } else {
+                        field += ch;
+                    }
+                } else if (ch === '"' && field.length === 0) {
+                    quoted = true;
+                } else if (ch === ',') {
+                    row.push(field.trim());
+                    field = '';
+                } else if (ch === '\n' || ch === '\r') {
+                    if (ch === '\r' && input[i + 1] === '\n') i++;
+                    row.push(field.trim());
+                    if (row.some(value => value !== '')) rows.push(row);
+                    row = [];
+                    field = '';
+                } else {
+                    field += ch;
+                }
+            }
+
+            row.push(field.trim());
+            if (row.some(value => value !== '')) rows.push(row);
+            return rows;
         }
 
 
@@ -1133,9 +1163,10 @@
         }
         normalModeBtn.addEventListener('click', () => setHomeSearchMode('normal'));
         aiModeBtn.addEventListener('click', () => setHomeSearchMode('ai'));
-        document.getElementById('smartCloseBtn').addEventListener('click', () => {
-            setHomeSearchMode('normal');
-        });
+        const smartCloseBtn = document.getElementById('smartCloseBtn');
+        if (smartCloseBtn) {
+            smartCloseBtn.addEventListener('click', () => setHomeSearchMode('normal'));
+        }
 
 
 
@@ -1223,10 +1254,17 @@ async function fetchAllData() {
                 const encodedSheetName = encodeURIComponent(channels[key].sheetName);
                 const url = `https://docs.google.com/spreadsheets/d/${channels[key].sheetId}/gviz/tq?tqx=out:csv&sheet=${encodedSheetName}`;
                 
-                return fetch(url)
-                    .then(res => res.text())
+                return fetch(url, { cache: 'no-store' })
+                    .then(res => {
+                        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                        return res.text();
+                    })
                     .then(csvText => {
+                        if (!csvText || /<html[\s>]/i.test(csvText.slice(0, 500))) {
+                            throw new Error('لم تُرجع Google Sheets ملف CSV. تحقق من مشاركة الورقة واسم التبويب.');
+                        }
                         const parsedRows = parseCSV(csvText);
+                        if (!parsedRows.length) throw new Error('ورقة البيانات فارغة أو تعذر قراءتها.');
                         
                         const rows = parsedRows.slice(0).map(row => ({
                             name: row[0] ? row[0].trim() : '',
@@ -1240,7 +1278,10 @@ async function fetchAllData() {
                         } else {
                             allDataMap[key] = rows;
                         }
-                    }).catch(err => console.error("Error loading " + key, err));
+                    }).catch(err => {
+                        console.error("Error loading Google Sheet tab " + channels[key].sheetName, err);
+                        allDataMap[key] = [];
+                    });
             });
 
             await Promise.all(fetchPromises);
@@ -1249,8 +1290,12 @@ async function fetchAllData() {
             const shuffled = uniqueSuggestions.sort(() => 0.5 - Math.random());
             currentHomeSuggestions = shuffled.slice(0, 8);
 
-            renderContent(); 
+            const loadedCount = Object.values(allDataMap).reduce((sum, rows) => sum + rows.length, 0);
+            renderContent();
             updateFavCount();
+            if (loadedCount === 0) {
+                seriesGrid.innerHTML = '<div class="no-results">تعذر تحميل المسلسلات من Google Sheets. تحقق من صلاحية عرض الأوراق وأسماء التبويبات، ثم أعد تحميل الصفحة.</div>';
+            }
         }
 
         function updateFavCount() { 
