@@ -722,6 +722,62 @@
             color:#eff8ff; background:rgba(8,20,39,.72); line-height:1.8; }
         .smart-answer { font-weight:bold; margin-bottom:8px; }
         .smart-empty { color:#c6d8e8; }
+        /* بطاقة بيانات العرض: فصل السنوات ومنع التفافها داخل فقرة طويلة */
+        .smart-year-card {
+            margin: 4px 0 12px;
+            padding: 16px;
+            border-radius: 14px;
+            background: linear-gradient(145deg, #0b1b32, #102844);
+            border: 1px solid rgba(121,215,243,.25);
+        }
+        .smart-year-heading {
+            color: #f4faff;
+            font-size: 1rem;
+            font-weight: 900;
+            line-height: 1.6;
+            margin-bottom: 13px;
+        }
+        .smart-year-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0,1fr));
+            gap: 10px;
+        }
+        .smart-year-item {
+            min-width: 0;
+            padding: 12px 9px;
+            border-radius: 11px;
+            background: rgba(121,215,243,.09);
+            border: 1px solid rgba(121,215,243,.2);
+            text-align: center;
+        }
+        .smart-year-label {
+            display: block;
+            color: #b9d5e8;
+            font-size: .78rem;
+            margin-bottom: 5px;
+        }
+        .smart-year-value {
+            display: block;
+            color: #fff;
+            font-size: 1.35rem;
+            font-weight: 900;
+            direction: ltr;
+            unicode-bidi: isolate;
+            white-space: nowrap;
+            font-variant-numeric: tabular-nums;
+        }
+        .smart-year-season {
+            margin-top: 10px;
+            color: #c8e9f7;
+            font-size: .86rem;
+        }
+        .smart-answer-text { color:#eaf5ff; line-height:1.8; }
+        @media(max-width:380px) {
+            .smart-year-grid { grid-template-columns:1fr 1fr; gap:7px; }
+            .smart-year-value { font-size:1.15rem; }
+            .smart-year-item { padding:10px 5px; }
+        }
+
         .ai-match { display:flex; gap:12px; align-items:center; padding:10px 0; border-top:1px solid rgba(255,255,255,.1); }
         .ai-match img { width:86px; height:68px; object-fit:cover; border-radius:9px; }
         .ai-match-title { font-weight:bold; color:white; }
@@ -1096,8 +1152,32 @@
                 </div>`;
             }).join('');
         }
+        function renderAssistantAnswer(answer) {
+            const raw = String(answer || '').trim();
+            if (!raw) return '';
+            const titleMatch = raw.match(/مسلسل\s+([^—\n:]+)/);
+            const gregorian = raw.match(/السنة\s+الميلادية\s*:\s*([0-9٠-٩۰-۹]{4})/);
+            const hijri = raw.match(/السنة\s+الهجرية\s*:\s*([0-9٠-٩۰-۹]{4})/);
+            const season = raw.match(/الموسم\s*:\s*([^\n]+)/);
+            if (gregorian || hijri) {
+                const title = titleMatch ? titleMatch[1].trim() : 'بيانات سنة العرض';
+                const yearCell = (label, match) => match
+                    ? `<div class="smart-year-item"><span class="smart-year-label">${label}</span><strong class="smart-year-value">${escapeAssistantHtml(match[1])}</strong></div>`
+                    : '';
+                return `<section class="smart-year-card">
+                    <div class="smart-year-heading">${escapeAssistantHtml(title)}</div>
+                    <div class="smart-year-grid">
+                        ${yearCell('السنة الميلادية', gregorian)}
+                        ${yearCell('السنة الهجرية', hijri)}
+                    </div>
+                    ${season ? `<div class="smart-year-season">الموسم: ${escapeAssistantHtml(season[1].trim())}</div>` : ''}
+                </section>`;
+            }
+            return `<div class="smart-answer-text">${escapeAssistantHtml(raw).replace(/\n/g, '<br>')}</div>`;
+        }
+
         async function runSmartSearch() {
-            const query = smartSearchInput.value.trim();
+            const query = smartSearchInput.value.replace(/\s+/g, ' ').trim();
             if (query.length < 2) {
                 aiAssistantResult.style.display = 'block';
                 aiAssistantResult.textContent = 'اكتب كلمات تتذكرها من الشارة، أو وصفاً لها، أو سنة عرض المسلسل.';
@@ -1119,7 +1199,7 @@
                 if (!response.ok || !data.ok) throw new Error(data.error || 'تعذر إكمال البحث.');
                 const matchesHtml = renderAssistantMatches(data.matches || []);
                 const answerHtml = data.answer
-                    ? `<div class="smart-answer">${escapeAssistantHtml(data.answer).replace(/\\n/g, '<br>')}</div>`
+                    ? renderAssistantAnswer(data.answer)
                     : `<div class="smart-answer">${matchesHtml ? 'هذه المسلسلات المطابقة لما تبحث عنه:' : 'لم أجد نتائج مطابقة حالياً.'}</div>`;
                 aiAssistantResult.innerHTML = answerHtml +
                     (matchesHtml || '<div class="smart-empty">لم تظهر نتائج في الأرشيف.</div>');
