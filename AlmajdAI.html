@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>شارات دراما المجد</title>
     
+    <!-- وصف الموقع الذي يظهر في نتائج بحث جوجل -->
     <meta name="description" content="أرشفة متكاملة لشارات مسلسلات شبكة المجد القديمة والجديدة">
 
+    <!-- وسوم عامة تدعم جميع المنصات -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="شارات دراما المجد">
     <meta property="og:description" content="أرشفة متكاملة لشارات مسلسلات شبكة المجد.">
@@ -14,6 +16,7 @@
     <meta property="og:url" content="https://almajddrama.giize.com/">
     <meta property="og:site_name" content="شارات دراما المجد">
 
+    <!-- وسوم خاصة بمنصة إكس (تويتر) -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="شارات دراما المجد">
     <meta name="twitter:description" content="أرشفة متكاملة لشارات مسلسلات شبكة المجد.">
@@ -21,15 +24,18 @@
     
     <link rel="icon" type="image/png" href="https://file.garden/aoLQp-Z9knG33grX/%D8%B4%D8%B9%D8%A7%D8%B1%D8%A7%D8%AA%20%D8%A7%D9%84%D8%B5%D9%88%D8%B1/Almajddrama.png">
 
+    <!-- أيقونات الآيفون والآيباد للشاشة الرئيسية -->
     <link rel="apple-touch-icon" href="https://file.garden/aoLQp-Z9knG33grX/%D8%B4%D8%B9%D8%A7%D8%B1%D8%A7%D8%AA%20%D8%A7%D9%84%D8%B5%D9%88%D8%B1/Almajddrama.png">
     <link rel="apple-touch-icon" sizes="152x152" href="https://file.garden/aoLQp-Z9knG33grX/%D8%B4%D8%B9%D8%A7%D8%B1%D8%A7%D8%AA%20%D8%A7%D9%84%D8%B5%D9%88%D8%B1/Almajddrama.png">
     <link rel="apple-touch-icon" sizes="180x180" href="https://file.garden/aoLQp-Z9knG33grX/%D8%B4%D8%B9%D8%A7%D8%B1%D8%A7%D8%AA%20%D8%A7%D9%84%D8%B5%D9%88%D8%B1/Almajddrama.png">
     <link rel="apple-touch-icon" sizes="167x167" href="https://file.garden/aoLQp-Z9knG33grX/%D8%B4%D8%B9%D8%A7%D8%B1%D8%A7%D8%AA%20%D8%A7%D9%84%D8%B5%D9%88%D8%B1/Almajddrama.png">
 
+    <!-- إعدادات إضافية لتجربة التطبيق في نظام iOS -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="شارات دراما المجد">
 
+    <!-- ربط ملف الـ Manifest -->
     <link rel="manifest" href="./manifest.json">
     
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -39,6 +45,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        /* تعريف الخط الجديد المرفوع على File Garden */
         @font-face {
             font-family: 'MajdCustomFont';
             src: url('https://file.garden/aoLQp-Z9knG33grX/%D8%B4%D8%B9%D8%A7%D8%B1%D8%A7%D8%AA%20%D8%A7%D9%84%D8%B5%D9%88%D8%B1/Majd2-Bold.ttf') format('truetype');
@@ -61,6 +68,7 @@
             --accent-cyan: #79d7f3;
         }
 
+        /* فرض الوضع الداكن تماماً ومنع أي تغيير في ألوان المتصفح */
         html, body {
             background-color: var(--bg-color) !important;
             color: var(--text-color) !important;
@@ -219,6 +227,7 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         
+        /* ضبط وتناسق مربع الصورة (الشارة) ليكون متوازناً ومضبوطاً بالشكل المطلوب */
         .card-img-container { 
             width: 100%; 
             aspect-ratio: 16 / 10; 
@@ -247,6 +256,7 @@
             margin-top: auto; 
         }
         
+        /* زر الشارة ثابت الحجم ونحيف ومضبوط بكل الأجهزة بدقة */
         .btn-watch { 
            background-color: #10b981; 
            color: white; 
@@ -306,6 +316,7 @@
             padding: 0 10px;
         }
         
+        /* تعديل محاذاة عنوان الأسئلة الشائعة لتكون من اليمين كباقي الأقسام */
         .faq-title {
             max-width: 900px;
             margin: 0 auto 25px auto;
@@ -418,6 +429,7 @@
         .footer-btn.btn-feedback { background-color: #ff6600; }
         .footer-btn:hover { transform: translateY(-2px); opacity: 0.9; }
 
+        /* PWA Modal Window Styles */
         .pwa-modal-overlay {
             position: fixed;
             top: 0;
@@ -542,17 +554,21 @@
         
         @media (max-width: 600px) {
             body { padding: 8px; }
+            
             .series-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            
             .card-content { padding: 8px; gap: 6px; }
             .card-title { font-size: 0.85rem; }
             .card-img-container { height: 110px; }
             .logo { max-width: 130px; }
             .nav-tab { padding: 8px 12px; font-size: 0.8rem; }
             .section-title { font-size: 0.95rem; margin: 10px 5px; }
+            
             .marketing-container { grid-template-columns: 1fr; gap: 10px; margin-top: 15px; }
             .ad-card { padding: 16px 12px; }
             .ad-title { font-size: 1.05rem; }
             .ad-desc { font-size: 0.78rem; }
+
             .faq-title { font-size: 1.05rem; margin: 0 5px 20px 5px; }
             summary { font-size: 0.9rem; }
             .answer { font-size: 0.85rem; }
@@ -560,7 +576,36 @@
             .footer-links { flex-direction: column; width: 100%; max-width: 280px; gap: 10px; }
             .footer-btn { justify-content: center; width: 100%; }
         }
+    
+        /* مساعد شارات دراما المجد */
+.ai-assistant-form input {
+            min-width:0; flex:1; padding:12px 14px; border-radius:11px;
+            border:1px solid rgba(215,232,245,.3); background:rgba(8,20,42,.72);
+            color:#fff; font:inherit; outline:none;
+        }
+        .ai-assistant-form input::placeholder { color:#b8cadd; }
+        .ai-assistant-form button {
+            border:0; border-radius:11px; padding:0 18px; color:#08243a;
+            background:#d7e8f5; font:inherit; font-weight:bold; cursor:pointer;
+        }
+        .ai-assistant-result {
+            display:none; margin-top:12px; padding:12px; border-radius:12px;
+            color:#edf7ff; background:rgba(4,15,32,.45); line-height:1.8;
+        }
+        .ai-match { display:flex; align-items:center; gap:12px; padding:9px 0; border-bottom:1px solid rgba(255,255,255,.1); }
+        .ai-match:last-child { border-bottom:0; }
+        .ai-match img { width:64px; height:48px; object-fit:cover; border-radius:8px; }
+        .ai-match-info { flex:1; min-width:0; }
+        .ai-match-title { font-weight:bold; }
+        .ai-match a { color:#8edcff; text-decoration:none; font-size:.85rem; }
+        .ai-note { color:#c5d7e8; font-size:.78rem; margin-top:8px; }
+        @media(max-width:600px) {
+            .ai-assistant { padding:14px; border-radius:14px; }
+            .ai-assistant-form button { padding:0 13px; }
+        }
 
+
+        /* واجهة محسّنة - مع الإبقاء على بنية الموقع الحالية */
         body {
             background:
               radial-gradient(ellipse at 50% -15%, rgba(7,152,206,.24), transparent 48%),
@@ -601,7 +646,7 @@
         .card:hover { transform: translateY(-4px); border-color:rgba(7,152,206,.55) !important; box-shadow:0 15px 32px rgba(0,0,0,.25); }
         .card-img-container img { transition: transform .35s ease; }
         .card:hover .card-img-container img { transform:scale(1.035); }
-        .btn-watch {
+.btn-watch {
             background:linear-gradient(135deg,#0798CE,#2365a0) !important;
             border-radius:10px !important; box-shadow:0 5px 14px rgba(7,152,206,.18);
         }
@@ -619,15 +664,15 @@
             font:inherit; font-weight:bold; transition:.2s ease;
         }
         .ai-assistant-form button { background:linear-gradient(135deg,#d7e8f5,#79d7f3); color:#10213c; }
-        .ai-assistant-form button:hover,.voice-btn:hover { transform:translateY(-1px); filter:brightness(1.06); }
+        .ai-assistant-form button:hover,.voice-btn:hover,.voice-btn:hover { transform:translateY(-1px); filter:brightness(1.06); }
         .voice-btn {
             display:inline-flex; align-items:center; justify-content:center; gap:7px;
             padding:0 13px; color:#eaf8ff; background:rgba(7,152,206,.18);
             border:1px solid rgba(121,215,243,.3);
         }
         .voice-btn.listening { background:#8c3143; border-color:#ff9aa9; }
-        .ai-match { padding:12px 0; }
-        .ai-match a { display:inline-block; margin-top:5px; padding:7px 12px;
+.ai-match { padding:12px 0; }
+.ai-match a { display:inline-block; margin-top:5px; padding:7px 12px;
             border-radius:9px; background:rgba(7,152,206,.18); border:1px solid rgba(121,215,243,.22); }
         @media(max-width:600px) {
             .google-login-bar { align-items:stretch; }
@@ -636,6 +681,7 @@
             .ai-assistant-form input { flex-basis:100%; }
             .ai-assistant-form button,.ai-assistant-form .voice-btn { flex:1; }
         }
+
 
         .card-actions { display:flex !important; align-items:center; justify-content:space-between; gap:10px; }
         .btn-fav {
@@ -648,6 +694,8 @@
         }
         .btn-fav.is-fav { color:#ff4d67 !important; background:rgba(239,68,68,.22) !important; }
         .btn-fav:active { transform:scale(.94); }
+        .fav-hint { color:#bfeaff; text-align:center; padding:12px; font-size:.85rem; }
+
 
         .unified-search {
             max-width: 900px; margin: 0 auto 24px; padding: 18px;
@@ -669,20 +717,18 @@
         .search-mode-btn { flex:1; min-width:0; min-height:46px; border:1px solid rgba(121,215,243,.22);
             border-radius:12px; background:#d7e8f5; color:#10213c; font-weight:bold; font-size:.92rem; }
         .search-mode-btn.active { background:linear-gradient(135deg,#0798ce,#2365a0); color:white; }
-        
+        .unified-search-hint { color:#bcd0e3; font-size:.78rem; line-height:1.6; margin-top:10px; }
         .ai-assistant-result { display:none; margin-top:13px; padding:13px; border-radius:12px;
             color:#eff8ff; background:rgba(8,20,39,.72); line-height:1.8; }
         .smart-answer { font-weight:bold; margin-bottom:8px; }
         .smart-empty { color:#c6d8e8; }
-        
-        /* ضبط بطاقة عرض السنة والهجري يميناً والميلادي يساراً بدقة وتساوي */
+        /* بطاقة بيانات العرض: فصل السنوات ومنع التفافها داخل فقرة طويلة */
         .smart-year-card {
             margin: 4px 0 12px;
             padding: 16px;
             border-radius: 14px;
             background: linear-gradient(145deg, #0b1b32, #102844);
             border: 1px solid rgba(121,215,243,.25);
-            direction: rtl;
         }
         .smart-year-heading {
             color: #f4faff;
@@ -690,17 +736,15 @@
             font-weight: 900;
             line-height: 1.6;
             margin-bottom: 13px;
-            text-align: right;
         }
         .smart-year-grid {
             display: grid;
             grid-template-columns: repeat(2, minmax(0,1fr));
-            gap: 12px;
-            direction: rtl;
+            gap: 10px;
         }
         .smart-year-item {
             min-width: 0;
-            padding: 12px;
+            padding: 12px 9px;
             border-radius: 11px;
             background: rgba(121,215,243,.09);
             border: 1px solid rgba(121,215,243,.2);
@@ -709,9 +753,8 @@
         .smart-year-label {
             display: block;
             color: #b9d5e8;
-            font-size: .82rem;
+            font-size: .78rem;
             margin-bottom: 5px;
-            font-weight: bold;
         }
         .smart-year-value {
             display: block;
@@ -727,9 +770,13 @@
             margin-top: 10px;
             color: #c8e9f7;
             font-size: .86rem;
-            text-align: right;
         }
-        .smart-answer-text { color:#eaf5ff; line-height:1.8; text-align: right; }
+        .smart-answer-text { color:#eaf5ff; line-height:1.8; }
+        @media(max-width:380px) {
+            .smart-year-grid { grid-template-columns:1fr 1fr; gap:7px; }
+            .smart-year-value { font-size:1.15rem; }
+            .smart-year-item { padding:10px 5px; }
+        }
 
         .ai-match { display:flex; gap:12px; align-items:center; padding:10px 0; border-top:1px solid rgba(255,255,255,.1); }
         .ai-match img { width:86px; height:68px; object-fit:cover; border-radius:9px; }
@@ -742,66 +789,82 @@
             color:#bdefff; background:rgba(7,152,206,.16);
             border:1px solid rgba(121,215,243,.35);
         }
-
-        /* اقتراحات متجاوبة وثابتة بثلاثة أعمدة */
         .smart-suggestions {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 8px;
-            margin: 14px 0 12px;
-            width: 100%;
-            direction: rtl;
+            display:grid; grid-template-columns:repeat(3,minmax(0,1fr));
+            gap:8px; margin:14px 0 12px; width:100%; direction:rtl;
         }
         .smart-suggestion {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            min-width: 0;
-            min-height: 48px;
-            padding: 8px 6px;
-            border-radius: 12px;
-            cursor: pointer;
-            font: inherit;
-            font-size: 0.78rem;
-            line-height: 1.35;
-            white-space: nowrap;
-            color: #dff5ff;
-            font-weight: bold;
-            background: linear-gradient(145deg, rgba(7,152,206,.18), rgba(7,152,206,.08));
-            border: 1px solid rgba(121,215,243,.30);
-            transition: background .18s ease;
+            display:flex; align-items:center; justify-content:center; gap:6px;
+            min-width:0; min-height:48px; padding:8px 5px; border-radius:14px;
+            cursor:pointer; font:inherit; font-size:.78rem; line-height:1.35;
+            white-space:nowrap; color:#dff5ff; font-weight:bold;
+            background:linear-gradient(145deg,rgba(7,152,206,.18),rgba(7,152,206,.08));
+            border:1px solid rgba(121,215,243,.30); transition:background .18s ease;
         }
-        .smart-suggestion:hover { background: rgba(7,152,206,.28); }
-        .smart-suggestion i { color: #79d7f3; flex: 0 0 auto; }
-        
-        @media(max-width: 600px) {
-            .smart-suggestions {
-                grid-template-columns: repeat(3, minmax(0, 1fr));
-                gap: 5px;
-            }
-            .smart-suggestion {
-                font-size: 0.7rem;
-                padding: 6px 2px;
-                min-height: 44px;
-                white-space: normal;
-                text-align: center;
-            }
+        .smart-suggestion:hover { background:rgba(7,152,206,.28); }
+        .smart-suggestion i { color:#79d7f3; flex:0 0 auto; }
+        .smart-suggestion:focus-visible { outline:2px solid #79d7f3; outline-offset:2px; }
+        @media(max-width:600px) {
+            .smart-suggestions { gap:6px; }
+            .smart-suggestion { font-size:.70rem; padding:7px 3px; min-height:46px; }
+            .smart-suggestion i { font-size:.82rem; }
         }
 
         .ai-match a { display:inline-block; margin-top:7px; padding:7px 12px; border-radius:9px;
             background:#0798ce; color:white; text-decoration:none; }
         @keyframes voicePulse { 50% { box-shadow:0 0 0 6px rgba(163,49,75,.2); } }
-        
+        @media(max-width:600px) {
+            .unified-search { padding:14px; margin-inline:12px; }
+            .unified-search-actions { gap:12px; margin-bottom:14px; }
+            .search-mode-btn { font-size:.84rem; padding:0 8px; }
+        }
+
+
+        .smart-open-btn { width:100%; margin-top:12px; min-height:47px; border:0; border-radius:12px;
+            background:linear-gradient(135deg,#0798ce,#2365a0); color:#fff; font-weight:bold; font-size:.95rem; }
         .smart-search-panel { margin-top:14px; padding:15px; border-radius:14px;
             background:rgba(7,18,36,.55); border:1px solid rgba(121,215,243,.24); }
         .smart-search-panel[hidden] { display:none !important; }
         .smart-panel-title { color:#fff; font-weight:bold; font-size:1rem; }
         .smart-search-panel p { color:#c5d8e9; font-size:.82rem; line-height:1.7; margin:6px 0 12px; }
         .smart-panel-actions { display:flex; gap:9px; margin-top:10px; }
-        .smart-run-btn { min-height:44px; border:0; border-radius:10px; font-weight:bold; flex:1; background:#d7e8f5; color:#10213c; }
+        .smart-run-btn,.smart-close-btn { min-height:44px; border:0; border-radius:10px; font-weight:bold; }
+        .smart-run-btn { flex:1; background:#d7e8f5; color:#10213c; }
+        .smart-close-btn { padding:0 17px; background:rgba(255,255,255,.10); color:#eaf8ff; border:1px solid rgba(255,255,255,.16); }
         .voice-permission-note { margin-top:10px; color:#bfeaff; font-size:.78rem; line-height:1.7; }
         .search-inline-icon { color:#a9bed4; padding:0 8px; }
+        @media(max-width:600px) { .smart-search-panel { padding:12px; } }
+
+
+        /* ===== إصلاحات نتائج البحث الذكي والاقتراحات ===== */
+        .sr-list { display:flex; flex-direction:column; gap:12px; }
+        .sr-card { padding:14px; border-radius:14px; background:linear-gradient(145deg,#0b1b32,#102844); border:1px solid rgba(121,215,243,.22); }
+        .sr-main { display:flex; align-items:center; gap:12px; }
+        .sr-img { width:86px; height:68px; flex:none; object-fit:cover; border-radius:9px; }
+        .sr-info { flex:1; min-width:0; display:flex; flex-direction:column; align-items:flex-start; gap:8px; }
+        .sr-head { display:flex; flex-wrap:wrap; align-items:center; gap:6px 8px; min-width:0; }
+        .sr-head .ai-match-title { font-weight:900; color:#fff; font-size:1.02rem; line-height:1.5; }
+        .sr-dash { color:#79d7f3; font-weight:900; }
+        .sr-head .ai-match-types { display:inline-flex; flex-wrap:wrap; gap:6px; margin:0; }
+        .sr-watch, .sr-actions a { display:inline-flex; align-items:center; gap:6px; padding:7px 14px; border-radius:9px; background:#0798ce; color:#fff; text-decoration:none; font-size:.85rem; font-weight:bold; }
+        .sr-actions { margin-top:12px; }
+        .sr-years { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:12px; direction:rtl; }
+        .sr-year-box { min-width:0; padding:12px 6px; border-radius:11px; text-align:center; background:rgba(121,215,243,.09); border:1px solid rgba(121,215,243,.22); }
+        .sr-year-label { display:block; color:#b9d5e8; font-size:.78rem; margin-bottom:6px; white-space:nowrap; }
+        .sr-year-value { display:flex; align-items:baseline; justify-content:center; gap:6px; direction:rtl; white-space:nowrap; color:#fff; font-weight:900; }
+        .sr-year-num { font-size:1.35rem; direction:ltr; unicode-bidi:isolate; font-variant-numeric:tabular-nums; }
+        .sr-year-unit { font-size:.95rem; color:#bdefff; }
+        .sr-season { margin-top:10px; color:#c8e9f7; font-size:.86rem; }
+        .sr-desc { margin-top:12px; color:#eaf5ff; line-height:1.9; font-size:.92rem; }
+        .sr-note { margin-top:10px; color:#c6d8e8; font-size:.84rem; }
+        @media(max-width:380px) { .sr-year-num { font-size:1.15rem; } .sr-img { width:70px; height:56px; } }
+
+        /* مربعات الاقتراحات: ثلاثة أعمدة متساوية، الأيقونة فوق النص، التفاف على حدود الكلمات فقط */
+        .smart-suggestions { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; direction:rtl; }
+        .smart-suggestion { flex-direction:column; gap:5px; white-space:normal; word-break:keep-all; overflow-wrap:normal; text-align:center; padding:9px 4px; min-height:62px; font-size:.8rem; line-height:1.35; }
+        .smart-suggestion i { font-size:1rem; }
+        @media(max-width:600px) { .smart-suggestions { gap:6px; } .smart-suggestion { font-size:.74rem; padding:8px 3px; min-height:60px; } }
+        @media(max-width:330px) { .smart-suggestions { grid-template-columns:1fr; } .smart-suggestion { flex-direction:row; min-height:44px; font-size:.82rem; } }
     </style>
 </head>
 <body>
@@ -817,6 +880,7 @@
         <button class="nav-tab" onclick="switchChannel('massa')"><img src="https://file.garden/aoLQp-Z9knG33grX/%D8%B4%D8%B9%D8%A7%D8%B1%D8%A7%D8%AA%20%D8%A7%D9%84%D8%B5%D9%88%D8%B1/Masah.png" alt="ماسة"> ماسة</button>
         <button class="nav-tab" onclick="switchChannel('fav')"><i class="fa-solid fa-heart" style="color: var(--fav-color);"></i> المفضلة (<span id="favCount">0</span>)</button>
     </div>
+
     
     <section class="unified-search" id="controlsBox" aria-label="البحث عن الشارات">
         <div class="unified-search-title"><i class="fa-solid fa-magnifying-glass"></i> ابحث عن شارات المسلسل</div>
@@ -849,8 +913,7 @@
             <div class="ai-assistant-result" id="aiAssistantResult" aria-live="polite"></div>
         </div>
     </section>
-
-    <div id="homeTitles" style="display:none;">
+<div id="homeTitles" style="display:none;">
         <div class="section-title"><i class="fa-solid fa-wand-magic-sparkles" style="color: #f59e0b;"></i> شارات مقترحة لك</div>
     </div>
 
@@ -878,27 +941,44 @@
         <div class="faq-container">
             <details>
                 <summary>1- هل الموقع يتبع بشكل رسمي لشبكة المجد؟</summary>
-                <div class="answer">الموقع هو من إدارة الجمهور مخصصة لأرشفة شارات مسلسلات المجد وتسهيل الوصول إليها، وليس منصة رسمية تابعة للشبكة أو من تطبيق سين؛ لذا جميع الحقوق الفكرية للمحتوى تعود لمالكيها الأصليين.</div>
+                <div class="answer">
+                    الموقع هو من إدارة الجمهور مخصصة لأرشفة شارات مسلسلات المجد وتسهيل الوصول إليها، وليس منصة رسمية تابعة للشبكة أو من تطبيق سين؛ لذا جميع الحقوق الفكرية للمحتوى تعود لمالكيها الأصليين.
+                </div>
             </details>
+
             <details>
                 <summary>2- لماذا قد لا تعمل بعض الروابط أو الملفات الصوتية؟</summary>
-                <div class="answer">يعتمد الموقع على بروتوكولات تشغيل سريعة، وفي حال واجهت مشكلة في التشغيل، تأكد من تحديث المتصفح لديك أو تحقق من استقرار اتصال الإنترنت لديك.</div>
+                <div class="answer">
+                    يعتمد الموقع على بروتوكولات تشغيل سريعة، وفي حال واجهت مشكلة في التشغيل، تأكد من تحديث المتصفح لديك أو تحقق من استقرار اتصال الإنترنت لديك؛ حيث أن بعض القيود التقنية قد تمنع التشغيل في المتصفحات القديمة.
+                </div>
             </details>
+
             <details>
                 <summary>3- كيف يمكنني اقتراح للموقع أو طلب شارة مفقودة؟</summary>
-                <div class="answer">نحن نرحب دائماً بطلبات الجمهور؛ يمكنك التواصل معنا عبر حسابات التواصل الموضحة في الأسفل.</div>
+                <div class="answer">
+                    نحن نرحب دائماً بطلبات الجمهور؛ يمكنك التواصل معنا عبر حسابات التواصل الموضحة في الأسفل (التذبيل) من خلالها تقديم طلباتك أو الإبلاغ عن أي خلل تقني.
+                </div>
             </details>
+
             <details>
                 <summary>4- هل الموقع آمن للاستخدام ولا يستهلك البيانات بشكل كبير؟</summary>
-                <div class="answer">نحن نضمن دائماً أن يكون الموقع خفيفاً جداً ومتوافقاً مع معايير الأمان الشاملة، مع ضغط ملفات الصوت والشعارات.</div>
+                <div class="answer">
+                    نحن نضمن دائماً أن يكون الموقع خفيفاً جداً ومتوافقاً مع معايير الأمان الشاملة، مع ضغط ملفات الصوت والشعارات لضمان أفضل جودة بأقل استهلاك ممكن للبيانات.
+                </div>
             </details>
+
             <details>
                 <summary>5- المشغل الصوتي يتوقف عند إغلاق الشاشة، ما الحل؟</summary>
-                <div class="answer">هذه خاصية تقنية في المتصفحات؛ ولضمان استمرار التشغيل، ننصح بتثبيت الموقع كـ "تطبيق ويب" على الشاشة الرئيسية.</div>
+                <div class="answer">
+                    هذه خاصية تقنية في المتصفحات للحفاظ على البطارية؛ ولضمان استمرار التشغيل، ننصح بتثبيت الموقع كـ "تطبيق ويب" على الشاشة الرئيسية، مما يمنحه صلاحيات تشغيل أوسع تشبه التطبيقات الرسمية.
+                </div>
             </details>
+
             <details>
                 <summary>6- هل جودة الصوت في المشغل هي الجودة الأصلية؟</summary>
-                <div class="answer">نعم، يتم رفع الشارات بأعلى جودة ممكنة مع موازنة تقنية تضمن سرعة التشغيل وعدم "التقطيع".</div>
+                <div class="answer">
+                    نعم، يتم رفع الشارات بأعلى جودة ممكنة مع موازنة تقنية تضمن سرعة التشغيل وعدم "التقطيع" حتى في سرعات الإنترنت المتوسطة.
+                </div>
             </details>
         </div>
     </div>
@@ -924,19 +1004,26 @@
             </a>
         </div>
         <div class="footer-rights">
-            جميع الحقوق محفوظة ©<br> شارات دراما المجد 1448 هـ - 2026 م
+            جميع الحقوق محفوظة ©
+            <br> شارات دراما المجد 1448 هـ - 2026 م
         </div>
     </footer>
 
+    <!-- PWA Installation Modal UI -->
     <div id="pwaModalOverlay" class="pwa-modal-overlay">
         <div class="pwa-modal">
             <div class="pwa-header-row">
-                <button class="pwa-close-box" id="closeBtn"><i class="fa-solid fa-xmark"></i></button>
+                <button class="pwa-close-box" id="closeBtn">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
                 <div class="pwa-title">التثبيت وإنشاء اختصار</div>
             </div>
+            
             <div class="pwa-option" id="installBtn">
                 <div class="pwa-option-left">
-                    <div class="pwa-icon"><i class="fa-solid fa-download"></i></div>
+                    <div class="pwa-icon">
+                        <i class="fa-solid fa-download"></i>
+                    </div>
                     <div class="pwa-details">
                         <div class="title">تثبيت التطبيق</div>
                         <div class="subtitle">إضافة شارات دراما المجد كـ تطبيق تفاعلي</div>
@@ -954,7 +1041,7 @@
             'general': { sheetId: SPREADSHEET_ID, sheetName: 'general', logo: 'https://file.garden/aoLQp-Z9knG33grX/%D8%B4%D8%B9%D8%A7%D8%B1%D8%A7%D8%AA%20%D8%A7%D9%84%D8%B5%D9%88%D8%B1/Almajd.png' },
             'kids': { sheetId: SPREADSHEET_ID, sheetName: 'kids', logo: 'https://file.garden/aoLQp-Z9knG33grX/%D8%B4%D8%B9%D8%A7%D8%B1%D8%A7%D8%AA%20%D8%A7%D9%84%D8%B5%D9%88%D8%B1/majd.webp' },
             'massa': { sheetId: SPREADSHEET_ID, sheetName: 'masah', logo: 'https://file.garden/aoLQp-Z9knG33grX/%D8%B4%D8%B9%D8%A7%D8%B1%D8%A7%D8%AA%20%D8%A7%D9%84%D8%B5%D9%88%D8%B1/Masah.png' },
-            'suggestions': { sheetId: SPREADSHEET_ID, sheetName: 'Ai' }
+            'suggestions': { sheetId: SPREADSHEET_ID, sheetName: 'data' }
         };
 
         let activeTab = 'home';
@@ -964,7 +1051,11 @@
         function loadFavorites() {
             let rawFavs = localStorage.getItem('majd_favs');
             let parsed = [];
-            try { parsed = rawFavs ? JSON.parse(rawFavs) : []; } catch (e) { parsed = []; }
+            try {
+                parsed = rawFavs ? JSON.parse(rawFavs) : [];
+            } catch (e) {
+                parsed = [];
+            }
             if (!Array.isArray(parsed)) parsed = [];
             return Array.from(new Set(parsed.map(name => typeof name === 'string' ? name.trim() : '').filter(Boolean)));
         }
@@ -991,24 +1082,37 @@
             for (let i = 0; i < input.length; i++) {
                 const ch = input[i];
                 if (quoted) {
-                    if (ch === '"' && input[i + 1] === '"') { field += '"'; i++; }
-                    else if (ch === '"') { quoted = false; }
-                    else { field += ch; }
-                } else if (ch === '"' && field.length === 0) { quoted = true; }
-                else if (ch === ',') { row.push(field.trim()); field = ''; }
-                else if (ch === '\n' || ch === '\r') {
+                    if (ch === '"' && input[i + 1] === '"') {
+                        field += '"';
+                        i++;
+                    } else if (ch === '"') {
+                        quoted = false;
+                    } else {
+                        field += ch;
+                    }
+                } else if (ch === '"' && field.length === 0) {
+                    quoted = true;
+                } else if (ch === ',') {
+                    row.push(field.trim());
+                    field = '';
+                } else if (ch === '\n' || ch === '\r') {
                     if (ch === '\r' && input[i + 1] === '\n') i++;
                     row.push(field.trim());
                     if (row.some(value => value !== '')) rows.push(row);
                     row = [];
                     field = '';
-                } else { field += ch; }
+                } else {
+                    field += ch;
+                }
             }
+
             row.push(field.trim());
             if (row.some(value => value !== '')) rows.push(row);
             return rows;
         }
 
+
+        // مساعد شارات دراما المجد — يرسل السؤال وأرشيف المسلسلات إلى Cloudflare Worker.
         const aiAssistantResult = document.getElementById('aiAssistantResult');
         const aiAssistantSubmit = document.getElementById('aiAssistantSubmit');
         const smartSearchInput = document.getElementById('smartSearchInput');
@@ -1024,6 +1128,12 @@
             return String(value || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
         }
 
+
+        function channelLabel(origin) {
+            return ({general:'قناة المجد العامة', kids:'قناة المجد للأطفال', massa:'قناة ماسة'})[origin] || '';
+        }
+
+
         function getAssistantCatalog() {
             const combined = [...allDataMap.general, ...allDataMap.kids, ...allDataMap.massa, ...allDataMap.suggestions];
             const seen = new Set();
@@ -1032,65 +1142,389 @@
                 if (!key || seen.has(key)) return false;
                 seen.add(key);
                 return true;
-            }).map(item => ({ name:item.name, url:item.watchLink, image:item.imgLink, type:item.type || '', hijri:item.hijri || '', gregorian:item.gregorian || '', season:item.season || '', desc:item.desc || '' }));
+            }).map(item => ({ name:item.name, url:item.watchLink, image:item.imgLink }));
         }
 
-        function renderAssistantMatches(matches) {
-            if (!Array.isArray(matches) || !matches.length) return '';
-            const seen = new Set();
-            const unique = matches.filter(item => {
-                const key = String(item.name || '').trim().toLowerCase().replace(/[أإآ]/g, 'ا').replace(/ى/g, 'ي').replace(/ة/g, 'ه').replace(/\s+/g, ' ');
-                if (!key || seen.has(key)) return false;
-                seen.add(key);
-                return true;
-            });
-            const orderedTypes = value => {
-                const raw = String(value || '');
-                const found = [];
-                if (/بداي/.test(raw)) found.push('البداية');
-                if (/نهاي/.test(raw)) found.push('النهاية');
-                return found;
-            };
-            return unique.map(item => {
-                const types = orderedTypes(item.type);
-                const typeHtml = types.length
-                    ? `<div class="ai-match-types">${types.map(type => `<span class="ai-match-type">${type}</span>`).join('')}</div>`
-                    : '';
-                return `
-                <div class="ai-match">
-                    ${item.image && item.image !== '-' ? `<img src="${escapeAssistantHtml(item.image)}" alt="" loading="lazy">` : ''}
-                    <div class="ai-match-info">
-                        <div class="ai-match-title">${escapeAssistantHtml(item.name)}</div>
-                        ${typeHtml}
-                        <a href="${escapeAssistantHtml(item.url)}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-circle-play"></i> مشاهدة الشارة</a>
-                    </div>
-                </div>`;
-            }).join('');
+        // BEGIN SMART ENGINE
+        // ===== البحث الذكي: يقرأ ورقة Ai (الأعمدة A..G) مباشرة، ويستعين بـ Worker عند تعذّر ذلك =====
+        const AI_SHEET_NAME = 'Ai';
+        let aiRows = [];            // {name, lyrics, type, desc, hijri, gregorian, season}
+        let aiSheetState = 'idle';  // idle | ok | failed
+        let aiSheetPromise = null;
+
+        // تطبيع عربي: التشكيل، التطويل، الألف، الياء، التاء المربوطة، الأرقام الهندية، علامات الترقيم، المسافات
+        function normAr(value) {
+            return String(value == null ? '' : value)
+                .replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d))
+                .replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d))
+                .toLowerCase()
+                .replace(/[ؐ-ًؚ-ٰٟۖ-ۭـ]/g, '')
+                .replace(/[أإآٱ]/g, 'ا')
+                .replace(/ى/g, 'ي')
+                .replace(/ة/g, 'ه')
+                .replace(/ؤ/g, 'و')
+                .replace(/ئ/g, 'ي')
+                .replace(/[^ء-يa-z0-9\s]/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
         }
 
-        function renderAssistantAnswer(answer) {
-            const raw = String(answer || '').trim();
-            if (!raw) return '';
-            const titleMatch = raw.match(/مسلسل\s+([^—\n:]+)/);
-            const gregorian = raw.match(/السنة\s+الميلادية\s*:\s*([0-9٠-٩۰-۹]{4})/);
-            const hijri = raw.match(/السنة\s+الهجرية\s*:\s*([0-9٠-٩۰-۹]{4})/);
-            const season = raw.match(/الموسم\s*:\s*([^\n]+)/);
-            if (gregorian || hijri) {
-                const title = titleMatch ? titleMatch[1].trim() : 'بيانات سنة العرض';
-                const yearCell = (label, match) => match
-                    ? `<div class="smart-year-item"><span class="smart-year-label">${label}</span><strong class="smart-year-value">${escapeAssistantHtml(match[1])}</strong></div>`
-                    : '';
-                return `<section class="smart-year-card">
-                    <div class="smart-year-heading">${escapeAssistantHtml(title)}</div>
-                    <div class="smart-year-grid">
-                        ${yearCell('السنة الميلادية', gregorian)}
-                        ${yearCell('السنة الهجرية', hijri)}
-                    </div>
-                    ${season ? `<div class="smart-year-season">الموسم: ${escapeAssistantHtml(season[1].trim())}</div>` : ''}
-                </section>`;
+        function yearDigits(value) {
+            const m = normAr(value).match(/\d{3,4}/);
+            return m ? m[0] : '';
+        }
+
+        function parseAiSheetRows(csvText) {
+            return parseCSV(csvText).map(r => ({
+                name: (r[0] || '').trim(),
+                lyrics: (r[1] || '').trim(),
+                type: (r[2] || '').trim(),
+                desc: (r[3] || '').trim(),
+                hijri: yearDigits(r[4]),
+                gregorian: yearDigits(r[5]),
+                season: (r[6] || '').trim()
+            })).filter(r => r.name && normAr(r.name) !== normAr('اسم المسلسل'));
+        }
+
+        function loadAiSheet() {
+            if (aiSheetPromise) return aiSheetPromise;
+            const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(AI_SHEET_NAME)}`;
+            aiSheetPromise = fetch(url, { cache: 'no-store' })
+                .then(res => {
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    return res.text();
+                })
+                .then(csv => {
+                    if (!csv || /<html[\s>]/i.test(csv.slice(0, 500))) throw new Error('لم تُرجع Google Sheets ملف CSV للورقة Ai.');
+                    aiRows = parseAiSheetRows(csv);
+                    aiSheetState = aiRows.length ? 'ok' : 'failed';
+                })
+                .catch(err => {
+                    console.error('Ai sheet load error:', err);
+                    aiRows = [];
+                    aiSheetState = 'failed';
+                    aiSheetPromise = null; // يسمح بإعادة المحاولة في البحث التالي
+                });
+            return aiSheetPromise;
+        }
+
+        // ---- إزالة العبارات التوجيهية من بداية السؤال فقط (حتى لا تُحذف كلمات الشارة الحقيقية) ----
+        const DIRECTIVE_LEADS = [
+            'ابحث عن الشارة من كلماتها', 'ابحث عن الشارة من كلمات', 'ابحث عن الشارة التي كلماتها',
+            'ابحث عن الشارة اللي كلماتها', 'ابحث عن الشارة التي تقول', 'ابحث عن الشارة التي فيها',
+            'ابحث عن شارة من كلماتها', 'ابحث عن شارة كلماتها', 'ابحث عن كلمات الشارة', 'ابحث عن كلمات شارة',
+            'ابحث لي عن الشارة من كلماتها', 'ابحث لي عن الشارة', 'ابحث لي عن شارة',
+            'ابحث عن الشارة', 'ابحث عن شارة', 'ابحث عن كلمات', 'ابحث عن مسلسل', 'ابحث عن', 'ابحث',
+            'دور على الشارة من كلماتها', 'دور لي على الشارة', 'جد لي الشارة من كلماتها',
+            'وش الشارة اللي كلماتها', 'وش الشارة التي كلماتها', 'ما هي الشارة التي كلماتها',
+            'ما الشارة التي كلماتها', 'ما الشارة اللي كلماتها',
+            'كلمات الشارة هي', 'كلمات الشارة', 'كلمات شارة', 'كلمات الشارات',
+            'الشارة من كلماتها', 'الشارة التي كلماتها', 'الشارة اللي كلماتها', 'الشارة الي كلماتها',
+            'شارة من كلماتها', 'شارة كلماتها', 'شارة مسلسل', 'الشارة', 'شارة',
+            'من كلماتها', 'من كلمات', 'كلماتها', 'كلماته', 'مسلسل',
+            'لو سمحت', 'من فضلك'
+        ].map(normAr).sort((a, b) => b.length - a.length);
+
+        function stripDirectives(norm) {
+            let t = norm;
+            let changed = true;
+            while (changed && t) {
+                changed = false;
+                for (const p of DIRECTIVE_LEADS) {
+                    if (t === p) { t = ''; changed = true; break; }
+                    if (t.startsWith(p + ' ')) { t = t.slice(p.length + 1).trim(); changed = true; break; }
+                }
             }
-            return `<div class="smart-answer-text">${escapeAssistantHtml(raw).replace(/\n/g, '<br>')}</div>`;
+            return t.replace(/\s+(?:لو سمحت|من فضلك|شكرا)$/, '').trim();
         }
+
+        // ---- نوايا السؤال: سنة العرض / القصة ----
+        const YEAR_RE = new RegExp('(?:^|\\s)(?:' + ['سنة', 'عام', 'تاريخ', 'موعد', 'متى'].map(normAr).join('|') + ')\\s+(?:' + ['عرض', 'بث', 'ظهور', 'صدور', 'إنتاج', 'مسلسل'].map(normAr).join('|') + ')'
+            + '|(?:^|\\s)(?:' + ['ما', 'ماهي', 'ماهو', 'كم', 'وش', 'ايش', 'متى'].map(normAr).join('|') + ')\\s+(?:' + ['سنة', 'عام'].map(normAr).join('|') + ')(?:\\s|$)'
+            + '|(?:^|\\s)(?:' + ['هجري', 'هجرية', 'ميلادي', 'ميلادية', 'موسم', 'الموسم'].map(normAr).join('|') + ')(?:\\s|$)');
+        const STORY_RE = new RegExp('(?:^|\\s)(?:' + ['قصة', 'حكاية', 'ملخص', 'نبذة', 'وصف', 'موضوع'].map(normAr).join('|') + ')(?:\\s|$)'
+            + '|(?:^|\\s)عن\\s+(?:' + ['ماذا', 'ايش', 'وش'].map(normAr).join('|') + ')(?:\\s|$)');
+        const INTENT_WORDS = new Set(['ما', 'ماهي', 'ماهو', 'كم', 'وش', 'ايش', 'متى', 'سنة', 'عام', 'تاريخ', 'موعد', 'عرض', 'بث', 'ظهور', 'صدور', 'انتاج',
+            'مسلسل', 'لمسلسل', 'هجري', 'هجرية', 'ميلادي', 'ميلادية', 'موسم', 'الموسم', 'قصة', 'حكاية', 'ملخص', 'نبذة', 'وصف', 'موضوع', 'عن', 'ماذا', 'هي', 'هو',
+            'لو', 'سمحت', 'من', 'فضلك', 'ابحث', 'لي', 'اخبرني', 'قل', 'اعطني', 'هل', 'تعرف'].map(normAr));
+
+        function extractSeriesPhrase(norm) {
+            const words = norm.split(' ').filter(Boolean);
+            let s = 0, e = words.length;
+            while (s < e && INTENT_WORDS.has(words[s])) s++;
+            while (e > s && INTENT_WORDS.has(words[e - 1])) e--;
+            return words.slice(s, e).join(' ');
+        }
+
+        // ---- مطابقة الكلمات ----
+        function stripAl(w) { return w.length > 3 && w.startsWith('ال') ? w.slice(2) : w; }
+        function tokenMatches(t, w) {
+            if (t === w) return 1;
+            if (stripAl(t) === stripAl(w)) return 0.95;
+            const a = stripAl(t), b = stripAl(w);
+            if (a.length >= 3 && b.length >= 3) {
+                if (b.startsWith(a) && b.length - a.length <= 2) return 0.8;
+                if (a.startsWith(b) && a.length - b.length <= 2) return 0.8;
+            }
+            return 0;
+        }
+        function hasWordSeq(hay, needle) { return needle !== '' && (' ' + hay + ' ').includes(' ' + needle + ' '); }
+
+        // درجة تطابق عبارة (كلمات الشارة) مع نص كلمات: 0 = لا تطابق
+        function lyricsScore(query, lyricsNorm) {
+            if (!query || !lyricsNorm) return 0;
+            const qt = Array.from(new Set(query.split(' ').filter(Boolean)));
+            if (!qt.length) return 0;
+            if (hasWordSeq(lyricsNorm, query)) {
+                return 1000 + (lyricsNorm === query ? 50 : 0) + (lyricsNorm.startsWith(query + ' ') ? 20 : 0);
+            }
+            const lw = lyricsNorm.split(' ');
+            let matched = 0, quality = 0;
+            const pos = [];
+            for (const t of qt) {
+                let best = 0, bestIdx = -1;
+                for (let i = 0; i < lw.length; i++) {
+                    const m = tokenMatches(t, lw[i]);
+                    if (m > best) { best = m; bestIdx = i; if (m === 1) break; }
+                }
+                if (best > 0) { matched++; quality += best; pos.push(bestIdx); }
+            }
+            const n = qt.length;
+            const need = n <= 2 ? n : (n === 3 ? 2 : Math.ceil(n * 0.6));
+            if (matched < need) return 0;
+            if (n === 1 && qt[0].length < 3 && quality < 1) return 0;
+            let adjacent = 0;
+            for (let i = 1; i < pos.length; i++) if (pos[i] === pos[i - 1] + 1) adjacent++;
+            return (matched / n) * 400 + (quality / n) * 100 + adjacent * 40;
+        }
+
+        // درجة تطابق اسم مسلسل مع عبارة
+        function nameScore(query, nameNorm) {
+            if (!query || !nameNorm) return 0;
+            if (nameNorm === query) return 900;
+            if (query.length >= 2 && hasWordSeq(nameNorm, query)) return 700;
+            if (nameNorm.length >= 2 && hasWordSeq(query, nameNorm)) return 650;
+            const qt = query.split(' ').filter(Boolean);
+            const nw = nameNorm.split(' ').filter(Boolean);
+            if (!qt.length || !nw.length) return 0;
+            let hit = 0;
+            for (const t of qt) if (nw.some(w => tokenMatches(t, w) >= 0.95)) hit++;
+            const cov = hit / qt.length;
+            return cov >= 0.75 && hit >= 1 ? 300 + cov * 100 : 0;
+        }
+
+        function typesOf(rows) {
+            const set = new Set();
+            rows.forEach(r => {
+                const t = normAr(r.type);
+                if (/بداي/.test(t)) set.add('البداية');
+                if (/نهاي/.test(t)) set.add('النهاية');
+            });
+            return ['البداية', 'النهاية'].filter(t => set.has(t)); // البداية دائماً أولاً
+        }
+
+        function buildCatalogIndex() {
+            const map = new Map();
+            [...allDataMap.general, ...allDataMap.kids, ...allDataMap.massa, ...allDataMap.suggestions].forEach(it => {
+                const k = normAr(it.name);
+                if (k && !map.has(k)) map.set(k, { url: it.watchLink, image: it.imgLink });
+            });
+            return map;
+        }
+        function lookupCatalog(index, name) {
+            const k = normAr(name);
+            if (index.has(k)) return index.get(k);
+            for (const [key, val] of index) if (key && (hasWordSeq(key, k) || hasWordSeq(k, key))) return val;
+            return { url: '', image: '' };
+        }
+
+        function firstFilled(rows, field) {
+            for (const r of rows) if (r[field]) return r[field];
+            return '';
+        }
+
+        function makeItem(group, rowsForTypes, catalog, score) {
+            const media = lookupCatalog(catalog, group.name);
+            return {
+                name: group.name,
+                types: typesOf(rowsForTypes),
+                hijri: firstFilled(group.rows, 'hijri'),
+                gregorian: firstFilled(group.rows, 'gregorian'),
+                season: firstFilled(group.rows, 'season'),
+                desc: firstFilled(group.rows, 'desc'),
+                url: media.url, image: media.image, score
+            };
+        }
+
+        function groupAiRows(rows) {
+            const map = new Map();
+            rows.forEach(r => {
+                const k = normAr(r.name);
+                if (!k) return;
+                if (!map.has(k)) map.set(k, { key: k, name: r.name, rows: [] });
+                map.get(k).rows.push(r);
+            });
+            return Array.from(map.values());
+        }
+
+        // البحث المحلي في ورقة Ai. يعيد { mode, query, items } أو { mode:'empty' } إن لم يبقَ نص للبحث
+        function localSmartSearch(rawQuery, rows, catalog) {
+            const norm = normAr(rawQuery);
+            const groups = groupAiRows(rows);
+            let mode = 'lyrics';
+            let query = stripDirectives(norm);
+
+            const wantsYear = YEAR_RE.test(norm);
+            const wantsStory = !wantsYear && STORY_RE.test(norm);
+            if (wantsYear || wantsStory) {
+                const phrase = extractSeriesPhrase(norm);
+                const found = groups.map(g => ({ g, s: nameScore(phrase, normAr(g.name)) })).filter(x => x.s >= 300).sort((a, b) => b.s - a.s);
+                if (found.length) {
+                    const top = found[0].s;
+                    const picked = found.filter(x => x.s >= top - 100).slice(0, 3);
+                    return {
+                        mode: wantsYear ? 'year' : 'story', query: phrase,
+                        items: picked.map(x => makeItem(x.g, x.g.rows, catalog, x.s))
+                    };
+                }
+                // لا يوجد مسلسل بهذا الاسم: يُعامل النص كبحث عادي عن كلمات
+            }
+
+            if (!query) return { mode: 'empty', query: '', items: [] };
+
+            const scored = [];
+            groups.forEach(g => {
+                let best = 0;
+                const hitRows = [];
+                g.rows.forEach(r => {
+                    const s = lyricsScore(query, normAr(r.lyrics));
+                    if (s > 0) { hitRows.push(r); if (s > best) best = s; }
+                });
+                const ns = nameScore(query, normAr(g.name));
+                if (!best && !ns) return;
+                // عند تطابق اسم المسلسل نفسه تُعرض كل أنواع شاراته؛ وعند تطابق الكلمات فقط يُعرض نوع الصف المطابق
+                const useRows = hitRows.length && ns < 650 ? hitRows : g.rows;
+                scored.push(makeItem(g, useRows, catalog, Math.max(best, ns)));
+            });
+            scored.sort((a, b) => b.score - a.score || a.name.localeCompare(b.name, 'ar'));
+            const top = scored.length ? scored[0].score : 0;
+            // استبعاد النتائج الضعيفة مقارنة بأقوى نتيجة
+            const items = scored.filter(x => x.score >= top * 0.6).slice(0, 6);
+            return { mode, query, items };
+        }
+
+        // ---- العرض الموحد للنتائج ----
+        function isHttpUrl(u) { return /^https?:\/\//i.test(String(u || '').trim()); }
+
+        function renderSeriesCard(item, mode) {
+            const e = escapeAssistantHtml;
+            const hasImg = item.image && item.image !== '-' && isHttpUrl(item.image);
+            const typeHtml = item.types.length
+                ? `<span class="sr-dash" aria-hidden="true">—</span><span class="ai-match-types">${item.types.map(t => `<span class="ai-match-type">${t}</span>`).join('')}</span>`
+                : '';
+            const link = isHttpUrl(item.url)
+                ? `<a class="sr-watch" href="${e(item.url)}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-circle-play"></i> مشاهدة الشارة</a>`
+                : '';
+            let extra = '';
+            if (mode === 'year' || item.hijri || item.gregorian) {
+                if (item.hijri || item.gregorian) {
+                    // الترتيب في DOM: الهجري أولاً، وبما أن الاتجاه rtl فيظهر يميناً، والميلادي يساراً
+                    const box = (label, num, unit) => `<div class="sr-year-box"><span class="sr-year-label">${label}</span><span class="sr-year-value"><span class="sr-year-num">${e(num)}</span><span class="sr-year-unit">${unit}</span></span></div>`;
+                    extra += `<div class="sr-years" dir="rtl">${item.hijri ? box('السنة الهجرية', item.hijri, 'هـ') : ''}${item.gregorian ? box('السنة الميلادية', item.gregorian, 'م') : ''}</div>`;
+                } else {
+                    extra += '<div class="sr-note">لم تُسجَّل سنة العرض لهذا المسلسل في الأرشيف.</div>';
+                }
+                if (mode === 'year' && item.season) extra += `<div class="sr-season">الموسم: ${e(item.season)}</div>`;
+            }
+            if (mode === 'story') {
+                extra += item.desc
+                    ? `<div class="sr-desc">${e(item.desc).replace(/\n/g, '<br>')}</div>`
+                    : '<div class="sr-note">لا يوجد وصف مسجَّل لهذا المسلسل في الأرشيف.</div>';
+            }
+            return `<article class="sr-card">
+                <div class="sr-main">
+                    ${hasImg ? `<img class="sr-img" src="${e(item.image)}" alt="" loading="lazy">` : ''}
+                    <div class="sr-info">
+                        <div class="sr-head"><span class="ai-match-title">${e(item.name)}</span>${typeHtml}</div>
+                        ${mode === 'story' || mode === 'year' ? '' : link}
+                    </div>
+                </div>
+                ${extra}
+                ${mode === 'story' || mode === 'year' ? (link ? `<div class="sr-actions">${link}</div>` : '') : ''}
+            </article>`;
+        }
+
+        function renderSearchResult(result) {
+            const e = escapeAssistantHtml;
+            if (result.mode === 'empty') return '<div class="smart-empty">اكتب الكلمات التي تتذكرها من الشارة بعد عبارة «كلمات الشارة»، أو اسم المسلسل.</div>';
+            if (!result.items.length) return '<div class="smart-empty">لم أجد نتيجة مطابقة في الأرشيف. جرّب كلمات أخرى من الشارة أو اسم المسلسل.</div>';
+            const heading = ({
+                lyrics: result.items.length > 1 ? 'وجدت هذه النتائج المطابقة في أرشيف الشارات:' : 'وجدت نتيجة مطابقة في أرشيف الشارات:',
+                year: 'بيانات سنة العرض:',
+                story: 'قصة المسلسل:'
+            })[result.mode] || 'نتائج البحث:';
+            return `<div class="smart-answer">${heading}</div><div class="sr-list">${result.items.map(i => renderSeriesCard(i, result.mode)).join('')}</div>`;
+        }
+
+        // ---- تحويل استجابة Worker (عند الحاجة فقط) إلى نفس شكل العرض ----
+        function workerToResult(data, catalog) {
+            const answer = String(data.answer || '').trim();
+            const orderTypes = value => {
+                const raw = normAr(value);
+                const f = [];
+                if (/بداي/.test(raw)) f.push('البداية');
+                if (/نهاي/.test(raw)) f.push('النهاية');
+                return f;
+            };
+            const seen = new Map();
+            (Array.isArray(data.matches) ? data.matches : []).forEach(m => {
+                const k = normAr(m.name);
+                if (!k) return;
+                if (!seen.has(k)) seen.set(k, { name: m.name, types: [], hijri: '', gregorian: '', season: '', desc: '', url: m.url, image: m.image, score: 0 });
+                const it = seen.get(k);
+                orderTypes(m.type).forEach(t => { if (!it.types.includes(t)) it.types.push(t); });
+                it.types.sort((a, b) => (a === 'البداية' ? 0 : 1) - (b === 'البداية' ? 0 : 1));
+            });
+            const num = re => { const m = answer.match(re); return m ? yearDigits(m[1]) : ''; };
+            const hijri = num(/السنة\s+الهجرية\s*:\s*([0-9٠-٩۰-۹]{3,4})/);
+            const gregorian = num(/السنة\s+الميلادية\s*:\s*([0-9٠-٩۰-۹]{3,4})/);
+            const seasonM = answer.match(/الموسم\s*:\s*([^\n]+)/);
+            const titleM = answer.match(/مسلسل\s+([^—\n:]+)/);
+            let mode = 'lyrics';
+            let textAnswer = '';
+            if (hijri || gregorian) {
+                mode = 'year';
+                const title = titleM ? titleM[1].trim() : '';
+                const tk = normAr(title);
+                let target = null;
+                for (const [k, it] of seen) if (tk && (k === tk || hasWordSeq(k, tk) || hasWordSeq(tk, k))) target = it;
+                if (!target && title) {
+                    const media = lookupCatalog(catalog, title);
+                    target = { name: title, types: [], hijri: '', gregorian: '', season: '', desc: '', url: media.url, image: media.image, score: 0 };
+                    seen.set(tk, target);
+                }
+                if (target) {
+                    target.hijri = hijri; target.gregorian = gregorian;
+                    target.season = seasonM ? seasonM[1].trim() : '';
+                }
+            } else if (answer) {
+                textAnswer = answer;
+            }
+            return { mode, items: Array.from(seen.values()), textAnswer };
+        }
+
+        async function askWorker(queryForWorker, rawQuery) {
+            const catalogForWorker = getAssistantCatalog();
+            const response = await fetch(AI_WORKER_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: queryForWorker, rawQuery, catalog: catalogForWorker })
+            });
+            const data = await response.json();
+            if (!response.ok || !data.ok) throw new Error(data.error || 'تعذر إكمال البحث.');
+            return data;
+        }
+        // END SMART ENGINE
 
         async function runSmartSearch() {
             const query = smartSearchInput.value.replace(/\s+/g, ' ').trim();
@@ -1100,25 +1534,34 @@
                 smartSearchInput.focus();
                 return;
             }
-            const catalog = getAssistantCatalog();
             aiAssistantResult.style.display = 'block';
-            aiAssistantResult.textContent = 'جارٍ تحليل الكلمات أو الفترة الزمنية ومقارنتها بأرشيف المسلسلات...';
+            aiAssistantResult.textContent = 'جارٍ مقارنة سؤالك بأرشيف المسلسلات...';
             aiAssistantSubmit.disabled = true;
             aiAssistantSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> يبحث...';
             try {
-                const response = await fetch(AI_WORKER_URL, {
-                    method:'POST',
-                    headers:{'Content-Type':'application/json'},
-                    body:JSON.stringify({query, catalog})
-                });
-                const data = await response.json();
-                if (!response.ok || !data.ok) throw new Error(data.error || 'تعذر إكمال البحث.');
-                const matchesHtml = renderAssistantMatches(data.matches || []);
-                const answerHtml = data.answer
-                    ? renderAssistantAnswer(data.answer)
-                    : `<div class="smart-answer">${matchesHtml ? 'هذه المسلسلات المطابقة لما تبحث عنه:' : 'لم أجد نتائج مطابقة حالياً.'}</div>`;
-                aiAssistantResult.innerHTML = answerHtml +
-                    (matchesHtml || '<div class="smart-empty">لم تظهر نتائج في الأرشيف.</div>');
+                await loadAiSheet();
+                const catalog = buildCatalogIndex();
+                let result = null;
+                if (aiSheetState === 'ok') {
+                    result = localSmartSearch(query, aiRows, catalog);
+                    if (result.mode === 'empty' || result.items.length) {
+                        aiAssistantResult.innerHTML = renderSearchResult(result);
+                        return;
+                    }
+                }
+                // لم تُحمَّل ورقة Ai أو لم تُوجد نتيجة محلية: نسأل Worker بالنص بعد إزالة العبارات التوجيهية
+                const cleaned = stripDirectives(normAr(query));
+                const hasIntent = YEAR_RE.test(normAr(query)) || STORY_RE.test(normAr(query));
+                const data = await askWorker(hasIntent ? query : (cleaned || query), query);
+                const wr = workerToResult(data, catalog);
+                if (!wr.items.length && !wr.textAnswer) {
+                    aiAssistantResult.innerHTML = '<div class="smart-empty">لم أجد نتيجة مطابقة في الأرشيف. جرّب كلمات أخرى من الشارة أو اسم المسلسل.</div>';
+                } else if (wr.textAnswer) {
+                    aiAssistantResult.innerHTML = `<div class="smart-answer-text">${escapeAssistantHtml(wr.textAnswer).replace(/\n/g, '<br>')}</div>`
+                        + (wr.items.length ? `<div class="sr-list">${wr.items.map(i => renderSeriesCard(i, 'lyrics')).join('')}</div>` : '');
+                } else {
+                    aiAssistantResult.innerHTML = renderSearchResult({ mode: wr.mode, items: wr.items });
+                }
             } catch (error) {
                 console.error('Majd AI search error:', error);
                 aiAssistantResult.textContent = error && error.message
@@ -1126,9 +1569,10 @@
                     : 'تعذر الاتصال بالبحث الذكي حالياً. تحقق من الإنترنت وحاول مرة أخرى.';
             } finally {
                 aiAssistantSubmit.disabled = false;
-                aiAssistantSubmit.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> إرسال';
+                aiAssistantSubmit.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> بحث ذكي';
             }
         }
+
 
         document.querySelectorAll('.smart-suggestion').forEach(button => {
             button.addEventListener('click', () => {
@@ -1158,7 +1602,14 @@
         }
         normalModeBtn.addEventListener('click', () => setHomeSearchMode('normal'));
         aiModeBtn.addEventListener('click', () => setHomeSearchMode('ai'));
+        const smartCloseBtn = document.getElementById('smartCloseBtn');
+        if (smartCloseBtn) {
+            smartCloseBtn.addEventListener('click', () => setHomeSearchMode('normal'));
+        }
 
+
+
+        // الميكروفون مخصص لحقل البحث الذكي ويطلب الإذن صراحةً.
         function setupUnifiedVoice() {
             const button = document.getElementById('aiVoiceBtn');
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -1170,27 +1621,29 @@
             };
             button.addEventListener('click', async () => {
                 if (!window.isSecureContext) {
-                    voicePermissionNote.textContent = 'الميكروفون يحتاج إلى اتصال آمن HTTPS.';
+                    voicePermissionNote.textContent = 'الميكروفون يحتاج إلى اتصال آمن HTTPS. افتح الموقع بعنوان https.';
                     return;
                 }
                 if (!navigator.mediaDevices?.getUserMedia) {
-                    voicePermissionNote.textContent = 'المتصفح لا يتيح طلب إذن الميكروفون.';
+                    voicePermissionNote.textContent = 'المتصفح لا يتيح طلب إذن الميكروفون. فعّله من إعدادات الموقع أو استخدم ميكروفون لوحة المفاتيح.';
                     return;
                 }
                 button.disabled = true;
-                voicePermissionNote.textContent = 'سيظهر طلب إذن الميكروفون الآن. اختر «سماح».';
+                voicePermissionNote.textContent = 'سيظهر طلب إذن الميكروفون الآن. اختر «سماح» للمتابعة.';
                 let stream;
                 try {
                     stream = await navigator.mediaDevices.getUserMedia({audio:true});
                     stream.getTracks().forEach(track => track.stop());
                 } catch (err) {
                     reset();
-                    voicePermissionNote.textContent = 'لم تسمح باستخدام الميكروفون أو حدث خطأ في الوصول إليه.';
+                    voicePermissionNote.textContent = err?.name === 'NotAllowedError'
+                        ? 'لم تسمح باستخدام الميكروفون. افتح إعدادات الموقع في المتصفح، وغيّر إذن الميكروفون إلى «سماح»، ثم حاول مجدداً.'
+                        : 'تعذر الوصول إلى الميكروفون. تحقق من إذن الموقع ومن عدم استخدام تطبيق آخر له.';
                     return;
                 }
                 if (!SpeechRecognition) {
                     reset();
-                    voicePermissionNote.textContent = 'متصفحك لا يدعم تحويل الكلام إلى نص.';
+                    voicePermissionNote.textContent = 'تم السماح بالميكروفون، لكن متصفحك لا يدعم تحويل الكلام إلى نص. استخدم ميكروفون لوحة مفاتيح الهاتف أو جرّب Chrome.';
                     return;
                 }
                 const recognition = new SpeechRecognition();
@@ -1202,22 +1655,40 @@
                     button.disabled = false;
                     button.classList.add('listening');
                     button.innerHTML = '<i class="fa-solid fa-microphone-lines"></i>';
-                    voicePermissionNote.textContent = 'أستمع إليك الآن... تحدث بوضوح.';
+                    voicePermissionNote.textContent = 'أستمع إليك الآن... قل كلمات الشارة أو وصفها أو سنة عرضها.';
                 };
                 recognition.onresult = event => {
                     const spoken = event.results?.[0]?.[0]?.transcript?.trim();
-                    if (!spoken) return;
+                    if (!spoken) {
+                        voicePermissionNote.textContent = 'لم ألتقط كلاماً واضحاً. حاول مرة أخرى.';
+                        return;
+                    }
                     smartSearchInput.value = spoken;
-                    voicePermissionNote.textContent = `تم تحويل كلامك إلى نص: «${spoken}».`;
+                    voicePermissionNote.textContent = `تم تحويل كلامك إلى نص: «${spoken}». اضغط «ابحث عن الشارة».`;
                 };
-                recognition.onerror = () => reset();
+                recognition.onerror = event => {
+                    const messages = {
+                        'not-allowed':'رفض المتصفح إذن التعرف الصوتي. اسمح بالميكروفون من إعدادات الموقع.',
+                        'service-not-allowed':'خدمة التعرف الصوتي غير متاحة في المتصفح.',
+                        'audio-capture':'لم يتم العثور على ميكروفون متاح.',
+                        'no-speech':'لم أسمع كلاماً. تحدث مباشرة بعد الضغط على الميكروفون.',
+                        'network':'تعذر الاتصال بخدمة التعرف الصوتي. تحقق من الإنترنت.',
+                        'aborted':'تم إيقاف الاستماع.'
+                    };
+                    voicePermissionNote.textContent = messages[event.error] || 'حدث خطأ أثناء تشغيل الميكروفون. حاول مجدداً.';
+                    reset();
+                };
                 recognition.onend = reset;
-                try { recognition.start(); } catch (_) { reset(); }
+                try { recognition.start(); }
+                catch (_) {
+                    reset();
+                    voicePermissionNote.textContent = 'تعذر بدء التعرف الصوتي. انتظر لحظة ثم حاول مجدداً.';
+                }
             });
         }
         setupUnifiedVoice();
 
-        async function fetchAllData() {
+async function fetchAllData() {
             const fetchPromises = Object.keys(channels).map(key => {
                 const encodedSheetName = encodeURIComponent(channels[key].sheetName);
                 const url = `https://docs.google.com/spreadsheets/d/${channels[key].sheetId}/gviz/tq?tqx=out:csv&sheet=${encodedSheetName}`;
@@ -1229,41 +1700,22 @@
                     })
                     .then(csvText => {
                         if (!csvText || /<html[\s>]/i.test(csvText.slice(0, 500))) {
-                            throw new Error('لم تُرجع Google Sheets ملف CSV.');
+                            throw new Error('لم تُرجع Google Sheets ملف CSV. تحقق من مشاركة الورقة واسم التبويب.');
                         }
                         const parsedRows = parseCSV(csvText);
-                        if (!parsedRows.length) return;
+                        if (!parsedRows.length) throw new Error('ورقة البيانات فارغة أو تعذر قراءتها.');
                         
-                        // قراءة الأعمدة بناءً على الترتيب المطلوب:
-                        // A: اسم المسلسل, B: كلمات الشارة, C: نوع الشارة, D: وصف المسلسل, E: السنة الهجرية, F: السنة الميلادية, G: الموسم
                         const rows = parsedRows.slice(0).map(row => ({
                             name: row[0] ? row[0].trim() : '',
-                            lyrics: row[1] ? row[1].trim() : '',
-                            type: row[2] ? row[2].trim() : '',
-                            desc: row[3] ? row[3].trim() : '',
-                            hijri: row[4] ? row[4].trim() : '',
-                            gregorian: row[5] ? row[5].trim() : '',
-                            season: row[6] ? row[6].trim() : '',
-                            watchLink: row[1] && row[1].startsWith('http') ? row[1].trim() : (row[1] || '#'), // احترازي إذا كان رابط الشارة في عمود آخر
-                            imgLink: row[2] && row[2].startsWith('http') ? row[2].trim() : '',
+                            watchLink: row[1] ? row[1].trim() : '#',
+                            imgLink: row[2] ? row[2].trim() : '',
                             origin: key
                         })).filter(item => item.name !== '' && item.name !== 'اسم المسلسل');
                         
-                        // تخصيص الروابط والصور لتبويب Ai / Suggestions
-                        if (key === 'suggestions') {
-                            allDataMap[key] = parsedRows.slice(1).map(row => ({
-                                name: row[0] ? row[0].trim() : '',
-                                lyrics: row[1] ? row[1].trim() : '',
-                                type: row[2] ? row[2].trim() : '',
-                                desc: row[3] ? row[3].trim() : '',
-                                hijri: row[4] ? row[4].trim() : '',
-                                gregorian: row[5] ? row[5].trim() : '',
-                                season: row[6] ? row[6].trim() : '',
-                                watchLink: '#',
-                                imgLink: ''
-                            })).filter(item => item.name !== '');
+                        if (key !== 'suggestions') {
+                            allDataMap[key] = rows.reverse(); 
                         } else {
-                            allDataMap[key] = rows.reverse();
+                            allDataMap[key] = rows;
                         }
                     }).catch(err => {
                         console.error("Error loading Google Sheet tab " + channels[key].sheetName, err);
@@ -1271,16 +1723,18 @@
                     });
             });
 
-            // جلب بيانات تبويب Ai أيضاً بشكل دقيق لضمان توفر روابط الشارات والصور إن وجدت
             await Promise.all(fetchPromises);
             
-            // دمج البيانات للاقتراحات والبحث
-            let combinedAll = [...allDataMap.general, ...allDataMap.kids, ...allDataMap.massa];
-            let uniqueSuggestions = combinedAll.filter((v, i, s) => s.findIndex(t => t.name.trim() === v.name.trim()) === i);
-            currentHomeSuggestions = uniqueSuggestions.sort(() => 0.5 - Math.random()).slice(0, 8);
+            let uniqueSuggestions = allDataMap.suggestions.filter((v, i, s) => s.findIndex(t => t.name === v.name) === i);
+            const shuffled = uniqueSuggestions.sort(() => 0.5 - Math.random());
+            currentHomeSuggestions = shuffled.slice(0, 8);
 
+            const loadedCount = Object.values(allDataMap).reduce((sum, rows) => sum + rows.length, 0);
             renderContent();
             updateFavCount();
+            if (loadedCount === 0) {
+                seriesGrid.innerHTML = '<div class="no-results">تعذر تحميل المسلسلات من Google Sheets. تحقق من صلاحية عرض الأوراق وأسماء التبويبات، ثم أعد تحميل الصفحة.</div>';
+            }
         }
 
         function updateFavCount() { 
@@ -1288,23 +1742,11 @@
             favCountLabel.textContent = favorites.length; 
         }
 
+
         function escapeCardHtml(value) {
             return String(value ?? '').replace(/[&<>"']/g, ch => ({
                 '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
             }[ch]));
-        }
-
-        // دالة تنظيف النص للبحث الذكي والمطابق
-        function cleanSearchText(text) {
-            return String(text || '').toLowerCase()
-                .replace(/(كلمات\s+الشارة|ابحث\s+عن\s+الشارة|ما\s+قصة\s+مسلسل|قصة\s+مسلسل|سنة\s+عرض\s+مسلسل|مسلسل)/g, '')
-                .replace(/[أإآا]/g, 'ا')
-                .replace(/[ىي]/g, 'ي')
-                .replace(/ةه/g, 'ه')
-                .replace(/[ًٌٍَُِّْـ]/g, '')
-                .replace(/[^\u0600-\u06FFa-z0-9\s]/g, ' ')
-                .replace(/\s+/g, ' ')
-                .trim();
         }
 
         function createCardHtml(item) {
@@ -1312,31 +1754,13 @@
             const safeName = escapeCardHtml(cleanName);
             const isFav = favorites.includes(cleanName);
             const finalImg = item.imgLink && item.imgLink !== '-' ? item.imgLink : 'https://images.unsplash.com/photo-1616469829581-73993eb86b02?q=80&w=300';
-            
-            // معالجة ترتيب نوع الشارة بجانب اسم المسلسل بدقة
-            let typesText = '';
-            if (item.type) {
-                const t = item.type.toLowerCase();
-                let hasStart = t.includes('بداي');
-                let hasEnd = t.includes('نهاي');
-                if (hasStart && hasEnd) {
-                    typesText = ' — البداية / النهاية';
-                } else if (hasStart) {
-                    typesText = ' — البداية';
-                } else if (hasEnd) {
-                    typesText = ' — النهاية';
-                } else {
-                    typesText = ` — ${escapeCardHtml(item.type)}`;
-                }
-            }
-
             return `
                 <div class="card">
                     <div class="card-img-container"><img src="${finalImg}" alt="${cleanName}" loading="lazy"></div>
                     <div class="card-content">
-                        <h3 class="card-title">${safeName}${typesText}</h3>
+                        <h3 class="card-title">${safeName}</h3>
                         <div class="card-actions">
-                            <a href="${item.watchLink || '#'}" target="_blank" class="btn-watch"><i class="fa-solid fa-play"></i> الشارة</a>
+                            <a href="${item.watchLink}" target="_blank" class="btn-watch"><i class="fa-solid fa-play"></i> الشارة</a>
                             <button type="button" class="btn-fav ${isFav ? 'is-fav' : ''}" data-favorite-name="${safeName}" aria-label="${isFav ? 'إزالة من المفضلة' : 'إضافة إلى المفضلة'}" aria-pressed="${isFav}">
                                 <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
                             </button>
@@ -1348,8 +1772,11 @@
         function renderContent() {
             favorites = loadFavorites();
             seriesGrid.innerHTML = '';
-            const rawQuery = searchInput.value;
-            const searchTerm = cleanSearchText(rawQuery);
+            const normalizeSearch = value => String(value || '').toLowerCase()
+                .replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه')
+                .replace(/[ًٌٍَُِّْـ]/g,'').replace(/[^\u0600-\u06FFa-z0-9\s]/g,' ')
+                .replace(/\s+/g,' ').trim();
+            const searchTerm = normalizeSearch(searchInput.value);
 
             if (activeTab === 'home') {
                 controlsBox.style.display = 'block';
@@ -1363,17 +1790,13 @@
                     marketingContainer.style.display = 'none';
                     faqSection.style.display = 'none';
                     
-                    let combinedData = [...allDataMap.general, ...allDataMap.kids, ...allDataMap.massa];
-                    let searchResults = combinedData.filter(item => {
-                        let nameClean = cleanSearchText(item.name);
-                        let lyricsClean = cleanSearchText(item.lyrics);
-                        return nameClean.includes(searchTerm) || lyricsClean.includes(searchTerm);
-                    });
+                    let combinedData = [...allDataMap.general, ...allDataMap.kids, ...allDataMap.massa, ...allDataMap.suggestions];
+                    let searchResults = combinedData.filter(item => normalizeSearch(item.name).includes(searchTerm));
                     
                     let uniqueSearch = searchResults.filter((v, i, s) => s.findIndex(t => t.name.trim() === v.name.trim()) === i);
                     
                     if (uniqueSearch.length === 0) {
-                        seriesGrid.innerHTML = '<div class="no-results">لم يتم العثور على نتائج مطابقة للبحث.</div>';
+                        seriesGrid.innerHTML = '<div class="no-results">لم يتم العثور على نتائج للبحث.</div>';
                         return;
                     }
                     uniqueSearch.forEach(item => seriesGrid.innerHTML += createCardHtml(item));
@@ -1405,18 +1828,18 @@
                 marketingContainer.style.display = 'none';
                 faqSection.style.display = 'none';
                 
-                let combinedData = [...allDataMap.general, ...allDataMap.kids, ...allDataMap.massa];
+                let combinedData = [...allDataMap.general, ...allDataMap.kids, ...allDataMap.massa, ...allDataMap.suggestions];
                 let favData = combinedData.filter(item => favorites.includes(item.name.trim()));
 
                 let uniqueFavData = favData.filter((value, index, self) => self.findIndex(t => t.name.trim() === value.name.trim()) === index);
                 uniqueFavData.sort((a, b) => favorites.indexOf(b.name.trim()) - favorites.indexOf(a.name.trim()));
 
                 if (searchTerm !== '') {
-                    uniqueFavData = uniqueFavData.filter(item => cleanSearchText(item.name).includes(searchTerm));
+                    uniqueFavData = uniqueFavData.filter(item => normalizeSearch(item.name).includes(searchTerm));
                 }
 
                 if (uniqueFavData.length === 0) {
-                    seriesGrid.innerHTML = '<div class="no-results">لم تضف أي مسلسل إلى المفضلة بعد. اضغط ❤️ على بطاقة أي مسلسل لإضافته.</div>';
+                    seriesGrid.innerHTML = '<div class="no-results">لم تضف أي مسلسل إلى المفضلة بعد. اضغط ❤️ على بطاقة أي مسلسل لإضافته — لا تحتاج إلى تسجيل الدخول.</div>';
                     return;
                 }
                 uniqueFavData.forEach(item => seriesGrid.innerHTML += createCardHtml(item));
@@ -1433,7 +1856,7 @@
                 let channelData = allDataMap[activeTab] || [];
                 
                 if (searchTerm !== '') {
-                    channelData = channelData.filter(item => cleanSearchText(item.name).includes(searchTerm));
+                    channelData = channelData.filter(item => normalizeSearch(item.name).includes(searchTerm));
                 }
 
                 if (channelData.length === 0) {
@@ -1446,7 +1869,9 @@
 
         function switchChannel(tabName) {
             activeTab = tabName;
-            document.querySelectorAll('.nav-tab').forEach(tab => {
+            
+            const tabs = document.querySelectorAll('.nav-tab');
+            tabs.forEach(tab => {
                 if(tab.getAttribute('onclick').includes(`'${tabName}'`)) {
                     tab.classList.add('active');
                 } else {
@@ -1458,6 +1883,7 @@
             } else {
                 mainLogo.src = 'https://raw.githubusercontent.com/sdkd2039/almajd-fav/refs/heads/main/unnamed.png'; 
             }
+
             searchInput.value = '';
             if (tabName === 'home') setHomeSearchMode('normal');
             renderContent();
@@ -1466,15 +1892,22 @@
         function toggleFavorite(name) {
             const cleanName = name.trim();
             favorites = loadFavorites();
+            
             if (favorites.includes(cleanName)) {
                 favorites = favorites.filter(item => item !== cleanName);
             } else {
                 favorites.push(cleanName);
             }
-            try { localStorage.setItem('majd_favs', JSON.stringify(favorites)); } catch (error) {}
+            
+            try {
+                localStorage.setItem('majd_favs', JSON.stringify(favorites));
+            } catch (error) {
+                console.warn('تعذر حفظ المفضلة محلياً:', error);
+            }
             updateFavCount();
             renderContent();
         }
+
 
         seriesGrid.addEventListener('click', event => {
             const heart = event.target.closest('.btn-fav[data-favorite-name]');
@@ -1484,8 +1917,9 @@
         });
 
         searchInput.addEventListener('input', renderContent);
-        window.addEventListener('DOMContentLoaded', fetchAllData);
+        window.addEventListener('DOMContentLoaded', () => { fetchAllData(); loadAiSheet(); });
 
+        /* --- PWA Logic Integration --- */
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js').then(() => {
                 console.log('Service Worker Active');
@@ -1507,6 +1941,7 @@
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User prompt outcome: ${outcome}`);
                 deferredPrompt = null;
                 pwaModalOverlay.style.display = 'none';
             }
