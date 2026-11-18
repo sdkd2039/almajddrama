@@ -835,6 +835,10 @@
             font-size:.75rem;
             font-weight:bold;
         }
+        .ai-match-type span {
+            color:#d5e9f8;
+            opacity:.9;
+        }
         .ai-match a {
             display:inline-flex;
             align-items:center;
@@ -1125,7 +1129,7 @@
             }).map(item => ({ name:item.name, url:item.watchLink, image:item.imgLink }));
         }
 
-        function renderAssistantMatches(matches) {
+        function renderAssistantMatches(matches, options = {}) {
             if (!Array.isArray(matches) || !matches.length) return '';
             // قد يكون للمسلسل أكثر من صف في ورقة Ai (بداية ونهاية)،
             // لكن نعرض اسم المسلسل مرة واحدة فقط دون إظهار نوع الشارة أو تفاصيلها.
@@ -1146,7 +1150,7 @@
                     ${item.image && item.image !== '-' ? `<img src="${escapeAssistantHtml(item.image)}" alt="" loading="lazy">` : ''}
                     <div class="ai-match-info">
                         <div class="ai-match-title">${escapeAssistantHtml(item.name)}</div>
-                        ${item.type ? `<div class="ai-match-type">${escapeAssistantHtml(item.type)}</div>` : ''}
+                        ${!options.hideType && item.type ? `<div class="ai-match-type"><span>نوع الشارة:</span> ${escapeAssistantHtml(item.type)}</div>` : ''}
                         <a href="${escapeAssistantHtml(item.url)}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-circle-play"></i> للمشاهدة الشارة</a>
                     </div>
                 </div>`).join('');
@@ -1179,21 +1183,24 @@
                 const data = await response.json();
                 if (!response.ok || !data.ok) throw new Error(data.error || 'تعذر إكمال البحث.');
                 const matches = data.matches || [];
-                const matchesHtml = renderAssistantMatches(matches);
+                const matchesHtml = renderAssistantMatches(matches, {
+                    hideType: ['series-description', 'series-year-details'].includes(data.mode)
+                });
                 const firstMatch = matches[0] || {};
                 let answerHtml = '';
 
                 // عرض سنة المسلسل في بطاقات صغيرة بدلاً من فقرة طويلة ومزدحمة.
                 if (data.mode === 'series-year-details' && (firstMatch.gregorian || firstMatch.hijri)) {
+                    // RTL: ابدأ بالهجري ليظهر يميناً، ثم الميلادي يساراً.
                     const yearItems = [
-                        firstMatch.gregorian ? `<div class="smart-year-item"><span class="smart-year-label">السنة الميلادية</span><strong class="smart-year-value">${escapeAssistantHtml(firstMatch.gregorian)} م</strong></div>` : '',
-                        firstMatch.hijri ? `<div class="smart-year-item"><span class="smart-year-label">السنة الهجرية</span><strong class="smart-year-value">${escapeAssistantHtml(firstMatch.hijri)} هـ</strong></div>` : ''
+                        firstMatch.hijri ? `<div class="smart-year-item"><span class="smart-year-label">السنة الهجرية</span><strong class="smart-year-value">${escapeAssistantHtml(firstMatch.hijri)} هـ</strong></div>` : '',
+                        firstMatch.gregorian ? `<div class="smart-year-item"><span class="smart-year-label">السنة الميلادية</span><strong class="smart-year-value">${escapeAssistantHtml(firstMatch.gregorian)} م</strong></div>` : ''
                     ].filter(Boolean).join('');
                     answerHtml = `<div class="smart-answer-year"><div class="smart-answer-year-title">بيانات العرض المسجلة</div><div class="smart-year-grid">${yearItems}</div></div>`;
                 } else {
                     let answerText = String(data.answer || '');
                     answerText = answerText.replace(
-                        'وجدت نتيجة مطابقة في أرشيف الشارات.',
+                        /وجدت نتيجة مطابقة في أرشيف الشارات[.:：]?/g,
                         'وجدت نتيجة مطابقة في أرشيف الشارات:'
                     );
                     answerHtml = `<div class="smart-answer">${escapeAssistantHtml(answerText || (matchesHtml ? 'هذه النتائج المطابقة لما تبحث عنه:' : 'لم أجد نتائج مطابقة حالياً.')).replace(/\\n/g, '<br>')}</div>`;
