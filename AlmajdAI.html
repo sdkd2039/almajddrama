@@ -910,7 +910,69 @@
             font-weight:bold; cursor:pointer;
         }
 
-    </style>
+    
+/* === Majd AI motion polish: microphone, smart search and typewriter === */
+.unified-voice { position:relative; isolation:isolate; overflow:visible; transition:transform .22s ease, box-shadow .22s ease, background .22s ease; }
+.unified-voice:active { transform:scale(.94); }
+.unified-voice.listening {
+  z-index:1; color:#fff; background:linear-gradient(145deg,#ef476f,#a51f55);
+  box-shadow:0 0 0 5px rgba(239,71,111,.13),0 0 24px rgba(239,71,111,.45);
+  animation:majdMicBeat 1.15s ease-in-out infinite;
+}
+.unified-voice.listening::before,
+.unified-voice.listening::after {
+  content:""; position:absolute; inset:-7px; border:2px solid rgba(255,105,135,.72);
+  border-radius:16px; z-index:-1; animation:majdMicWave 1.8s ease-out infinite;
+  pointer-events:none;
+}
+.unified-voice.listening::after { animation-delay:.9s; }
+.unified-voice.listening i { filter:drop-shadow(0 0 7px rgba(255,255,255,.8)); animation:majdMicIcon .8s ease-in-out infinite alternate; }
+@keyframes majdMicWave { 0% { transform:scale(.92); opacity:.85; } 100% { transform:scale(1.55); opacity:0; } }
+@keyframes majdMicBeat { 0%,100% { transform:scale(1); } 50% { transform:scale(1.055); } }
+@keyframes majdMicIcon { from { transform:translateY(1px); } to { transform:translateY(-2px) scale(1.08); } }
+
+.smart-run-btn { position:relative; overflow:hidden; isolation:isolate; transition:transform .2s ease,box-shadow .2s ease,filter .2s ease; }
+.smart-run-btn:not(:disabled):hover { box-shadow:0 8px 24px rgba(7,152,206,.22); transform:translateY(-1px); }
+.smart-run-btn.is-searching { color:#fff; background:linear-gradient(110deg,#087eaf,#13a8d5,#087eaf); background-size:220% 100%; animation:majdSearchGlow 1.5s linear infinite; }
+.smart-run-btn.is-searching::after {
+  content:""; position:absolute; top:-60%; bottom:-60%; left:-35%; width:24%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.42),transparent);
+  transform:skewX(-22deg); animation:majdButtonShine 1.35s ease-in-out infinite;
+}
+@keyframes majdSearchGlow { to { background-position:220% 0; } }
+@keyframes majdButtonShine { 0% { left:-35%; } 100% { left:125%; } }
+
+.smart-loading-card {
+  display:flex; align-items:center; gap:13px; min-height:86px; padding:18px;
+  border-radius:16px; color:#eaf7ff; background:linear-gradient(135deg,#08182d,#102b49);
+  border:1px solid rgba(121,215,243,.24); box-shadow:0 12px 28px rgba(0,0,0,.18);
+}
+.smart-loading-orb { position:relative; flex:0 0 42px; width:42px; height:42px; border-radius:50%;
+  border:2px solid rgba(121,215,243,.2); display:grid; place-items:center; color:#8de5ff;
+}
+.smart-loading-orb::before,.smart-loading-orb::after {
+  content:""; position:absolute; inset:-5px; border:2px solid transparent;
+  border-top-color:#13b5e8; border-left-color:rgba(19,181,232,.35); border-radius:50%;
+  animation:majdOrbSpin .95s linear infinite;
+}
+.smart-loading-orb::after { inset:3px; border-top-color:#b5edff; border-left-color:transparent; animation-duration:1.4s; animation-direction:reverse; }
+@keyframes majdOrbSpin { to { transform:rotate(360deg); } }
+.smart-loading-copy { min-width:0; flex:1; font-weight:800; line-height:1.9; }
+.smart-loading-kicker { display:block; margin-bottom:2px; color:#75d9f5; font-size:.75rem; letter-spacing:.02em; }
+.smart-typewriter { display:inline; white-space:normal; }
+.smart-typewriter-caret { display:inline-block; width:2px; height:1.1em; margin-right:3px; vertical-align:-.18em; background:#75d9f5; animation:majdCaret .72s steps(1) infinite; }
+@keyframes majdCaret { 50% { opacity:0; } }
+.smart-result-enter { animation:majdResultIn .48s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes majdResultIn { from { opacity:0; transform:translateY(13px) scale(.99); filter:blur(3px); } to { opacity:1; transform:translateY(0) scale(1); filter:blur(0); } }
+@media (prefers-reduced-motion:reduce) {
+  .unified-voice.listening,.unified-voice.listening::before,.unified-voice.listening::after,
+  .unified-voice.listening i,.smart-run-btn.is-searching,.smart-run-btn.is-searching::after,
+  .smart-loading-orb::before,.smart-loading-orb::after,.smart-typewriter-caret,.smart-result-enter {
+    animation:none !important; transition:none !important;
+  }
+}
+
+</style>
 </head>
 <body>
     <header>
@@ -1265,7 +1327,7 @@ function renderAssistantAnswer(answer, matches = [], mode = '') {
     }
 
     if (mode === 'series-description') {
-        const heading = firstMatch.name ? `نبذة عن مسلسل ${firstMatch.name}` : 'قصة المسلسل';
+        const heading = 'نبذة عن المسلسل';
         // نستخدم الوصف من السجل المطابق مرة واحدة، ونرجع لإجابة Worker عند غيابه.
         const description = String(firstMatch.description || raw).trim();
         return `<section class="smart-description-card">
@@ -1276,6 +1338,33 @@ function renderAssistantAnswer(answer, matches = [], mode = '') {
 
     return `<div class="smart-answer-text">${escapeAssistantHtml(raw).replace(/\n/g, '<br>')}</div>`;
 }
+
+function showSmartLoading() {
+    const message = 'جارٍ تحليل الكلمات أو الفترة الزمنية ومقارنتها بأرشيف المسلسلات...';
+    aiAssistantResult.classList.remove('smart-result-enter');
+    aiAssistantResult.innerHTML = `
+      <div class="smart-loading-card" role="status" aria-live="polite">
+        <span class="smart-loading-orb"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+        <span class="smart-loading-copy">
+          <span class="smart-loading-kicker">مساعد شارات دراما المجد</span>
+          <span class="smart-typewriter" id="smartTypewriterText"></span><span class="smart-typewriter-caret" aria-hidden="true"></span>
+        </span>
+      </div>`;
+    const target = document.getElementById('smartTypewriterText');
+    if (!target) return;
+    let index = 0;
+    const chars = Array.from(message);
+    const typeNext = () => {
+        if (!target.isConnected) return;
+        target.textContent = chars.slice(0, index).join('');
+        index += 1;
+        if (index <= chars.length) {
+            window.setTimeout(typeNext, index < 12 ? 48 : 31);
+        }
+    };
+    typeNext();
+}
+
 async function runSmartSearch() {
             const query = smartSearchInput.value.replace(/\s+/g, ' ').trim();
             if (query.length < 2) {
@@ -1286,9 +1375,10 @@ async function runSmartSearch() {
             }
             const catalog = getAssistantCatalog();
             aiAssistantResult.style.display = 'block';
-            aiAssistantResult.textContent = 'جارٍ تحليل الكلمات أو الفترة الزمنية ومقارنتها بأرشيف المسلسلات...';
+            showSmartLoading();
             aiAssistantSubmit.disabled = true;
-            aiAssistantSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> يبحث...';
+            aiAssistantSubmit.classList.add('is-searching');
+            aiAssistantSubmit.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> جارٍ البحث...';
             try {
                 const response = await fetch(AI_WORKER_URL, {
                     method:'POST',
@@ -1304,6 +1394,9 @@ async function runSmartSearch() {
                     : `<div class="smart-answer">${matchesHtml ? 'هذه المسلسلات المطابقة لما تبحث عنه:' : 'لم أجد نتائج مطابقة حالياً.'}</div>`;
                 aiAssistantResult.innerHTML = answerHtml +
                     (matchesHtml || '<div class="smart-empty">لم تظهر نتائج في الأرشيف.</div>');
+                aiAssistantResult.classList.remove('smart-result-enter');
+                void aiAssistantResult.offsetWidth;
+                aiAssistantResult.classList.add('smart-result-enter');
             } catch (error) {
                 console.error('Majd AI search error:', error);
                 aiAssistantResult.textContent = error && error.message
@@ -1311,6 +1404,7 @@ async function runSmartSearch() {
                     : 'تعذر الاتصال بالبحث الذكي حالياً. تحقق من الإنترنت وحاول مرة أخرى.';
             } finally {
                 aiAssistantSubmit.disabled = false;
+                aiAssistantSubmit.classList.remove('is-searching');
                 aiAssistantSubmit.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> بحث ذكي';
             }
         }
@@ -1397,7 +1491,7 @@ async function runSmartSearch() {
                     button.disabled = false;
                     button.classList.add('listening');
                     button.innerHTML = '<i class="fa-solid fa-microphone-lines"></i>';
-                    voicePermissionNote.textContent = 'أستمع إليك الآن... قل كلمات الشارة أو وصفها أو سنة عرضها.';
+                    voicePermissionNote.textContent = 'أستمع إليك الآن... تحدث بوضوح، وسأحوّل كلامك إلى نص.';
                 };
                 recognition.onresult = event => {
                     const spoken = event.results?.[0]?.[0]?.transcript?.trim();
@@ -1406,7 +1500,7 @@ async function runSmartSearch() {
                         return;
                     }
                     smartSearchInput.value = spoken;
-                    voicePermissionNote.textContent = `تم تحويل كلامك إلى نص: «${spoken}». اضغط «ابحث عن الشارة».`;
+                    voicePermissionNote.textContent = `تم التقاط العبارة: «${spoken}». أصبح النص جاهزاً للبحث الذكي.`;
                 };
                 recognition.onerror = event => {
                     const messages = {
