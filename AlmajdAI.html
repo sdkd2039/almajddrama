@@ -718,26 +718,145 @@
             border-radius:12px; background:#d7e8f5; color:#10213c; font-weight:bold; font-size:.92rem; }
         .search-mode-btn.active { background:linear-gradient(135deg,#0798ce,#2365a0); color:white; }
         .unified-search-hint { color:#bcd0e3; font-size:.78rem; line-height:1.6; margin-top:10px; }
-        .ai-assistant-result { display:none; margin-top:13px; padding:13px; border-radius:12px;
-            color:#eff8ff; background:rgba(8,20,39,.72); line-height:1.8; }
-        .smart-answer { font-weight:bold; margin-bottom:8px; }
-        .smart-empty { color:#c6d8e8; }
-        .ai-match { display:flex; gap:12px; align-items:center; padding:10px 0; border-top:1px solid rgba(255,255,255,.1); }
-        .ai-match img { width:86px; height:68px; object-fit:cover; border-radius:9px; }
-        .ai-match-title { font-weight:bold; color:white; }
+        .ai-assistant-result {
+            display:none;
+            margin-top:14px;
+            padding:14px;
+            border:1px solid rgba(145,190,225,.18);
+            border-radius:17px;
+            color:#eff8ff;
+            background:linear-gradient(145deg,rgba(7,20,40,.96),rgba(11,31,55,.94));
+            box-shadow:0 10px 26px rgba(0,0,0,.16);
+            line-height:1.75;
+            text-align:right;
+        }
+        .smart-answer {
+            position:relative;
+            margin:0 0 12px;
+            padding:13px 14px 14px;
+            border:1px solid rgba(126,190,225,.2);
+            border-right:3px solid #16a6d5;
+            border-radius:12px;
+            background:rgba(20,43,69,.72);
+            color:#eaf4ff;
+            font-size:.94rem;
+            font-weight:500;
+            line-height:1.85;
+            overflow-wrap:anywhere;
+        }
+        .smart-answer::before {
+            content:"الإجابة";
+            display:block;
+            margin-bottom:5px;
+            color:#80d9f4;
+            font-size:.72rem;
+            font-weight:800;
+            letter-spacing:.02em;
+        }
+        .smart-answer-year {
+            margin:0 0 12px;
+            padding:13px;
+            border:1px solid rgba(126,190,225,.2);
+            border-radius:13px;
+            background:rgba(20,43,69,.72);
+        }
+        .smart-answer-year-title {
+            margin-bottom:10px;
+            color:#80d9f4;
+            font-size:.78rem;
+            font-weight:800;
+        }
+        .smart-year-grid {
+            display:grid;
+            grid-template-columns:repeat(2,minmax(0,1fr));
+            gap:8px;
+        }
+        .smart-year-item {
+            min-width:0;
+            padding:10px 9px;
+            border-radius:10px;
+            background:rgba(5,17,34,.68);
+            border:1px solid rgba(145,190,225,.12);
+        }
+        .smart-year-label {
+            display:block;
+            color:#a9c5dc;
+            font-size:.72rem;
+            margin-bottom:3px;
+        }
+        .smart-year-value {
+            display:block;
+            color:#fff;
+            font-size:1.08rem;
+            font-weight:800;
+            overflow-wrap:anywhere;
+        }
+        .smart-empty { color:#c6d8e8; font-size:.9rem; padding:8px 2px; }
+        .ai-match {
+            display:flex;
+            flex-direction:row;
+            direction:rtl;
+            gap:12px;
+            align-items:center;
+            padding:12px 2px 2px;
+            margin-top:4px;
+            border-top:1px solid rgba(255,255,255,.12);
+        }
+        .ai-match img {
+            width:92px;
+            height:76px;
+            flex:none;
+            object-fit:cover;
+            border-radius:11px;
+            border:1px solid rgba(255,255,255,.12);
+        }
+        .ai-match-info {
+            min-width:0;
+            flex:1;
+            display:flex;
+            flex-direction:column;
+            align-items:flex-start;
+            gap:8px;
+        }
+        .ai-match-title {
+            font-weight:800;
+            color:white;
+            font-size:.96rem;
+            line-height:1.5;
+        }
         .ai-match-type {
             display:inline-block;
-            margin-top:5px;
-            padding:2px 9px;
+            margin:0;
+            padding:3px 9px;
             border-radius:7px;
             background:rgba(7,152,206,.18);
             border:1px solid rgba(142,220,255,.35);
             color:#a9e6ff;
-            font-size:.78rem;
+            font-size:.75rem;
             font-weight:bold;
         }
-        .ai-match a { display:inline-block; margin-top:7px; padding:7px 12px; border-radius:9px;
-            background:#0798ce; color:white; text-decoration:none; }
+        .ai-match a {
+            display:inline-flex;
+            align-items:center;
+            gap:6px;
+            margin:0;
+            padding:8px 12px;
+            border-radius:9px;
+            background:linear-gradient(135deg,#0798ce,#2365a0);
+            color:white;
+            text-decoration:none;
+            font-size:.82rem;
+            font-weight:700;
+        }
+        @media(max-width:480px) {
+            .ai-assistant-result { padding:11px; border-radius:15px; }
+            .smart-answer { padding:11px 12px; font-size:.9rem; }
+            .smart-year-grid { gap:6px; }
+            .smart-year-item { padding:9px 7px; }
+            .smart-year-value { font-size:1rem; }
+            .ai-match img { width:82px; height:70px; }
+            .ai-match-title { font-size:.9rem; }
+        }
         @keyframes voicePulse { 50% { box-shadow:0 0 0 6px rgba(163,49,75,.2); } }
         @media(max-width:600px) {
             .unified-search { padding:14px; margin-inline:12px; }
@@ -760,77 +879,6 @@
         .voice-permission-note { margin-top:10px; color:#bfeaff; font-size:.78rem; line-height:1.7; }
         .search-inline-icon { color:#a9bed4; padding:0 8px; }
         @media(max-width:600px) { .smart-search-panel { padding:12px; } }
-
-    
-        /* ترتيب نتيجة المساعد: اسم المسلسل ونوع الشارة في سطر واحد */
-        .ai-match {
-            display:flex;
-            align-items:center;
-            gap:12px;
-            direction:rtl;
-        }
-        .ai-match-info {
-            flex:1;
-            min-width:0;
-            display:flex;
-            flex-direction:column;
-            align-items:flex-start;
-            gap:9px;
-        }
-        .ai-match-heading {
-            display:flex;
-            align-items:center;
-            justify-content:flex-start;
-            flex-wrap:wrap;
-            gap:8px;
-            width:100%;
-            min-width:0;
-        }
-        .ai-match-title {
-            display:inline-block;
-            font-size:1rem;
-            line-height:1.5;
-            overflow-wrap:anywhere;
-        }
-        .ai-match-type {
-            display:inline-flex;
-            align-items:center;
-            justify-content:center;
-            flex:none;
-            margin:0;
-            padding:3px 10px;
-            border-radius:8px;
-            background:#d7e8f5;
-            border:1px solid rgba(215,232,245,.8);
-            color:#12304a;
-            font-size:.78rem;
-            line-height:1.5;
-            font-weight:bold;
-            white-space:nowrap;
-        }
-        .ai-match-watch {
-            display:inline-flex !important;
-            align-items:center;
-            gap:6px;
-            width:max-content;
-            max-width:100%;
-            margin:0 !important;
-            padding:8px 13px !important;
-            border-radius:9px;
-            background:linear-gradient(135deg,#0798ce,#2365a0) !important;
-            color:#fff !important;
-            text-decoration:none;
-            font-size:.84rem;
-            line-height:1.4;
-        }
-        @media(max-width:600px) {
-            .ai-match { gap:10px; }
-            .ai-match img { width:82px; height:66px; flex:none; }
-            .ai-match-heading { gap:7px; }
-            .ai-match-title { font-size:.96rem; }
-            .ai-match-type { font-size:.75rem; padding:3px 8px; }
-            .ai-match-watch { font-size:.8rem; padding:7px 10px !important; }
-        }
 
     </style>
 </head>
@@ -1097,11 +1145,9 @@
                 <div class="ai-match">
                     ${item.image && item.image !== '-' ? `<img src="${escapeAssistantHtml(item.image)}" alt="" loading="lazy">` : ''}
                     <div class="ai-match-info">
-                        <div class="ai-match-heading">
-                            <span class="ai-match-title">${escapeAssistantHtml(item.name)}</span>
-                            ${item.type ? `<span class="ai-match-type">${escapeAssistantHtml(item.type)}</span>` : ''}
-                        </div>
-                        <a class="ai-match-watch" href="${escapeAssistantHtml(item.url)}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-circle-play"></i> لمشاهدة الشارة</a>
+                        <div class="ai-match-title">${escapeAssistantHtml(item.name)}</div>
+                        ${item.type ? `<div class="ai-match-type">${escapeAssistantHtml(item.type)}</div>` : ''}
+                        <a href="${escapeAssistantHtml(item.url)}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-circle-play"></i> للمشاهدة الشارة</a>
                     </div>
                 </div>`).join('');
         }
@@ -1132,10 +1178,27 @@
                 });
                 const data = await response.json();
                 if (!response.ok || !data.ok) throw new Error(data.error || 'تعذر إكمال البحث.');
-                const matchesHtml = renderAssistantMatches(data.matches || []);
-                const answerHtml = data.answer
-                    ? `<div class="smart-answer">${escapeAssistantHtml(data.answer).replace(/\\n/g, '<br>')}</div>`
-                    : `<div class="smart-answer">${matchesHtml ? 'هذه المسلسلات المطابقة لما تبحث عنه:' : 'لم أجد نتائج مطابقة حالياً.'}</div>`;
+                const matches = data.matches || [];
+                const matchesHtml = renderAssistantMatches(matches);
+                const firstMatch = matches[0] || {};
+                let answerHtml = '';
+
+                // عرض سنة المسلسل في بطاقات صغيرة بدلاً من فقرة طويلة ومزدحمة.
+                if (data.mode === 'series-year-details' && (firstMatch.gregorian || firstMatch.hijri)) {
+                    const yearItems = [
+                        firstMatch.gregorian ? `<div class="smart-year-item"><span class="smart-year-label">السنة الميلادية</span><strong class="smart-year-value">${escapeAssistantHtml(firstMatch.gregorian)} م</strong></div>` : '',
+                        firstMatch.hijri ? `<div class="smart-year-item"><span class="smart-year-label">السنة الهجرية</span><strong class="smart-year-value">${escapeAssistantHtml(firstMatch.hijri)} هـ</strong></div>` : ''
+                    ].filter(Boolean).join('');
+                    answerHtml = `<div class="smart-answer-year"><div class="smart-answer-year-title">بيانات العرض المسجلة</div><div class="smart-year-grid">${yearItems}</div></div>`;
+                } else {
+                    let answerText = String(data.answer || '');
+                    answerText = answerText.replace(
+                        'وجدت نتيجة مطابقة في أرشيف الشارات.',
+                        'وجدت نتيجة مطابقة في أرشيف الشارات:'
+                    );
+                    answerHtml = `<div class="smart-answer">${escapeAssistantHtml(answerText || (matchesHtml ? 'هذه النتائج المطابقة لما تبحث عنه:' : 'لم أجد نتائج مطابقة حالياً.')).replace(/\\n/g, '<br>')}</div>`;
+                }
+
                 aiAssistantResult.innerHTML = answerHtml +
                     (matchesHtml || '<div class="smart-empty">لم تظهر نتائج في الأرشيف.</div>');
             } catch (error) {
