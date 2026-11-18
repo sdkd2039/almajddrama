@@ -836,6 +836,16 @@
             color: #c8e9f7;
             font-size: .86rem;
         }
+        .smart-series-years { display:grid; gap:12px; margin:4px 0 12px; }
+        .smart-series-years > .smart-year-heading {
+            color:#f3f8ff; font-size:1.08rem; font-weight:900; text-align:right;
+            margin:0 2px 2px;
+        }
+        .smart-season-year-card { margin:0; }
+        .smart-season-year-card .smart-year-season-heading {
+            color:#8edcf4; font-size:1rem; font-weight:900; text-align:right;
+            margin:0 0 12px;
+        }
         .smart-answer-text { color:#eaf5ff; line-height:1.8; }
         .smart-description-card {
             margin: 4px 0 12px;
@@ -1337,22 +1347,40 @@ function renderAssistantAnswer(answer, matches = [], mode = '') {
 
     if (mode === 'series-year-details' || gregorian || hijri) {
         const title = firstMatch.name || (titleMatch ? titleMatch[1].trim() : 'بيانات سنة العرض');
-        const yearCell = (label, match, suffix, positionClass) => match
+        const yearCell = (label, value, suffix, positionClass) => value
             ? `<div class="smart-year-item ${positionClass}">
                     <span class="smart-year-label">${label}</span>
-                    <strong class="smart-year-value"><bdi>${escapeAssistantHtml(match[1])} ${suffix}</bdi></strong>
+                    <strong class="smart-year-value"><bdi>${escapeAssistantHtml(String(value))} ${suffix}</bdi></strong>
                </div>` : '';
+        const seasonEntries = Array.isArray(firstMatch.seasonEntries) ? firstMatch.seasonEntries : [];
+        if (seasonEntries.length > 1) {
+            const cards = seasonEntries.map(entry => `
+                <section class="smart-year-card smart-season-year-card">
+                    ${entry.season ? `<div class="smart-year-season-heading">الموسم ${escapeAssistantHtml(entry.season)}</div>` : ''}
+                    <div class="smart-year-grid">
+                        ${yearCell('السنة الميلادية', entry.gregorian, 'م', 'smart-year-gregorian')}
+                        ${yearCell('السنة الهجرية', entry.hijri, 'هـ', 'smart-year-hijri')}
+                    </div>
+                </section>`).join('');
+            return `<div class="smart-series-years">
+                <div class="smart-year-heading">${escapeAssistantHtml(title)}</div>
+                ${cards}
+            </div>`;
+        }
 
+        const single = seasonEntries[0] || {};
+        const gregorianValue = single.gregorian || (gregorian && gregorian[1]) || '';
+        const hijriValue = single.hijri || (hijri && hijri[1]) || '';
+        const seasonValue = single.season || (season && season[1].trim()) || '';
         return `<section class="smart-year-card">
             <div class="smart-year-heading">${escapeAssistantHtml(title)}</div>
             <div class="smart-year-grid">
-                ${yearCell('السنة الميلادية', gregorian, 'م', 'smart-year-gregorian')}
-                ${yearCell('السنة الهجرية', hijri, 'هـ', 'smart-year-hijri')}
+                ${yearCell('السنة الميلادية', gregorianValue, 'م', 'smart-year-gregorian')}
+                ${yearCell('السنة الهجرية', hijriValue, 'هـ', 'smart-year-hijri')}
             </div>
-            ${season ? `<div class="smart-year-season">الموسم: ${escapeAssistantHtml(season[1].trim())}</div>` : ''}
+            ${seasonValue ? `<div class="smart-year-season">الموسم: ${escapeAssistantHtml(seasonValue)}</div>` : ''}
         </section>`;
     }
-
     if (mode === 'series-description') {
         const heading = 'نبذة عن المسلسل';
         // نستخدم الوصف من السجل المطابق مرة واحدة، ونرجع لإجابة Worker عند غيابه.
