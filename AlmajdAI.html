@@ -744,14 +744,10 @@
             line-height:1.85;
             overflow-wrap:anywhere;
         }
+        /* لا نعرض عنواناً زائداً فوق نص الإجابة. */
         .smart-answer::before {
-            content:"الإجابة";
-            display:block;
-            margin-bottom:5px;
-            color:#80d9f4;
-            font-size:.72rem;
-            font-weight:800;
-            letter-spacing:.02em;
+            content:none;
+            display:none;
         }
         .smart-answer-year {
             margin:0 0 12px;
@@ -792,6 +788,17 @@
             overflow-wrap:anywhere;
         }
         .smart-empty { color:#c6d8e8; font-size:.9rem; padding:8px 2px; }
+        .smart-description {
+            margin:0 0 12px;
+            padding:12px 14px;
+            border-right:3px solid #16a6d5;
+            border-radius:11px;
+            background:rgba(20,43,69,.62);
+            color:#eaf4ff;
+            font-size:.91rem;
+            line-height:1.8;
+            overflow-wrap:anywhere;
+        }
         .ai-match {
             display:flex;
             flex-direction:row;
@@ -818,11 +825,29 @@
             align-items:flex-start;
             gap:8px;
         }
+        .ai-match-title-row {
+            display:flex;
+            flex-direction:row;
+            direction:rtl;
+            align-items:center;
+            justify-content:flex-start;
+            flex-wrap:wrap;
+            gap:7px;
+            width:100%;
+        }
         .ai-match-title {
             font-weight:800;
             color:white;
             font-size:.96rem;
             line-height:1.5;
+        }
+        .ai-match-types {
+            display:inline-flex;
+            flex-direction:row;
+            direction:rtl;
+            align-items:center;
+            flex-wrap:wrap;
+            gap:5px;
         }
         .ai-match-type {
             display:inline-block;
@@ -834,10 +859,6 @@
             color:#a9e6ff;
             font-size:.75rem;
             font-weight:bold;
-        }
-        .ai-match-type span {
-            color:#d5e9f8;
-            opacity:.9;
         }
         .ai-match a {
             display:inline-flex;
@@ -860,6 +881,8 @@
             .smart-year-value { font-size:1rem; }
             .ai-match img { width:82px; height:70px; }
             .ai-match-title { font-size:.9rem; }
+            .ai-match-title-row { gap:6px; }
+            .ai-match-type { padding:2px 7px; font-size:.7rem; }
         }
         @keyframes voicePulse { 50% { box-shadow:0 0 0 6px rgba(163,49,75,.2); } }
         @media(max-width:600px) {
@@ -1129,29 +1152,47 @@
             }).map(item => ({ name:item.name, url:item.watchLink, image:item.imgLink }));
         }
 
-        function renderAssistantMatches(matches, options = {}) {
+        function renderAssistantMatches(matches) {
             if (!Array.isArray(matches) || !matches.length) return '';
-            // قد يكون للمسلسل أكثر من صف في ورقة Ai (بداية ونهاية)،
-            // لكن نعرض اسم المسلسل مرة واحدة فقط دون إظهار نوع الشارة أو تفاصيلها.
-            const seen = new Set();
-            const unique = matches.filter(item => {
+
+            // دمج الصفوف المكررة للمسلسل نفسه مع الاحتفاظ بالبداية والنهاية معاً.
+            const grouped = new Map();
+            matches.forEach(item => {
                 const key = String(item.name || '').trim()
                     .toLowerCase()
                     .replace(/[أإآ]/g, 'ا')
                     .replace(/ى/g, 'ي')
                     .replace(/ة/g, 'ه')
                     .replace(/\s+/g, ' ');
-                if (!key || seen.has(key)) return false;
-                seen.add(key);
-                return true;
+                if (!key) return;
+
+                if (!grouped.has(key)) {
+                    grouped.set(key, { ...item, types: [] });
+                }
+                const saved = grouped.get(key);
+                const types = Array.isArray(item.types)
+                    ? item.types
+                    : String(item.type || '').split(/[،,]/).map(x => x.trim()).filter(Boolean);
+
+                types.forEach(type => {
+                    if (['البداية', 'النهاية'].includes(type) && !saved.types.includes(type)) {
+                        saved.types.push(type);
+                    }
+                });
+
+                if (!saved.image && item.image) saved.image = item.image;
+                if (!saved.url && item.url) saved.url = item.url;
             });
-            return unique.map(item => `
+
+            return [...grouped.values()].map(item => `
                 <div class="ai-match">
                     ${item.image && item.image !== '-' ? `<img src="${escapeAssistantHtml(item.image)}" alt="" loading="lazy">` : ''}
                     <div class="ai-match-info">
-                        <div class="ai-match-title">${escapeAssistantHtml(item.name)}</div>
-                        ${!options.hideType && item.type ? `<div class="ai-match-type"><span>نوع الشارة:</span> ${escapeAssistantHtml(item.type)}</div>` : ''}
-                        <a href="${escapeAssistantHtml(item.url)}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-circle-play"></i> للمشاهدة الشارة</a>
+                        <div class="ai-match-title-row">
+                            <div class="ai-match-title">${escapeAssistantHtml(item.name)}</div>
+                            ${item.types.length ? `<div class="ai-match-types">${item.types.map(type => `<span class="ai-match-type">${escapeAssistantHtml(type)}</span>`).join('')}</div>` : ''}
+                        </div>
+                        ${item.url ? `<a href="${escapeAssistantHtml(item.url)}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-circle-play"></i> لمشاهدة الشارة</a>` : ''}
                     </div>
                 </div>`).join('');
         }
@@ -1183,9 +1224,7 @@
                 const data = await response.json();
                 if (!response.ok || !data.ok) throw new Error(data.error || 'تعذر إكمال البحث.');
                 const matches = data.matches || [];
-                const matchesHtml = renderAssistantMatches(matches, {
-                    hideType: ['series-description', 'series-year-details'].includes(data.mode)
-                });
+                const matchesHtml = renderAssistantMatches(matches);
                 const firstMatch = matches[0] || {};
                 let answerHtml = '';
 
@@ -1197,17 +1236,15 @@
                         firstMatch.gregorian ? `<div class="smart-year-item"><span class="smart-year-label">السنة الميلادية</span><strong class="smart-year-value">${escapeAssistantHtml(firstMatch.gregorian)} م</strong></div>` : ''
                     ].filter(Boolean).join('');
                     answerHtml = `<div class="smart-answer-year"><div class="smart-answer-year-title">بيانات العرض المسجلة</div><div class="smart-year-grid">${yearItems}</div></div>`;
-                } else {
-                    let answerText = String(data.answer || '');
-                    answerText = answerText.replace(
-                        /وجدت نتيجة مطابقة في أرشيف الشارات[.:：]?/g,
-                        'وجدت نتيجة مطابقة في أرشيف الشارات:'
-                    );
-                    answerHtml = `<div class="smart-answer">${escapeAssistantHtml(answerText || (matchesHtml ? 'هذه النتائج المطابقة لما تبحث عنه:' : 'لم أجد نتائج مطابقة حالياً.')).replace(/\\n/g, '<br>')}</div>`;
+                } else if (data.mode === 'series-description' && data.answer) {
+                    // الوصف معلومة مطلوبة، نعرضها مباشرة بلا عنوان "الإجابة".
+                    answerHtml = `<div class="smart-description">${escapeAssistantHtml(String(data.answer)).replace(/\\n/g, '<br>')}</div>`;
+                } else if (!matchesHtml) {
+                    answerHtml = `<div class="smart-empty">${escapeAssistantHtml(data.answer || 'لم تظهر نتائج في الأرشيف.')}</div>`;
                 }
 
-                aiAssistantResult.innerHTML = answerHtml +
-                    (matchesHtml || '<div class="smart-empty">لم تظهر نتائج في الأرشيف.</div>');
+                // لا نعرض عبارة عامة مثل "وجدت نتيجة مطابقة..."؛ بطاقة المسلسل تكفي.
+                aiAssistantResult.innerHTML = answerHtml + matchesHtml;
             } catch (error) {
                 aiAssistantResult.textContent = 'تعذر الاتصال بالبحث الذكي حالياً. تحقق من الإنترنت وحاول مرة أخرى.';
             } finally {
