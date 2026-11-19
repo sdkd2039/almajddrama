@@ -1437,10 +1437,9 @@ function renderAssistantAnswer(answer, matches = [], mode = '') {
         </section>`;
     }
 
-    const isDescriptionMode = String(mode || '').toLowerCase().includes('description') ||
-        (!!String(firstMatch.description || '').trim() &&
-         mode !== 'year-filter' && mode !== 'season-filter' &&
-         mode !== 'series-year-details');
+    // لا تعرض نبذة المسلسل لمجرد وجود وصف في سجل الشارة.
+    // تظهر النبذة فقط عندما يكون طلب المستخدم صراحةً عن قصة/وصف المسلسل.
+    const isDescriptionMode = String(mode || '').toLowerCase() === 'series-description';
     if (isDescriptionMode) {
         const heading = 'نبذة عن المسلسل';
         const description = String(firstMatch.description || raw).trim();
@@ -1464,7 +1463,9 @@ function initSmartDescriptionToggle() {
     if (!description || !button) return;
 
     const updateVisibility = () => {
-        const isOverflowing = description.scrollHeight > description.clientHeight + 2;
+        const fullHeight = description.scrollHeight;
+        const visibleHeight = description.getBoundingClientRect().height;
+        const isOverflowing = fullHeight > visibleHeight + 2;
         button.hidden = !isOverflowing;
         if (!isOverflowing) {
             description.classList.remove('is-collapsed', 'is-expanded');
