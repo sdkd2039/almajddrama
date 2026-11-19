@@ -130,7 +130,10 @@
             object-fit: contain;
             border-radius: 4px;
         }
-        .nav-tab.active {
+.nav-tab.active img {
+            filter: brightness(0) invert(1);
+        }
+                .nav-tab.active {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
             transform: scale(1.03);
@@ -878,10 +881,9 @@
             overflow: hidden;
         }
         .smart-description-text.is-expanded {
-            max-height: 5000px;
+            max-height: 2000px;
             overflow: visible;
         }
-        .smart-description-toggle[hidden] { display:none !important; }
         .smart-description-toggle {
             display: inline-flex;
             align-items: center;
@@ -1427,28 +1429,54 @@ function renderAssistantAnswer(answer, matches = [], mode = '') {
         </section>`;
     }
 
-    if (mode === 'series-description') {
+    const isDescriptionMode = String(mode || '').toLowerCase().includes('description') ||
+        (!!String(firstMatch.description || '').trim() &&
+         mode !== 'year-filter' && mode !== 'season-filter' &&
+         mode !== 'series-year-details');
+    if (isDescriptionMode) {
         const heading = 'نبذة عن المسلسل';
         const description = String(firstMatch.description || raw).trim();
-        const canExpand = description.length > 0;
         return `<section class="smart-description-card">
             <div class="smart-description-title">${escapeAssistantHtml(heading)}</div>
-            <div class="smart-description-text${canExpand ? ' is-collapsed' : ''}"${canExpand ? ' id="smartDescriptionText"' : ''}>${escapeAssistantHtml(description)}</div>
-            ${canExpand ? `<button type="button" class="smart-description-toggle" id="smartDescriptionToggle" aria-expanded="false" aria-controls="smartDescriptionText" hidden>عرض المزيد <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></button>` : ''}
+            <div class="smart-description-text is-collapsed" id="smartDescriptionText">${escapeAssistantHtml(description)}</div>
+            <button type="button" class="smart-description-toggle" id="smartDescriptionToggle"
+                aria-expanded="false" aria-controls="smartDescriptionText" hidden>
+                عرض المزيد <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+            </button>
         </section>`;
     }
 
     return `<div class="smart-answer-text">${escapeAssistantHtml(raw).replace(/\n/g, '<br>')}</div>`;
 }
 
-// زر عرض المزيد خاص بنبذة المسلسل فقط، ويظل يعمل بعد استبدال نتائج البحث.
+// إظهار زر «عرض المزيد» فقط عندما تتجاوز النبذة المساحة المختصرة فعلياً.
+function initSmartDescriptionToggle() {
+    const description = aiAssistantResult.querySelector('#smartDescriptionText');
+    const button = aiAssistantResult.querySelector('#smartDescriptionToggle');
+    if (!description || !button) return;
+
+    const updateVisibility = () => {
+        const isOverflowing = description.scrollHeight > description.clientHeight + 2;
+        button.hidden = !isOverflowing;
+        if (!isOverflowing) {
+            description.classList.remove('is-collapsed', 'is-expanded');
+            button.setAttribute('aria-expanded', 'false');
+        }
+    };
+
+    requestAnimationFrame(() => requestAnimationFrame(updateVisibility));
+}
+
+// تفويض النقر يضمن عمل الزر حتى بعد استبدال نتيجة البحث.
 aiAssistantResult.addEventListener('click', event => {
     const button = event.target.closest('#smartDescriptionToggle');
     if (!button || !aiAssistantResult.contains(button)) return;
     const description = aiAssistantResult.querySelector('#smartDescriptionText');
     if (!description) return;
+
     const expanded = button.getAttribute('aria-expanded') === 'true';
     description.classList.toggle('is-expanded', !expanded);
+    description.classList.toggle('is-collapsed', expanded);
     button.setAttribute('aria-expanded', String(!expanded));
     button.innerHTML = !expanded
         ? 'عرض أقل <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>'
@@ -1496,14 +1524,7 @@ async function runSmartSearch() {
                     : `<div class="smart-answer">${matchesHtml ? 'هذه المسلسلات المطابقة لما تبحث عنه:' : 'لم أجد نتائج مطابقة حالياً.'}</div>`;
                 aiAssistantResult.innerHTML = answerHtml +
                     (matchesHtml || '<div class="smart-empty">لم تظهر نتائج في الأرشيف.</div>');
-                const descriptionText = aiAssistantResult.querySelector('#smartDescriptionText');
-                const descriptionToggle = aiAssistantResult.querySelector('#smartDescriptionToggle');
-                if (descriptionText && descriptionToggle) {
-                    requestAnimationFrame(() => {
-                        const hasOverflow = descriptionText.scrollHeight > descriptionText.clientHeight + 2;
-                        descriptionToggle.hidden = !hasOverflow;
-                    });
-                }
+                initSmartDescriptionToggle();
                 aiAssistantResult.classList.remove('smart-result-enter');
                 void aiAssistantResult.offsetWidth;
                 aiAssistantResult.classList.add('smart-result-enter');
@@ -1882,12 +1903,7 @@ async function runSmartSearch() {
                     tab.classList.remove('active');
                 }
             });
-            if (channels[tabName] && channels[tabName].logo) {
-                mainLogo.src = channels[tabName].logo;
-            } else {
-                mainLogo.src = 'https://raw.githubusercontent.com/sdkd2039/almajd-fav/refs/heads/main/unnamed.png'; 
-            }
-
+            // شعار الموقع في أعلى الصفحة ثابت؛ يتغير تمييز شعار القناة داخل زرها فقط.
             searchInput.value = '';
             if (tabName === 'home') setHomeSearchMode('normal');
             renderContent();
