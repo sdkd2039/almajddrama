@@ -870,10 +870,30 @@
             color: #edf7ff;
             font-size: .91rem;
             line-height: 1.9;
-            display: -webkit-box;
-            -webkit-box-orient: vertical;
-            -webkit-line-clamp: 5;
+            max-height: 9.5em;
             overflow: hidden;
+            transition: max-height .38s ease;
+            overflow-wrap: anywhere;
+        }
+        .smart-description-text.is-expanded { max-height: 2000px; }
+        .smart-description-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin-top: 9px;
+            padding: 5px 0;
+            border: 0;
+            background: transparent;
+            color: #79d7f3;
+            font: inherit;
+            font-size: .84rem;
+            font-weight: 900;
+            cursor: pointer;
+        }
+        .smart-description-toggle:focus-visible {
+            outline: 2px solid #79d7f3;
+            outline-offset: 3px;
+            border-radius: 5px;
         }
         @media(max-width:380px) { .smart-year-card { padding:13px; } .smart-year-grid { gap:7px; } .smart-year-item { min-height:100px; padding:11px 5px; } .smart-year-label { font-size:.75rem; } .smart-year-value { font-size:1.18rem; } }
 
@@ -1404,14 +1424,30 @@ function renderAssistantAnswer(answer, matches = [], mode = '') {
     if (mode === 'series-description') {
         const heading = 'نبذة عن المسلسل';
         const description = String(firstMatch.description || raw).trim();
+        const canExpand = description.length > 190;
         return `<section class="smart-description-card">
             <div class="smart-description-title">${escapeAssistantHtml(heading)}</div>
-            <div class="smart-description-text">${escapeAssistantHtml(description)}</div>
+            <div class="smart-description-text${canExpand ? ' is-collapsed' : ''}"${canExpand ? ' id="smartDescriptionText"' : ''}>${escapeAssistantHtml(description)}</div>
+            ${canExpand ? `<button type="button" class="smart-description-toggle" id="smartDescriptionToggle" aria-expanded="false" aria-controls="smartDescriptionText">عرض المزيد <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></button>` : ''}
         </section>`;
     }
 
     return `<div class="smart-answer-text">${escapeAssistantHtml(raw).replace(/\n/g, '<br>')}</div>`;
 }
+
+// زر عرض المزيد خاص بنبذة المسلسل فقط، ويظل يعمل بعد استبدال نتائج البحث.
+aiAssistantResult.addEventListener('click', event => {
+    const button = event.target.closest('#smartDescriptionToggle');
+    if (!button || !aiAssistantResult.contains(button)) return;
+    const description = aiAssistantResult.querySelector('#smartDescriptionText');
+    if (!description) return;
+    const expanded = button.getAttribute('aria-expanded') === 'true';
+    description.classList.toggle('is-expanded', !expanded);
+    button.setAttribute('aria-expanded', String(!expanded));
+    button.innerHTML = !expanded
+        ? 'عرض أقل <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>'
+        : 'عرض المزيد <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>';
+});
 
 function showSmartLoading() {
     aiAssistantResult.classList.remove('smart-result-enter');
