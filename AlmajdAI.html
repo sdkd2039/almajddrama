@@ -870,12 +870,18 @@
             color: #edf7ff;
             font-size: .91rem;
             line-height: 1.9;
+            overflow-wrap: anywhere;
+            transition: max-height .38s ease;
+        }
+        .smart-description-text.is-collapsed {
             max-height: 9.5em;
             overflow: hidden;
-            transition: max-height .38s ease;
-            overflow-wrap: anywhere;
         }
-        .smart-description-text.is-expanded { max-height: 2000px; }
+        .smart-description-text.is-expanded {
+            max-height: 5000px;
+            overflow: visible;
+        }
+        .smart-description-toggle[hidden] { display:none !important; }
         .smart-description-toggle {
             display: inline-flex;
             align-items: center;
@@ -1424,11 +1430,11 @@ function renderAssistantAnswer(answer, matches = [], mode = '') {
     if (mode === 'series-description') {
         const heading = 'نبذة عن المسلسل';
         const description = String(firstMatch.description || raw).trim();
-        const canExpand = description.length > 190;
+        const canExpand = description.length > 0;
         return `<section class="smart-description-card">
             <div class="smart-description-title">${escapeAssistantHtml(heading)}</div>
             <div class="smart-description-text${canExpand ? ' is-collapsed' : ''}"${canExpand ? ' id="smartDescriptionText"' : ''}>${escapeAssistantHtml(description)}</div>
-            ${canExpand ? `<button type="button" class="smart-description-toggle" id="smartDescriptionToggle" aria-expanded="false" aria-controls="smartDescriptionText">عرض المزيد <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></button>` : ''}
+            ${canExpand ? `<button type="button" class="smart-description-toggle" id="smartDescriptionToggle" aria-expanded="false" aria-controls="smartDescriptionText" hidden>عرض المزيد <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></button>` : ''}
         </section>`;
     }
 
@@ -1490,6 +1496,14 @@ async function runSmartSearch() {
                     : `<div class="smart-answer">${matchesHtml ? 'هذه المسلسلات المطابقة لما تبحث عنه:' : 'لم أجد نتائج مطابقة حالياً.'}</div>`;
                 aiAssistantResult.innerHTML = answerHtml +
                     (matchesHtml || '<div class="smart-empty">لم تظهر نتائج في الأرشيف.</div>');
+                const descriptionText = aiAssistantResult.querySelector('#smartDescriptionText');
+                const descriptionToggle = aiAssistantResult.querySelector('#smartDescriptionToggle');
+                if (descriptionText && descriptionToggle) {
+                    requestAnimationFrame(() => {
+                        const hasOverflow = descriptionText.scrollHeight > descriptionText.clientHeight + 2;
+                        descriptionToggle.hidden = !hasOverflow;
+                    });
+                }
                 aiAssistantResult.classList.remove('smart-result-enter');
                 void aiAssistantResult.offsetWidth;
                 aiAssistantResult.classList.add('smart-result-enter');
