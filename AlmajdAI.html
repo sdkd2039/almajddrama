@@ -133,6 +133,14 @@
 .nav-tab.active img {
             filter: brightness(0) invert(1);
         }
+        /* شعار الأطفال يحتفظ بألوانه الأصلية حتى عند تحديد القناة */
+        .nav-tab.active[onclick*="'kids'"] img {
+            filter: none !important;
+        }
+        /* أيقونة المفضلة تتحول إلى الأبيض عند تحديد تبويب المفضلة */
+        .nav-tab.active[onclick*="'fav'"] .fa-heart {
+            color: #fff !important;
+        }
                 .nav-tab.active {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
@@ -874,15 +882,14 @@
             font-size: .91rem;
             line-height: 1.9;
             overflow-wrap: anywhere;
-            transition: max-height .38s ease;
+            transition: max-height .20s ease-out;
         }
         .smart-description-text.is-collapsed {
             max-height: 9.5em;
             overflow: hidden;
         }
         .smart-description-text.is-expanded {
-            max-height: 2000px;
-            overflow: visible;
+            overflow: hidden;
         }
         .smart-description-toggle {
             display: inline-flex;
@@ -1226,6 +1233,7 @@
         let favorites = loadFavorites();
 
         const mainLogo = document.getElementById('mainLogo');
+        const DEFAULT_MAIN_LOGO = 'https://raw.githubusercontent.com/sdkd2039/almajd-fav/refs/heads/main/unnamed.png';
         const seriesGrid = document.getElementById('seriesGrid');
         const homeTitles = document.getElementById('homeTitles');
         const controlsBox = document.getElementById('controlsBox');
@@ -1475,12 +1483,31 @@ aiAssistantResult.addEventListener('click', event => {
     if (!description) return;
 
     const expanded = button.getAttribute('aria-expanded') === 'true';
-    description.classList.toggle('is-expanded', !expanded);
-    description.classList.toggle('is-collapsed', expanded);
-    button.setAttribute('aria-expanded', String(!expanded));
-    button.innerHTML = !expanded
-        ? 'عرض أقل <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>'
-        : 'عرض المزيد <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>';
+    if (!expanded) {
+        // الانتقال إلى الارتفاع الفعلي للنص بدلاً من قيمة كبيرة ثابتة.
+        description.classList.remove('is-collapsed');
+        description.classList.add('is-expanded');
+        description.style.maxHeight = `${description.scrollHeight}px`;
+        button.setAttribute('aria-expanded', 'true');
+        button.innerHTML = 'عرض أقل <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>';
+        description.addEventListener('transitionend', function onExpandEnd(event) {
+            if (event.propertyName !== 'max-height') return;
+            description.removeEventListener('transitionend', onExpandEnd);
+            if (button.getAttribute('aria-expanded') === 'true') {
+                description.style.maxHeight = 'none';
+            }
+        });
+    } else {
+        // ابدأ من الارتفاع الحالي ثم ارجع سريعاً إلى الارتفاع المختصر.
+        description.style.maxHeight = `${description.scrollHeight}px`;
+        requestAnimationFrame(() => {
+            description.classList.remove('is-expanded');
+            description.classList.add('is-collapsed');
+            description.style.maxHeight = '';
+        });
+        button.setAttribute('aria-expanded', 'false');
+        button.innerHTML = 'عرض المزيد <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>';
+    }
 });
 
 function showSmartLoading() {
@@ -1903,7 +1930,14 @@ async function runSmartSearch() {
                     tab.classList.remove('active');
                 }
             });
-            // شعار الموقع في أعلى الصفحة ثابت؛ يتغير تمييز شعار القناة داخل زرها فقط.
+            // أعد شعار القناة المختارة في أعلى الصفحة، واحتفظ بشعار الموقع في الرئيسية/الجدول/المفضلة.
+            const selectedChannel = channels[tabName];
+            mainLogo.src = selectedChannel && selectedChannel.logo
+                ? selectedChannel.logo
+                : DEFAULT_MAIN_LOGO;
+            mainLogo.alt = selectedChannel && selectedChannel.logo
+                ? `شعار قناة ${tabName}`
+                : 'شعار دراما المجد';
             searchInput.value = '';
             if (tabName === 'home') setHomeSearchMode('normal');
             renderContent();
