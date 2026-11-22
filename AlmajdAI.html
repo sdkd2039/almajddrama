@@ -1335,9 +1335,17 @@
 
     const hideTypes = ['year-filter', 'season-filter', 'series-year-details', 'series-description'].includes(mode);
     const seen = new Set();
+    const canonicalSeriesKey = value => String(value || '')
+        .toLowerCase()
+        .replace(/[٠-٩]/g, digit => String('٠١٢٣٤٥٦٧٨٩'.indexOf(digit)))
+        .replace(/[۰-۹]/g, digit => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)))
+        .replace(/[\u064B-\u065F\u0670\u0640\u200B-\u200F\uFEFF]/g, '')
+        .replace(/[أإآٱ]/g, 'ا').replace(/ى/g, 'ي').replace(/ة/g, 'ه')
+        .replace(/\s+(?:(?:ال)?جزء|ج)\s*\d+(?:\s*[-–—/]\s*\d+|\s+\d+)?\s*$/u, '')
+        .replace(/[ـ\s.,،؛:!?؟()[\]{}"'`~_\-–—/\\]+/g, '')
+        .trim();
     const unique = matches.filter(item => {
-        const key = String(item.name || '').trim().toLowerCase()
-            .replace(/[أإآ]/g, 'ا').replace(/ى/g, 'ي').replace(/ة/g, 'ه').replace(/\s+/g, ' ');
+        const key = canonicalSeriesKey(item.name);
         if (!key || seen.has(key)) return false;
         seen.add(key);
         return true;
