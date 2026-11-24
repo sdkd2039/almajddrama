@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-theme="original">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1034,7 +1034,49 @@
   }
 }
 
-</style>
+
+        /* خلفية صفحات القنوات فقط؛ الرئيسية والجدول اليومي والمفضلة تحتفظ بالخلفية الأصلية */
+        html[data-theme="green"], html[data-theme="green"] body {
+            background-color:#102b27 !important;
+            background-image:radial-gradient(ellipse at 50% 12%, rgba(39,112,76,.22), transparent 58%) !important;
+        }
+        html[data-theme="kids"], html[data-theme="kids"] body {
+            background-color:#2b1922 !important;
+            background-image:radial-gradient(ellipse at 50% 12%, rgba(145,55,69,.20), transparent 58%) !important;
+        }
+        html[data-theme="gold"], html[data-theme="gold"] body {
+            background-color:#2b261a !important;
+            background-image:radial-gradient(ellipse at 50% 12%, rgba(151,119,54,.20), transparent 58%) !important;
+        }
+
+        /* حركة ظهور بطاقات المسلسلات عند التمرير */
+        .series-grid .card {
+            opacity:0;
+            transform:translate3d(0,22px,0) scale(.985);
+            filter:blur(3px);
+            transition:opacity .58s cubic-bezier(.2,.7,.2,1),
+                       transform .68s cubic-bezier(.2,.75,.25,1),
+                       filter .58s ease;
+            transition-delay:var(--reveal-delay,0ms);
+            will-change:opacity,transform,filter;
+        }
+        .series-grid .card.is-in-view {
+            opacity:1;
+            transform:translate3d(0,0,0) scale(1);
+            filter:blur(0);
+        }
+        @media (prefers-reduced-motion:reduce) {
+            .series-grid .card,
+            .series-grid .card.is-in-view {
+                opacity:1 !important;
+                transform:none !important;
+                filter:none !important;
+                transition:none !important;
+                will-change:auto;
+            }
+        }
+
+    </style>
 </head>
 <body>
     <header>
@@ -1800,6 +1842,32 @@ async function runSmartSearch() {
             }[ch]));
         }
 
+
+        // إظهار بطاقات المسلسلات عند دخولها الشاشة وإخفاؤها بهدوء عند مغادرتها.
+        const seriesRevealObserver = ('IntersectionObserver' in window)
+            ? new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('is-in-view');
+                    else entry.target.classList.remove('is-in-view');
+                });
+            }, { threshold:0.12, rootMargin:'0px 0px -5% 0px' })
+            : null;
+
+        function observeSeriesCards() {
+            const cards = seriesGrid.querySelectorAll('.card:not([data-reveal-ready])');
+            cards.forEach((card, index) => {
+                card.dataset.revealReady = 'true';
+                card.style.setProperty('--reveal-delay', `${Math.min(index % 6, 5) * 55}ms`);
+                if (seriesRevealObserver) seriesRevealObserver.observe(card);
+                else card.classList.add('is-in-view');
+            });
+        }
+
+        if (seriesRevealObserver && 'MutationObserver' in window) {
+            const seriesGridObserver = new MutationObserver(observeSeriesCards);
+            seriesGridObserver.observe(seriesGrid, { childList:true, subtree:true });
+        }
+
         function createCardHtml(item) {
             const cleanName = item.name.trim();
             const safeName = escapeCardHtml(cleanName);
@@ -1930,6 +1998,13 @@ async function runSmartSearch() {
 
         function switchChannel(tabName) {
             activeTab = tabName;
+
+            // تغيير خلفية صفحة القناة فقط، دون المساس بألوان عناصر الموقع.
+            const channelTheme = tabName === 'general' ? 'green'
+                : tabName === 'kids' ? 'kids'
+                : tabName === 'massa' ? 'gold'
+                : 'original';
+            document.documentElement.dataset.theme = channelTheme;
 
             const tabs = document.querySelectorAll('.nav-tab');
             tabs.forEach(tab => {
