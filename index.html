@@ -1109,7 +1109,7 @@
             <div class="smart-panel-title">محادثة شارات دراما المجد</div>
             <p>يمكنكم الاستفسار عن كلمات الشارة، سنة العرض، أو موسم المسلسل، فالمساعد مخصص لإجابة كل ما يتعلق بشارات ومسلسلات المجد.</p>
             <div class="smart-suggestions" id="smartSuggestions" aria-label="أسئلة مقترحة">
-                <button type="button" class="smart-suggestion" data-prompt="ابحث عن الشارة من كلماتها"><i class="fa-solid fa-music"></i> كلمات الشارة</button>
+                <button type="button" class="smart-suggestion" data-prompt="ابحث عن الشارة من كلماتها "><i class="fa-solid fa-music"></i> كلمات الشارة</button>
                 <button type="button" class="smart-suggestion" data-prompt="ما سنة عرض مسلسل "><i class="fa-solid fa-calendar-days"></i> سنة عرض مسلسل</button>
                 <button type="button" class="smart-suggestion" data-prompt="ما قصة مسلسل "><i class="fa-solid fa-film"></i> قصة مسلسل</button>
             </div>
@@ -1143,7 +1143,7 @@
         <a href="https://portal.almajdtv.com/ords/f?p=109:3" target="_blank" class="ad-card ad-card-2">
             <div class="ad-badge">تجديد فوري</div>
             <div class="ad-title">جدد اشتراكك الحالي خلال ثوانٍ</div>
-            <div class="ad-desc">لا توقف متعة العائلة.. بضغطة زر واحدة جدد اشتراكك بشكل أسرع.</div>
+            <div class="ad-desc">لا توقف متعة العائلة.. بضغطة زر تقدر تجدد اشتراكك بشكل أسرع.</div>
             <div class="ad-link-btn">اضغط هنا للتجديد <i class="fa-solid fa-arrow-left"></i></div>
         </a>
     </div>
@@ -1212,7 +1212,7 @@
                 <i class="fa-brands fa-telegram"></i> تليجرام
             </a>
             <a href="https://forms.gle/6WTCcbFk9sk4PqeG9" target="_blank" class="footer-btn btn-feedback">
-                <i class="fa-solid fa-comments"></i> آرائكــــــــم
+                <i class="fa-solid fa-comments"></i> آرائكــم
             </a>
         </div>
         <div class="footer-rights">
@@ -1958,7 +1958,7 @@ async function runSmartSearch() {
                 }
 
                 if (uniqueFavData.length === 0) {
-                    seriesGrid.innerHTML = '<div class="no-results">لم تضف أي مسلسل إلى المفضلة بعد. اضغط ❤️ على بطاقة أي مسلسل لإضافته — لا تحتاج إلى تسجيل الدخول.</div>';
+                    seriesGrid.innerHTML = '<div class="no-results">لم تقم بإضافة المسلسل إلى المفضلة بعد.</div>';
                     return;
                 }
                 uniqueFavData.forEach(item => seriesGrid.innerHTML += createCardHtml(item));
