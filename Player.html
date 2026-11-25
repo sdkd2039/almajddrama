@@ -310,6 +310,9 @@ body {
   color:#38bdf8;
 }
 
+.player-extra-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.embed-toggle{flex:1;min-width:140px;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:#111c30;color:#cbd5e1;font:inherit;cursor:pointer}
+.embed-toggle:hover{border-color:var(--primary-color);color:#38bdf8}
 .translation-area {
   display:none;
   background:var(--player-bg);
@@ -560,10 +563,13 @@ function createPlayer(record) {
       </div>
     </div>
 
-    <button class="translation-toggle">
+    <div class="player-extra-actions">
+      <button class="translation-toggle">
       <i class="fa-solid fa-language"></i>
       إظهار الترجمة
     </button>
+      <button class="embed-toggle" type="button"><i class="fa-solid fa-code"></i> نسخ كود التضمين</button>
+    </div>
 
     <section class="translation-area">
       <div class="translation-text empty">
@@ -593,6 +599,23 @@ function createPlayer(record) {
   const speedMenu = card.querySelector(".speed-menu");
   const loopButton = card.querySelector(".btn-loop");
   const downloadButton = card.querySelector(".downloadBtn");
+
+  const embedButton = card.querySelector(".embed-toggle");
+  embedButton.addEventListener("click", async () => {
+    const embedUrl = new URL("Player.html", location.href);
+    embedUrl.searchParams.set("id", String(record.id));
+    const title = String(record.name || "مشغل الشارة").replace(/["<>]/g, "");
+    const snippet = '<iframe src="' + embedUrl.href + '" title="' + title +
+      '" loading="lazy" allow="autoplay; fullscreen" allowfullscreen ' +
+      'style="width:100%;height:560px;border:0;overflow:hidden"></iframe>';
+    try {
+      await navigator.clipboard.writeText(snippet);
+      embedButton.innerHTML = '<i class="fa-solid fa-check"></i> تم نسخ التضمين';
+      setTimeout(() => embedButton.innerHTML = '<i class="fa-solid fa-code"></i> نسخ كود التضمين', 2000);
+    } catch {
+      window.prompt("انسخ كود التضمين:", snippet);
+    }
+  });
 
   const translationButton = card.querySelector(".translation-toggle");
   const translationArea = card.querySelector(".translation-area");
@@ -838,15 +861,20 @@ async function loadAllPlayers() {
       String(item.audio).trim() !== ""
     );
 
+    const requestedId = new URLSearchParams(location.search).get("id");
+    const visibleRecords = requestedId
+      ? records.filter(item => String(item.id).trim() === requestedId.trim())
+      : records;
+
     playersList.innerHTML = "";
 
-    if (!records.length) {
+    if (!visibleRecords.length) {
       playersList.innerHTML =
         '<div class="page-status">لا توجد شارات مكتملة في ورقة Player.</div>';
       return;
     }
 
-    records.forEach(record => createPlayer(record));
+    visibleRecords.forEach(record => createPlayer(record));
 
   } catch(error) {
     console.error("Player loading error:",error);
