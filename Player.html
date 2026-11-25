@@ -605,7 +605,6 @@ function createPlayer(record) {
       إظهار الترجمة
     </button>
       <button class="embed-toggle" type="button"><i class="fa-solid fa-code"></i> نسخ كود التضمين</button>
-      <button class="transcribe-toggle" type="button" hidden><i class="fa-solid fa-wand-magic-sparkles"></i> تفريغ صوت تجريبي</button>
     </div>
 
     <section class="translation-area">
@@ -641,54 +640,6 @@ function createPlayer(record) {
   // واجهة التضمين لا تظهر للزوار العاديين؛ افتح لوحة النسخ بإضافة ?admin=1.
   const isEmbedAdmin = new URLSearchParams(location.search).get("admin") === "1";
   embedButton.hidden = !isEmbedAdmin;
-  const transcribeButton = card.querySelector(".transcribe-toggle");
-  transcribeButton.hidden = !isEmbedAdmin;
-  transcribeButton.addEventListener("click", () => {
-    // استخدم الترجمة الموجودة أصلًا في العمود السادس من Google Sheets.
-    translationArea.classList.add("visible");
-    translationButton.innerHTML = '<i class="fa-solid fa-eye-slash"></i> إخفاء الترجمة';
-    let list = translationArea.querySelector(".transcript-list");
-    if (!list) {
-      list = document.createElement("div");
-      list.className = "transcript-list";
-      translationArea.appendChild(list);
-    }
-    list.replaceChildren();
-    if (translation.lines.length) {
-      translationText.textContent = "اختر أي توقيت للانتقال إليه في الشارة، أو شغّل الصوت لمتابعة الترجمة تلقائيًا.";
-      translationText.classList.remove("empty");
-      translation.lines.forEach((line, index) => {
-        const item = document.createElement("button");
-        item.type = "button";
-        item.className = "transcript-line";
-        const stamp = document.createElement("span");
-        stamp.className = "transcript-time";
-        stamp.textContent = formatTime(line.start);
-        const words = document.createElement("span");
-        words.className = "transcript-words";
-        words.textContent = line.text;
-        item.append(stamp, words);
-        item.addEventListener("click", () => {
-          audio.currentTime = Math.max(0, line.start);
-          audio.play().catch(() => {});
-          list.querySelectorAll(".transcript-line").forEach(row => row.classList.remove("active"));
-          item.classList.add("active");
-        });
-        list.appendChild(item);
-      });
-      transcribeButton.innerHTML = '<i class="fa-solid fa-check"></i> عرض الترجمة والتوقيت';
-    } else if (translation.plain.trim()) {
-      translationText.textContent = translation.plain;
-      translationText.classList.remove("empty");
-      list.innerHTML = '<div class="transcript-empty">الترجمة محفوظة كنص عادي دون توقيتات قابلة للنقر.</div>';
-      transcribeButton.innerHTML = '<i class="fa-solid fa-check"></i> عرض الترجمة';
-    } else {
-      translationText.textContent = "لا توجد ترجمة محفوظة في العمود السادس لهذه الشارة.";
-      translationText.classList.add("empty");
-      list.innerHTML = '<div class="transcript-empty">أضف الترجمة في العمود السادس بورقة Player.</div>';
-      transcribeButton.innerHTML = '<i class="fa-solid fa-circle-info"></i> لا توجد ترجمة محفوظة';
-    }
-  });
   embedButton.addEventListener("click", async () => {
     const embedUrl = new URL("Player.html", location.href);
     embedUrl.searchParams.set("id", String(record.id));
@@ -748,16 +699,24 @@ function createPlayer(record) {
     if (!translationArea.classList.contains("visible")) return;
 
     if (translation.lines.length) {
-      const line = translation.lines.find(item =>
+      const lineIndex = translation.lines.findIndex(item =>
         current >= item.start && current < item.end
       );
-
+      const line = lineIndex >= 0 ? translation.lines[lineIndex] : null;
       if (line) {
         translationText.textContent = line.text;
         translationText.classList.remove("empty");
       } else {
         translationText.textContent = "";
         translationText.classList.add("empty");
+      }
+      const transcriptRows = translationArea.querySelectorAll(".transcript-line");
+      transcriptRows.forEach((row, index) => {
+        row.classList.toggle("active", index === lineIndex);
+      });
+      const activeRow = lineIndex >= 0 ? transcriptRows[lineIndex] : null;
+      if (activeRow && translationArea.classList.contains("visible")) {
+        activeRow.scrollIntoView({block:"nearest",behavior:"smooth"});
       }
     }
   });
@@ -824,13 +783,43 @@ function createPlayer(record) {
       ? '<i class="fa-solid fa-eye-slash"></i> إخفاء الترجمة'
       : '<i class="fa-solid fa-language"></i> إظهار الترجمة';
 
-    if (visible && !translation.lines.length) {
-      if (translation.plain.trim()) {
+    if (visible) {
+      let list = translationArea.querySelector(".transcript-list");
+      if (!list) {
+        list = document.createElement("div");
+        list.className = "transcript-list";
+        translationArea.appendChild(list);
+      }
+      list.replaceChildren();
+      if (translation.lines.length) {
+        translationText.textContent = "تظهر كلمات الشارة تلقائيًا مع توقيتها أثناء التشغيل.";
+        translationText.classList.remove("empty");
+        translation.lines.forEach((line, index) => {
+          const item = document.createElement("button");
+          item.type = "button";
+          item.className = "transcript-line";
+          const stamp = document.createElement("span");
+          stamp.className = "transcript-time";
+          stamp.textContent = formatTime(line.start);
+          const words = document.createElement("span");
+          words.className = "transcript-words";
+          words.textContent = line.text;
+          item.append(stamp, words);
+          item.addEventListener("click", () => {
+            audio.currentTime = line.start;
+            audio.play().catch(() => {});
+          });
+          list.appendChild(item);
+        });
+        audio.dispatchEvent(new Event("timeupdate"));
+      } else if (translation.plain.trim()) {
         translationText.textContent = translation.plain;
         translationText.classList.remove("empty");
+        list.innerHTML = '<div class="transcript-empty">هذه الترجمة نص متصل ولا تحتوي على توقيتات للمزامنة.</div>';
       } else {
         translationText.textContent = "لا توجد ترجمة محفوظة لهذه الشارة بعد";
         translationText.classList.add("empty");
+        list.innerHTML = '<div class="transcript-empty">أضف كلمات الشارة وتوقيت كل مقطع في العمود السادس بورقة Player.</div>';
       }
     }
   };
