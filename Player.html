@@ -1,0 +1,449 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مشغل الشارات</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+:root {
+  --bg:#0f172a;
+  --card:#1e293b;
+  --player:#151f32;
+  --primary:#0284c7;
+  --text:#f8fafc;
+  --muted:#94a3b8;
+}
+* {box-sizing:border-box;margin:0;padding:0;font-family:Tajawal,sans-serif}
+body {
+  background:var(--bg);color:var(--text);min-height:100vh;
+  display:flex;align-items:center;justify-content:center;padding:14px
+}
+.container {
+  width:100%;max-width:650px;background:var(--card);
+  border:1px solid #ffffff0d;border-radius:22px;padding:22px;
+  display:flex;flex-direction:column;gap:18px;
+  box-shadow:0 18px 45px #0007
+}
+.cover {
+  width:100%;display:flex;justify-content:center;
+}
+.cover img {
+  width:100px;height:100px;object-fit:cover;border-radius:15px;
+  display:none;border:1px solid #ffffff22
+}
+.translation {
+  background:var(--player);border:1px solid #ffffff0d;
+  border-radius:16px;padding:22px 15px;min-height:145px;
+  display:flex;align-items:center;justify-content:center;
+  text-align:center;position:relative;transition:.2s
+}
+.translation-text {
+  font-size:25px;font-weight:700;line-height:1.9;
+  color:#fff;white-space:pre-wrap;overflow-wrap:anywhere
+}
+.translation-text.empty {color:var(--muted);font-size:16px;font-weight:500}
+.translation-tools {
+  display:flex;justify-content:center;align-items:center;gap:9px
+}
+.tool {
+  background:#ffffff0b;color:var(--muted);border:1px solid #ffffff12;
+  border-radius:9px;padding:9px 13px;cursor:pointer;font-size:14px
+}
+.tool:hover,.tool.active {color:#38bdf8;border-color:#0284c7}
+.player {
+  background:var(--player);border-radius:16px;padding:19px;
+  border:1px solid #ffffff08
+}
+.timeline {
+  height:7px;background:#334155;border-radius:10px;
+  cursor:pointer;overflow:hidden
+}
+.progress {
+  height:100%;width:0;background:linear-gradient(90deg,#0284c7,#38bdf8);
+  border-radius:10px
+}
+.times {
+  display:flex;justify-content:space-between;color:var(--muted);
+  font-size:13px;margin:8px 0 18px;direction:ltr
+}
+.controls {
+  display:flex;align-items:center;justify-content:space-between;gap:8px
+}
+button {font-family:inherit}
+.control {
+  border:0;background:transparent;color:var(--text);
+  cursor:pointer;display:flex;align-items:center;justify-content:center
+}
+.skip {
+  width:40px;height:40px;border-radius:50%;color:var(--muted);font-size:19px
+}
+.skip:hover {background:#ffffff0d;color:white}
+.play {
+  width:54px;height:54px;border-radius:50%;
+  background:var(--primary);font-size:21px;color:white;
+  box-shadow:0 4px 15px #0284c755
+}
+.play:hover {background:#0369a1}
+.loop,.speed {
+  height:39px;border-radius:9px;background:#ffffff0b;
+  border:1px solid #ffffff12;color:var(--muted);
+  padding:0 12px;cursor:pointer
+}
+.loop.active {color:#38bdf8}
+.speed-wrap {position:relative}
+.speed-menu {
+  display:none;position:absolute;bottom:48px;right:0;
+  background:#1e293b;border:1px solid #334155;border-radius:10px;
+  padding:5px;z-index:5;flex-direction:column;min-width:80px
+}
+.speed-menu button {
+  border:0;background:transparent;color:white;padding:7px;cursor:pointer
+}
+.speed-menu button:hover {background:#0284c7;border-radius:6px}
+.download {
+  width:42px;height:42px;border-radius:10px;
+  background:#059669;color:white;border:0;cursor:pointer;font-size:17px
+}
+.status {font-size:13px;color:var(--muted);text-align:center}
+.translation:fullscreen {
+  background:#0b1220;padding:35px;min-height:100vh;
+  display:flex;align-items:center;justify-content:center
+}
+.translation:fullscreen .translation-text {font-size:clamp(25px,5vw,48px)}
+@media(max-width:480px) {
+  .container{padding:15px;gap:14px}
+  .translation{min-height:125px;padding:17px 10px}
+  .translation-text{font-size:21px}
+  .player{padding:15px}
+  .controls{gap:5px}
+  .skip{width:34px}
+}
+</style>
+</head>
+
+<body>
+<main class="container">
+
+  <div class="cover">
+    <img id="coverImage" alt="صورة الشارة">
+  </div>
+
+  <section class="translation" id="translationBox">
+    <div class="translation-text empty" id="translationText">
+      جارٍ تحميل الشارة...
+    </div>
+  </section>
+
+  <div class="translation-tools">
+    <button class="tool" id="smaller" title="تصغير الخط">A−</button>
+    <button class="tool" id="larger" title="تكبير الخط">A+</button>
+    <button class="tool" id="fullscreen" title="ملء الشاشة">
+      <i class="fa-solid fa-expand"></i>
+    </button>
+  </div>
+
+  <section class="player">
+    <div class="timeline" id="timeline">
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <div class="times">
+      <span id="current">0:00</span>
+      <span id="duration">0:00</span>
+    </div>
+
+    <div class="controls">
+      <div class="speed-wrap">
+        <button class="control speed" id="speedBtn">1.0x</button>
+        <div class="speed-menu" id="speedMenu">
+          <button data-speed="0.5">0.5x</button>
+          <button data-speed="0.75">0.75x</button>
+          <button data-speed="1">1.0x</button>
+          <button data-speed="1.25">1.25x</button>
+          <button data-speed="1.5">1.5x</button>
+          <button data-speed="2">2.0x</button>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="control skip" id="forward" title="تقديم 10 ثوانٍ">
+          <i class="fa-solid fa-forward-fast"></i>
+        </button>
+        <button class="control play" id="playBtn">
+          <i class="fa-solid fa-play" id="playIcon"></i>
+        </button>
+        <button class="control skip" id="backward" title="تأخير 10 ثوانٍ">
+          <i class="fa-solid fa-backward-fast"></i>
+        </button>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:8px">
+        <button class="control loop" id="loopBtn" title="تكرار">
+          <i class="fa-solid fa-repeat"></i>
+        </button>
+        <button class="control download" id="downloadBtn" title="تحميل">
+          <i class="fa-solid fa-download"></i>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <audio id="audio" preload="metadata"></audio>
+  <div class="status" id="status">جاري الاتصال بقاعدة البيانات...</div>
+
+</main>
+
+<script>
+const SHEET_ID = "1rL5l72HK8KccymCdpfQE1eITLv-d-MNl0I-fIcpNgPA";
+const SHEET_NAME = "Player";
+
+const audio = document.getElementById("audio");
+const text = document.getElementById("translationText");
+const status = document.getElementById("status");
+const progress = document.getElementById("progress");
+const timeline = document.getElementById("timeline");
+const playIcon = document.getElementById("playIcon");
+
+let translationLines = [];
+let currentFontSize = 25;
+let audioUrl = "";
+
+function showMessage(message, isError=false) {
+  text.textContent = message;
+  text.classList.add("empty");
+  status.textContent = isError ? "تعذر تحميل البيانات" : message;
+}
+
+function formatTime(value) {
+  if (!Number.isFinite(value)) return "0:00";
+  const m = Math.floor(value / 60);
+  const s = Math.floor(value % 60);
+  return m + ":" + String(s).padStart(2,"0");
+}
+
+function parseTranslation(value) {
+  if (!value) return [];
+  try {
+    const parsed = JSON.parse(value);
+    if (Array.isArray(parsed)) {
+      return parsed.map(item => ({
+        start: Number(item.start),
+        end: Number(item.end),
+        text: String(item.text || "")
+      })).filter(item =>
+        Number.isFinite(item.start) &&
+        Number.isFinite(item.end) &&
+        item.text
+      ).sort((a,b) => a.start - b.start);
+    }
+  } catch(e) {}
+  return [];
+}
+
+async function loadPlayer() {
+  const id = new URLSearchParams(location.search).get("id");
+  if (!id) {
+    showMessage("لم يتم تحديد رقم الشارة في الرابط", true);
+    return;
+  }
+
+  try {
+    const url =
+      "https://docs.google.com/spreadsheets/d/" + SHEET_ID +
+      "/gviz/tq?tqx=out:json&headers=0&sheet=" +
+      encodeURIComponent(SHEET_NAME);
+
+    const response = await fetch(url);
+    if (!response.ok) throw new Error("Sheet request failed");
+
+    const raw = await response.text();
+    const start = raw.indexOf("{");
+    const end = raw.lastIndexOf("}");
+    if (start < 0 || end < 0) throw new Error("Invalid sheet response");
+
+    const data = JSON.parse(raw.substring(start, end + 1));
+    const rows = data.table.rows || [];
+
+    const record = rows.find(row => {
+      const cells = row.c || [];
+      const cellId = cells[0]?.v;
+      return String(cellId ?? "").trim() === String(id).trim();
+    });
+
+    if (!record) {
+      showMessage("لم نعثر على الشارة المطلوبة", true);
+      return;
+    }
+
+    const cells = record.c || [];
+    const imageUrl = cells[1]?.v || "";
+    audioUrl = cells[4]?.v || "";
+    const translationData = cells[5]?.v || "";
+
+    if (imageUrl) {
+      const image = document.getElementById("coverImage");
+      image.src = imageUrl;
+      image.style.display = "block";
+    }
+
+    if (!audioUrl) throw new Error("Audio URL is missing");
+
+    audio.src = audioUrl;
+    translationLines = parseTranslation(translationData);
+
+    if (translationLines.length) {
+      text.textContent = "جاهز للاستماع";
+      text.classList.remove("empty");
+      status.textContent = "تم تحميل الشارة والترجمة";
+    } else {
+      showMessage("لا توجد ترجمة متزامنة لهذه الشارة بعد");
+    }
+
+  } catch(error) {
+    console.error(error);
+    showMessage("تعذر الاتصال بالجدول. تأكد من إتاحة العرض العام واسم ورقة Player.", true);
+  }
+}
+
+document.getElementById("playBtn").addEventListener("click", () => {
+  if (audio.paused) audio.play().catch(() => {
+    status.textContent = "تعذر تشغيل الصوت";
+  });
+  else audio.pause();
+});
+
+audio.addEventListener("play", () => {
+  playIcon.className = "fa-solid fa-pause";
+});
+
+audio.addEventListener("pause", () => {
+  playIcon.className = "fa-solid fa-play";
+});
+
+audio.addEventListener("loadedmetadata", () => {
+  document.getElementById("duration").textContent = formatTime(audio.duration);
+});
+
+audio.addEventListener("timeupdate", () => {
+  const current = audio.currentTime;
+  const duration = audio.duration || 0;
+
+  progress.style.width = duration ? (current / duration * 100) + "%" : "0%";
+  document.getElementById("current").textContent = formatTime(current);
+
+  const line = translationLines.find(item =>
+    current >= item.start && current < item.end
+  );
+
+  if (line) {
+    text.textContent = line.text;
+    text.classList.remove("empty");
+  } else if (translationLines.length) {
+    text.textContent = "";
+  }
+});
+
+document.getElementById("forward").onclick = () => {
+  audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 10);
+};
+
+document.getElementById("backward").onclick = () => {
+  audio.currentTime = Math.max(0, audio.currentTime - 10);
+};
+
+timeline.addEventListener("click", event => {
+  if (!audio.duration) return;
+  const rect = timeline.getBoundingClientRect();
+  const ratio = (rect.right - event.clientX) / rect.width;
+  audio.currentTime = Math.max(0, Math.min(1, ratio)) * audio.duration;
+});
+
+document.getElementById("loopBtn").onclick = event => {
+  audio.loop = !audio.loop;
+  event.currentTarget.classList.toggle("active", audio.loop);
+};
+
+const speedBtn = document.getElementById("speedBtn");
+const speedMenu = document.getElementById("speedMenu");
+
+speedBtn.onclick = event => {
+  event.stopPropagation();
+  speedMenu.style.display =
+    speedMenu.style.display === "flex" ? "none" : "flex";
+};
+
+speedMenu.querySelectorAll("button").forEach(button => {
+  button.onclick = () => {
+    const speed = Number(button.dataset.speed);
+    audio.playbackRate = speed;
+    speedBtn.textContent = speed + "x";
+    speedMenu.style.display = "none";
+  };
+});
+
+document.addEventListener("click", () => {
+  speedMenu.style.display = "none";
+});
+
+document.getElementById("larger").onclick = () => {
+  currentFontSize = Math.min(48, currentFontSize + 2);
+  text.style.fontSize = currentFontSize + "px";
+};
+
+document.getElementById("smaller").onclick = () => {
+  currentFontSize = Math.max(14, currentFontSize - 2);
+  text.style.fontSize = currentFontSize + "px";
+};
+
+document.getElementById("fullscreen").onclick = async () => {
+  const box = document.getElementById("translationBox");
+  try {
+    if (!document.fullscreenElement) await box.requestFullscreen();
+    else await document.exitFullscreen();
+  } catch(e) {
+    status.textContent = "ملء الشاشة غير مدعوم في هذا المتصفح";
+  }
+};
+
+document.getElementById("downloadBtn").onclick = async () => {
+  if (!audioUrl) return;
+  try {
+    const response = await fetch(audioUrl);
+    if (!response.ok) throw new Error("Download failed");
+    const blob = await response.blob();
+    const blobUrl = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = blobUrl;
+    link.download = "audio.mp3";
+    link.click();
+    URL.revokeObjectURL(blobUrl);
+  } catch(e) {
+    window.open(audioUrl, "_blank");
+  }
+};
+
+document.addEventListener("keydown", event => {
+  if (["INPUT","TEXTAREA"].includes(event.target.tagName)) return;
+
+  if (event.key === "ArrowLeft") {
+    event.preventDefault();
+    audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 10);
+  } else if (event.key === "ArrowRight") {
+    event.preventDefault();
+    audio.currentTime = Math.max(0, audio.currentTime - 10);
+  } else if (event.code === "Space") {
+    event.preventDefault();
+    if (audio.paused) audio.play();
+    else audio.pause();
+  }
+});
+
+loadPlayer();
+</script>
+</body>
+</html>
