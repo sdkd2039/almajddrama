@@ -601,6 +601,9 @@ function createPlayer(record) {
   const downloadButton = card.querySelector(".downloadBtn");
 
   const embedButton = card.querySelector(".embed-toggle");
+  // واجهة التضمين لا تظهر للزوار العاديين؛ افتح لوحة النسخ بإضافة ?admin=1.
+  const isEmbedAdmin = new URLSearchParams(location.search).get("admin") === "1";
+  embedButton.hidden = !isEmbedAdmin;
   embedButton.addEventListener("click", async () => {
     const embedUrl = new URL("Player.html", location.href);
     embedUrl.searchParams.set("id", String(record.id));
