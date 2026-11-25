@@ -313,6 +313,7 @@ body {
 .player-extra-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
 .embed-toggle{flex:1;min-width:140px;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:#111c30;color:#cbd5e1;font:inherit;cursor:pointer}
 .embed-toggle:hover{border-color:var(--primary-color);color:#38bdf8}
+.transcribe-toggle{flex:1;min-width:140px;padding:12px;border-radius:10px;border:1px solid rgba(14,165,233,.25);background:#10263c;color:#7dd3fc;font:inherit;cursor:pointer}.transcribe-toggle:disabled{opacity:.6;cursor:wait}
 .translation-area {
   display:none;
   background:var(--player-bg);
@@ -483,6 +484,23 @@ function parseTranslation(value) {
   return {lines:[],plain:String(value)};
 }
 
+function parseVtt(vtt) {
+  const blocks = String(vtt).replace(/\\r/g, "").split(/\\n\\s*\\n/);
+  const toSeconds = value => {
+    const parts = value.trim().replace(",", ".").split(":").map(Number);
+    if (parts.some(Number.isNaN)) return NaN;
+    return parts.reduce((total, part) => total * 60 + part, 0);
+  };
+  return blocks.map(block => {
+    const lines = block.split("\\n");
+    const timing = lines.find(line => line.includes("-->"));
+    if (!timing) return null;
+    const [start, end] = timing.split("-->").map(part => toSeconds(part.trim().split(/\\s+/)[0]));
+    const text = lines.slice(lines.indexOf(timing) + 1).join(" ").replace(/<[^>]*>/g, "").trim();
+    return { start, end, text };
+  }).filter(item => item && Number.isFinite(item.start) && Number.isFinite(item.end) && item.end > item.start && item.text);
+}
+
 function createPlayer(record) {
   const card = document.createElement("section");
   card.className = "page-container";
@@ -569,6 +587,7 @@ function createPlayer(record) {
       إظهار الترجمة
     </button>
       <button class="embed-toggle" type="button"><i class="fa-solid fa-code"></i> نسخ كود التضمين</button>
+      <button class="transcribe-toggle" type="button" hidden><i class="fa-solid fa-wand-magic-sparkles"></i> تفريغ صوت تجريبي</button>
     </div>
 
     <section class="translation-area">
@@ -604,6 +623,51 @@ function createPlayer(record) {
   // واجهة التضمين لا تظهر للزوار العاديين؛ افتح لوحة النسخ بإضافة ?admin=1.
   const isEmbedAdmin = new URLSearchParams(location.search).get("admin") === "1";
   embedButton.hidden = !isEmbedAdmin;
+  const transcribeButton = card.querySelector(".transcribe-toggle");
+  transcribeButton.hidden = !isEmbedAdmin;
+  transcribeButton.addEventListener("click", async () => {
+    const original = transcribeButton.innerHTML;
+    transcribeButton.disabled = true;
+    transcribeButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جارٍ تفريغ الصوت...';
+    try {
+      const response = await fetch("https://sultan2021alamoudi.workers.dev/player/transcribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ audioUrl: record.audio })
+      });
+      const result = await response.json();
+      if (!response.ok || !result.ok) throw new Error(result.error || "تعذر تفريغ الصوت");
+      const timedLines = Array.isArray(result.segments) ? result.segments
+        .map(item => ({
+          start: Number(item.start),
+          end: Number(item.end),
+          text: String(item.text || "").trim()
+        }))
+        .filter(item => Number.isFinite(item.start) && Number.isFinite(item.end) && item.end > item.start && item.text)
+        : [];
+      if (timedLines.length) {
+        translation.lines = timedLines;
+        translation.plain = "";
+      } else if (result.vtt) {
+        translation.lines = parseVtt(result.vtt);
+        translation.plain = result.text || "";
+      } else {
+        translation.plain = result.text || "";
+      }
+      translationArea.classList.add("visible");
+      translationButton.innerHTML = '<i class="fa-solid fa-eye-slash"></i> إخفاء الترجمة';
+      translationText.textContent = translation.lines.length
+        ? "تم استخراج النص بالتوقيت. شغّل الصوت لمتابعة المقاطع."
+        : (translation.plain || "لم يرجع النموذج نصًا.");
+      translationText.classList.toggle("empty", !translation.lines.length && !translation.plain);
+      transcribeButton.innerHTML = '<i class="fa-solid fa-check"></i> اكتمل التفريغ (غير محفوظ)';
+    } catch (error) {
+      transcribeButton.innerHTML = original;
+      alert("تعذر التفريغ: " + error.message);
+    } finally {
+      transcribeButton.disabled = false;
+    }
+  });
   embedButton.addEventListener("click", async () => {
     const embedUrl = new URL("Player.html", location.href);
     embedUrl.searchParams.set("id", String(record.id));
