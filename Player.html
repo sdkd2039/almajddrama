@@ -3,447 +3,860 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>مشغل الشارات</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مشغل صوتي - دراما المجد</title>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
 :root {
-  --bg:#0f172a;
-  --card:#1e293b;
-  --player:#151f32;
-  --primary:#0284c7;
-  --text:#f8fafc;
-  --muted:#94a3b8;
+  --bg-color:#0f172a;
+  --card-bg:#1e293b;
+  --text-color:#f8fafc;
+  --primary-color:#0284c7;
+  --primary-hover:#0369a1;
+  --text-muted:#94a3b8;
+  --accent-gold:#ffd700;
+  --player-bg:#151f32;
 }
-* {box-sizing:border-box;margin:0;padding:0;font-family:Tajawal,sans-serif}
+
+* {
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:'Tajawal',sans-serif;
+}
+
 body {
-  background:var(--bg);color:var(--text);min-height:100vh;
-  display:flex;align-items:center;justify-content:center;padding:14px
+  background:var(--bg-color);
+  color:var(--text-color);
+  min-height:100vh;
+  padding:20px;
 }
-.container {
-  width:100%;max-width:650px;background:var(--card);
-  border:1px solid #ffffff0d;border-radius:22px;padding:22px;
-  display:flex;flex-direction:column;gap:18px;
-  box-shadow:0 18px 45px #0007
+
+#playersList {
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:22px;
 }
-.cover {
-  width:100%;display:flex;justify-content:center;
+
+.page-container {
+  width:100%;
+  max-width:700px;
+  background:var(--card-bg);
+  border-radius:24px;
+  box-shadow:0 20px 50px rgba(0,0,0,.5);
+  padding:25px 30px;
+  display:flex;
+  flex-direction:column;
+  gap:22px;
+  border:1px solid rgba(255,255,255,.05);
 }
-.cover img {
-  width:100px;height:100px;object-fit:cover;border-radius:15px;
-  display:none;border:1px solid #ffffff22
+
+.top-meta-bar {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  width:100%;
+  gap:20px;
 }
-.translation {
-  background:var(--player);border:1px solid #ffffff0d;
-  border-radius:16px;padding:22px 15px;min-height:145px;
-  display:flex;align-items:center;justify-content:center;
-  text-align:center;position:relative;transition:.2s
+
+.meta-container {
+  display:flex;
+  align-items:center;
+  gap:20px;
+  text-align:right;
+  min-width:0;
 }
-.translation-text {
-  font-size:25px;font-weight:700;line-height:1.9;
-  color:#fff;white-space:pre-wrap;overflow-wrap:anywhere
+
+.poster-container {
+  width:90px;
+  height:90px;
+  border-radius:14px;
+  box-shadow:0 8px 20px rgba(0,0,0,.4);
+  overflow:hidden;
+  border:2px solid rgba(255,255,255,.1);
+  flex-shrink:0;
 }
-.translation-text.empty {color:var(--muted);font-size:16px;font-weight:500}
-.translation-tools {
-  display:flex;justify-content:center;align-items:center;gap:9px
+
+.poster-container img {
+  width:100%;
+  height:100%;
+  object-fit:cover;
 }
-.tool {
-  background:#ffffff0b;color:var(--muted);border:1px solid #ffffff12;
-  border-radius:9px;padding:9px 13px;cursor:pointer;font-size:14px
+
+.track-info {
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  min-width:0;
 }
-.tool:hover,.tool.active {color:#38bdf8;border-color:#0284c7}
-.player {
-  background:var(--player);border-radius:16px;padding:19px;
-  border:1px solid #ffffff08
+
+.track-title {
+  font-size:1.6rem;
+  font-weight:900;
+  margin-bottom:6px;
+  color:#fff;
+  overflow-wrap:anywhere;
 }
+
+.track-channel {
+  font-size:.95rem;
+  color:var(--primary-color);
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.btn-download-special {
+  padding:8px 18px;
+  height:40px;
+  border-radius:6px;
+  background:#10b981;
+  color:#fff;
+  font-size:1.15rem;
+  border:1px solid #047857;
+  box-shadow:0 2px 6px rgba(0,0,0,.3);
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+}
+
+.btn-download-special.loading-dl {
+  background:#d97706;
+}
+
+.audio-player {
+  background:var(--player-bg);
+  border-radius:18px;
+  padding:20px;
+  border:1px solid rgba(255,255,255,.03);
+  width:100%;
+}
+
+.progress-container {
+  width:100%;
+  margin-bottom:15px;
+}
+
 .timeline {
-  height:7px;background:#334155;border-radius:10px;
-  cursor:pointer;overflow:hidden
+  width:100%;
+  height:6px;
+  background:#334155;
+  border-radius:10px;
+  cursor:pointer;
+  position:relative;
 }
-.progress {
-  height:100%;width:0;background:linear-gradient(90deg,#0284c7,#38bdf8);
-  border-radius:10px
+
+.timeline:hover {
+  height:8px;
 }
-.times {
-  display:flex;justify-content:space-between;color:var(--muted);
-  font-size:13px;margin:8px 0 18px;direction:ltr
+
+.progress-bar {
+  height:100%;
+  width:0%;
+  background:linear-gradient(270deg,var(--primary-color),#0ea5e9);
+  border-radius:10px;
 }
-.controls {
-  display:flex;align-items:center;justify-content:space-between;gap:8px
+
+.time-stamps {
+  display:flex;
+  justify-content:space-between;
+  font-size:.85rem;
+  color:var(--text-muted);
+  margin-top:8px;
+  direction:ltr;
 }
-button {font-family:inherit}
-.control {
-  border:0;background:transparent;color:var(--text);
-  cursor:pointer;display:flex;align-items:center;justify-content:center
+
+.player-controls {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  width:100%;
 }
-.skip {
-  width:40px;height:40px;border-radius:50%;color:var(--muted);font-size:19px
+
+.control-btn {
+  background:none;
+  border:none;
+  color:var(--text-color);
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
-.skip:hover {background:#ffffff0d;color:white}
-.play {
-  width:54px;height:54px;border-radius:50%;
-  background:var(--primary);font-size:21px;color:white;
-  box-shadow:0 4px 15px #0284c755
+
+.speed-wrapper {
+  position:relative;
 }
-.play:hover {background:#0369a1}
-.loop,.speed {
-  height:39px;border-radius:9px;background:#ffffff0b;
-  border:1px solid #ffffff12;color:var(--muted);
-  padding:0 12px;cursor:pointer
+
+.btn-speed {
+  font-size:.85rem;
+  font-weight:700;
+  background:rgba(255,255,255,.06);
+  padding:8px 14px;
+  border-radius:8px;
+  border:1px solid rgba(255,255,255,.05);
+  color:var(--text-muted);
+  width:60px;
 }
-.loop.active {color:#38bdf8}
-.speed-wrap {position:relative}
+
+.btn-speed.active-speed {
+  color:var(--accent-gold);
+  background:rgba(255,215,0,.1);
+}
+
+.center-playback-group {
+  display:flex;
+  align-items:center;
+  gap:20px;
+}
+
+.btn-skip {
+  font-size:1.35rem;
+  color:var(--text-muted);
+  width:38px;
+  height:38px;
+  border-radius:50%;
+}
+
+.btn-skip:hover {
+  color:#fff;
+  background:rgba(255,255,255,.05);
+}
+
+.btn-play-pause {
+  width:52px;
+  height:52px;
+  border-radius:50%;
+  background:var(--primary-color);
+  color:#fff;
+  font-size:1.25rem;
+}
+
+.btn-loop {
+  width:38px;
+  height:38px;
+  font-size:1.1rem;
+  background:rgba(255,255,255,.06);
+  border-radius:8px;
+  border:1px solid rgba(255,255,255,.05);
+  color:var(--text-muted);
+}
+
+.btn-loop.active-loop {
+  color:#0ea5e9;
+  background:rgba(14,165,233,.1);
+}
+
 .speed-menu {
-  display:none;position:absolute;bottom:48px;right:0;
-  background:#1e293b;border:1px solid #334155;border-radius:10px;
-  padding:5px;z-index:5;flex-direction:column;min-width:80px
+  display:none;
+  position:absolute;
+  bottom:45px;
+  right:0;
+  background:#1e293b;
+  border:1px solid #334155;
+  border-radius:12px;
+  padding:5px;
+  z-index:10;
+  flex-direction:column;
+  gap:2px;
 }
-.speed-menu button {
-  border:0;background:transparent;color:white;padding:7px;cursor:pointer
+
+.speed-option {
+  background:none;
+  border:none;
+  color:var(--text-color);
+  padding:6px 14px;
+  font-size:.85rem;
+  font-weight:700;
+  border-radius:6px;
+  cursor:pointer;
+  width:65px;
 }
-.speed-menu button:hover {background:#0284c7;border-radius:6px}
-.download {
-  width:42px;height:42px;border-radius:10px;
-  background:#059669;color:white;border:0;cursor:pointer;font-size:17px
+
+.speed-option:hover {
+  background:var(--primary-color);
+  color:#fff;
 }
-.status {font-size:13px;color:var(--muted);text-align:center}
-.translation:fullscreen {
-  background:#0b1220;padding:35px;min-height:100vh;
-  display:flex;align-items:center;justify-content:center
+
+.speed-option.selected {
+  background:rgba(2,132,199,.2);
+  color:#38bdf8;
 }
-.translation:fullscreen .translation-text {font-size:clamp(25px,5vw,48px)}
-@media(max-width:480px) {
-  .container{padding:15px;gap:14px}
-  .translation{min-height:125px;padding:17px 10px}
-  .translation-text{font-size:21px}
-  .player{padding:15px}
-  .controls{gap:5px}
-  .skip{width:34px}
+
+/* الترجمة مخفية افتراضياً */
+
+.translation-toggle {
+  width:100%;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.05);
+  color:#cbd5e1;
+  font-size:1rem;
+  cursor:pointer;
+}
+
+.translation-toggle:hover {
+  border-color:var(--primary-color);
+  color:#38bdf8;
+}
+
+.translation-area {
+  display:none;
+  background:var(--player-bg);
+  border-radius:16px;
+  padding:18px 15px;
+  border:1px solid rgba(255,255,255,.04);
+  flex-direction:column;
+  gap:15px;
+}
+
+.translation-area.visible {
+  display:flex;
+}
+
+.translation-text {
+  min-height:105px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  font-size:24px;
+  line-height:1.9;
+  font-weight:700;
+  color:#fff;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+}
+
+.translation-text.empty {
+  color:var(--text-muted);
+  font-size:15px;
+  font-weight:500;
+}
+
+.translation-tools {
+  display:flex;
+  justify-content:center;
+  gap:10px;
+}
+
+.translation-tools button {
+  background:rgba(255,255,255,.06);
+  color:var(--text-muted);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:9px;
+  padding:9px 14px;
+  cursor:pointer;
+}
+
+.translation-area:fullscreen {
+  background:#0b1220;
+  min-height:100vh;
+  justify-content:center;
+  padding:30px;
+}
+
+.translation-area:fullscreen .translation-text {
+  font-size:clamp(25px,5vw,48px);
+}
+
+.page-status {
+  color:var(--text-muted);
+  text-align:center;
+  padding:35px 10px;
+  font-size:15px;
+}
+
+@media(max-width:540px) {
+  body {
+    padding:12px;
+  }
+
+  .page-container {
+    padding:20px;
+    gap:18px;
+  }
+
+  .top-meta-bar {
+    gap:12px;
+  }
+
+  .meta-container {
+    gap:12px;
+  }
+
+  .poster-container {
+    width:75px;
+    height:75px;
+  }
+
+  .track-title {
+    font-size:1.3rem;
+  }
+
+  .track-channel {
+    font-size:.85rem;
+  }
+
+  .audio-player {
+    padding:15px;
+  }
+
+  .center-playback-group {
+    gap:12px;
+  }
 }
 </style>
 </head>
 
 <body>
-<main class="container">
 
-  <div class="cover">
-    <img id="coverImage" alt="صورة الشارة">
-  </div>
-
-  <section class="translation" id="translationBox">
-    <div class="translation-text empty" id="translationText">
-      جارٍ تحميل الشارة...
-    </div>
-  </section>
-
-  <div class="translation-tools">
-    <button class="tool" id="smaller" title="تصغير الخط">A−</button>
-    <button class="tool" id="larger" title="تكبير الخط">A+</button>
-    <button class="tool" id="fullscreen" title="ملء الشاشة">
-      <i class="fa-solid fa-expand"></i>
-    </button>
-  </div>
-
-  <section class="player">
-    <div class="timeline" id="timeline">
-      <div class="progress" id="progress"></div>
-    </div>
-
-    <div class="times">
-      <span id="current">0:00</span>
-      <span id="duration">0:00</span>
-    </div>
-
-    <div class="controls">
-      <div class="speed-wrap">
-        <button class="control speed" id="speedBtn">1.0x</button>
-        <div class="speed-menu" id="speedMenu">
-          <button data-speed="0.5">0.5x</button>
-          <button data-speed="0.75">0.75x</button>
-          <button data-speed="1">1.0x</button>
-          <button data-speed="1.25">1.25x</button>
-          <button data-speed="1.5">1.5x</button>
-          <button data-speed="2">2.0x</button>
-        </div>
-      </div>
-
-      <div style="display:flex;align-items:center;gap:12px">
-        <button class="control skip" id="forward" title="تقديم 10 ثوانٍ">
-          <i class="fa-solid fa-forward-fast"></i>
-        </button>
-        <button class="control play" id="playBtn">
-          <i class="fa-solid fa-play" id="playIcon"></i>
-        </button>
-        <button class="control skip" id="backward" title="تأخير 10 ثوانٍ">
-          <i class="fa-solid fa-backward-fast"></i>
-        </button>
-      </div>
-
-      <div style="display:flex;align-items:center;gap:8px">
-        <button class="control loop" id="loopBtn" title="تكرار">
-          <i class="fa-solid fa-repeat"></i>
-        </button>
-        <button class="control download" id="downloadBtn" title="تحميل">
-          <i class="fa-solid fa-download"></i>
-        </button>
-      </div>
-    </div>
-  </section>
-
-  <audio id="audio" preload="metadata"></audio>
-  <div class="status" id="status">جاري الاتصال بقاعدة البيانات...</div>
-
+<main id="playersList">
+  <div class="page-status">جاري تحميل الشارات...</div>
 </main>
 
 <script>
 const SHEET_ID = "1rL5l72HK8KccymCdpfQE1eITLv-d-MNl0I-fIcpNgPA";
 const SHEET_NAME = "Player";
 
-const audio = document.getElementById("audio");
-const text = document.getElementById("translationText");
-const status = document.getElementById("status");
-const progress = document.getElementById("progress");
-const timeline = document.getElementById("timeline");
-const playIcon = document.getElementById("playIcon");
+const playersList = document.getElementById("playersList");
 
-let translationLines = [];
-let currentFontSize = 25;
-let audioUrl = "";
-
-function showMessage(message, isError=false) {
-  text.textContent = message;
-  text.classList.add("empty");
-  status.textContent = isError ? "تعذر تحميل البيانات" : message;
+function getCell(row,index) {
+  const cell = row.c?.[index];
+  return cell?.v ?? cell?.f ?? "";
 }
 
-function formatTime(value) {
-  if (!Number.isFinite(value)) return "0:00";
-  const m = Math.floor(value / 60);
-  const s = Math.floor(value % 60);
-  return m + ":" + String(s).padStart(2,"0");
+function formatTime(seconds) {
+  if (!Number.isFinite(seconds)) return "0:00";
+  const min = Math.floor(seconds / 60);
+  const sec = Math.floor(seconds % 60);
+  return min + ":" + String(sec).padStart(2,"0");
+}
+
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g, char => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  })[char]);
 }
 
 function parseTranslation(value) {
-  if (!value) return [];
+  if (!value) return {lines:[], plain:""};
+
   try {
     const parsed = JSON.parse(value);
+
     if (Array.isArray(parsed)) {
-      return parsed.map(item => ({
-        start: Number(item.start),
-        end: Number(item.end),
-        text: String(item.text || "")
+      const lines = parsed.map(item => ({
+        start:Number(item.start),
+        end:Number(item.end),
+        text:String(item.text || "")
       })).filter(item =>
         Number.isFinite(item.start) &&
         Number.isFinite(item.end) &&
-        item.text
+        item.end > item.start &&
+        item.text.trim()
       ).sort((a,b) => a.start - b.start);
-    }
-  } catch(e) {}
-  return [];
-}
 
-async function loadPlayer() {
-  const id = new URLSearchParams(location.search).get("id");
-  if (!id) {
-    showMessage("لم يتم تحديد رقم الشارة في الرابط", true);
-    return;
+      return {lines,plain:""};
+    }
+  } catch(error) {
+    // النص العادي يعرض عند فتح الترجمة
   }
 
+  return {lines:[],plain:String(value)};
+}
+
+function createPlayer(record) {
+  const card = document.createElement("section");
+  card.className = "page-container";
+
+  const safeTitle = escapeHTML(record.name || "شارة صوتية");
+  const safeChannel = escapeHTML(record.channel || "");
+  const safeImage = escapeHTML(record.image || "");
+
+  card.innerHTML = `
+    <div class="top-meta-bar">
+      <div class="meta-container">
+        <div class="poster-container">
+          <img src="${safeImage}" alt="بوستر المسلسل"
+               onerror="this.style.display='none'">
+        </div>
+
+        <div class="track-info">
+          <h2 class="track-title">${safeTitle}</h2>
+          <div class="track-channel">
+            <i class="fa-solid fa-tv"></i>
+            <span>${safeChannel}</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="control-btn btn-download-special downloadBtn"
+              title="تحميل الشارة">
+        <i class="fa-solid fa-cloud-arrow-down"></i>
+      </button>
+    </div>
+
+    <audio preload="metadata"></audio>
+
+    <div class="audio-player">
+      <div class="progress-container">
+        <div class="timeline">
+          <div class="progress-bar"></div>
+        </div>
+
+        <div class="time-stamps">
+          <span class="currentTime">0:00</span>
+          <span class="duration">0:00</span>
+        </div>
+      </div>
+
+      <div class="player-controls">
+        <div class="speed-wrapper">
+          <button class="control-btn btn-speed">1.0x</button>
+          <div class="speed-menu">
+            <button class="speed-option" data-speed="0.5">0.5x</button>
+            <button class="speed-option" data-speed="0.75">0.75x</button>
+            <button class="speed-option selected" data-speed="1">1.0x</button>
+            <button class="speed-option" data-speed="1.25">1.25x</button>
+            <button class="speed-option" data-speed="1.5">1.5x</button>
+            <button class="speed-option" data-speed="2">2.0x</button>
+          </div>
+        </div>
+
+        <div class="center-playback-group">
+          <button class="control-btn btn-skip rewindBtn"
+                  title="تأخير 10 ثوانٍ">
+            <i class="fa-solid fa-forward-fast"></i>
+          </button>
+
+          <button class="control-btn btn-play-pause">
+            <i class="fa-solid fa-play"></i>
+          </button>
+
+          <button class="control-btn btn-skip forwardBtn"
+                  title="تقديم 10 ثوانٍ">
+            <i class="fa-solid fa-backward-fast"></i>
+          </button>
+        </div>
+
+        <button class="control-btn btn-loop" title="تكرار تلقائي">
+          <i class="fa-solid fa-arrows-rotate"></i>
+        </button>
+      </div>
+    </div>
+
+    <button class="translation-toggle">
+      <i class="fa-solid fa-language"></i>
+      إظهار الترجمة
+    </button>
+
+    <section class="translation-area">
+      <div class="translation-text empty">
+        اضغط تشغيل لعرض الترجمة المتزامنة
+      </div>
+
+      <div class="translation-tools">
+        <button class="smaller">A−</button>
+        <button class="larger">A+</button>
+        <button class="fullscreen">
+          <i class="fa-solid fa-expand"></i>
+        </button>
+      </div>
+    </section>
+  `;
+
+  playersList.appendChild(card);
+
+  const audio = card.querySelector("audio");
+  const playButton = card.querySelector(".btn-play-pause");
+  const playIcon = playButton.querySelector("i");
+  const timeline = card.querySelector(".timeline");
+  const progressBar = card.querySelector(".progress-bar");
+  const currentLabel = card.querySelector(".currentTime");
+  const durationLabel = card.querySelector(".duration");
+  const speedButton = card.querySelector(".btn-speed");
+  const speedMenu = card.querySelector(".speed-menu");
+  const loopButton = card.querySelector(".btn-loop");
+  const downloadButton = card.querySelector(".downloadBtn");
+
+  const translationButton = card.querySelector(".translation-toggle");
+  const translationArea = card.querySelector(".translation-area");
+  const translationText = card.querySelector(".translation-text");
+
+  const translation = parseTranslation(record.translation);
+  let fontSize = 24;
+
+  audio.src = record.audio;
+
+  // التشغيل والإيقاف
+  playButton.onclick = () => {
+    if (audio.paused) {
+      audio.play().catch(() => {});
+    } else {
+      audio.pause();
+    }
+  };
+
+  audio.addEventListener("play", () => {
+    playIcon.className = "fa-solid fa-pause";
+  });
+
+  audio.addEventListener("pause", () => {
+    playIcon.className = "fa-solid fa-play";
+  });
+
+  audio.addEventListener("loadedmetadata", () => {
+    durationLabel.textContent = formatTime(audio.duration);
+  });
+
+  // مزامنة الترجمة مع الصوت
+  audio.addEventListener("timeupdate", () => {
+    const current = audio.currentTime;
+    const duration = audio.duration || 0;
+
+    progressBar.style.width =
+      duration ? (current / duration * 100) + "%" : "0%";
+
+    currentLabel.textContent = formatTime(current);
+
+    if (!translationArea.classList.contains("visible")) return;
+
+    if (translation.lines.length) {
+      const line = translation.lines.find(item =>
+        current >= item.start && current < item.end
+      );
+
+      if (line) {
+        translationText.textContent = line.text;
+        translationText.classList.remove("empty");
+      } else {
+        translationText.textContent = "";
+        translationText.classList.add("empty");
+      }
+    }
+  });
+
+  // التقديم والتأخير
+  card.querySelector(".forwardBtn").onclick = () => {
+    audio.currentTime = Math.min(
+      audio.duration || 0,
+      audio.currentTime + 10
+    );
+  };
+
+  card.querySelector(".rewindBtn").onclick = () => {
+    audio.currentTime = Math.max(0, audio.currentTime - 10);
+  };
+
+  // تحريك شريط الصوت
+  function seek(event) {
+    if (!audio.duration) return;
+
+    const rect = timeline.getBoundingClientRect();
+    const ratio = (rect.right - event.clientX) / rect.width;
+
+    audio.currentTime =
+      Math.max(0, Math.min(1, ratio)) * audio.duration;
+  }
+
+  timeline.addEventListener("click",seek);
+
+  // التكرار
+  loopButton.onclick = () => {
+    audio.loop = !audio.loop;
+    loopButton.classList.toggle("active-loop",audio.loop);
+  };
+
+  // السرعة
+  speedButton.onclick = event => {
+    event.stopPropagation();
+    speedMenu.style.display =
+      speedMenu.style.display === "flex" ? "none" : "flex";
+  };
+
+  speedMenu.querySelectorAll(".speed-option").forEach(option => {
+    option.onclick = () => {
+      const speed = Number(option.dataset.speed);
+
+      audio.playbackRate = speed;
+      speedButton.textContent = speed + "x";
+      speedButton.classList.toggle("active-speed",speed !== 1);
+
+      speedMenu.querySelectorAll(".speed-option")
+        .forEach(item => item.classList.remove("selected"));
+
+      option.classList.add("selected");
+      speedMenu.style.display = "none";
+    };
+  });
+
+  // إظهار وإخفاء الترجمة
+  translationButton.onclick = () => {
+    const visible = translationArea.classList.toggle("visible");
+
+    translationButton.innerHTML = visible
+      ? '<i class="fa-solid fa-eye-slash"></i> إخفاء الترجمة'
+      : '<i class="fa-solid fa-language"></i> إظهار الترجمة';
+
+    if (visible && !translation.lines.length) {
+      if (translation.plain.trim()) {
+        translationText.textContent = translation.plain;
+        translationText.classList.remove("empty");
+      } else {
+        translationText.textContent = "لا توجد ترجمة محفوظة لهذه الشارة بعد";
+        translationText.classList.add("empty");
+      }
+    }
+  };
+
+  // تكبير وتصغير
+  card.querySelector(".larger").onclick = () => {
+    fontSize = Math.min(48,fontSize + 2);
+    translationText.style.fontSize = fontSize + "px";
+  };
+
+  card.querySelector(".smaller").onclick = () => {
+    fontSize = Math.max(14,fontSize - 2);
+    translationText.style.fontSize = fontSize + "px";
+  };
+
+  // ملء الشاشة
+  card.querySelector(".fullscreen").onclick = async () => {
+    try {
+      if (!document.fullscreenElement) {
+        await translationArea.requestFullscreen();
+      } else {
+        await document.exitFullscreen();
+      }
+    } catch(error) {
+      console.error(error);
+    }
+  };
+
+  // التحميل
+  downloadButton.onclick = async () => {
+    const icon = downloadButton.querySelector("i");
+
+    try {
+      downloadButton.classList.add("loading-dl");
+      icon.className = "fa-solid fa-spinner fa-spin";
+
+      const response = await fetch(record.audio);
+      if (!response.ok) throw new Error("Download failed");
+
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = (record.name || "audio") + ".mp3";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      setTimeout(() => URL.revokeObjectURL(blobUrl),1000);
+
+    } catch(error) {
+      window.open(record.audio,"_blank");
+    } finally {
+      downloadButton.classList.remove("loading-dl");
+      icon.className = "fa-solid fa-cloud-arrow-down";
+    }
+  };
+
+  // اختصارات لوحة المفاتيح
+  card.addEventListener("keydown",event => {
+    if (event.target.tagName === "BUTTON") return;
+
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      audio.currentTime = Math.min(
+        audio.duration || 0,
+        audio.currentTime + 10
+      );
+    } else if (event.key === "ArrowRight") {
+      event.preventDefault();
+      audio.currentTime = Math.max(0,audio.currentTime - 10);
+    } else if (event.code === "Space") {
+      event.preventDefault();
+      if (audio.paused) audio.play();
+      else audio.pause();
+    }
+  });
+}
+
+async function loadAllPlayers() {
   try {
     const url =
-      "https://docs.google.com/spreadsheets/d/" + SHEET_ID +
+      "https://docs.google.com/spreadsheets/d/" +
+      SHEET_ID +
       "/gviz/tq?tqx=out:json&headers=0&sheet=" +
       encodeURIComponent(SHEET_NAME);
 
     const response = await fetch(url);
-    if (!response.ok) throw new Error("Sheet request failed");
+
+    if (!response.ok) {
+      throw new Error("تعذر الوصول إلى Google Sheets");
+    }
 
     const raw = await response.text();
     const start = raw.indexOf("{");
     const end = raw.lastIndexOf("}");
-    if (start < 0 || end < 0) throw new Error("Invalid sheet response");
 
-    const data = JSON.parse(raw.substring(start, end + 1));
+    if (start < 0 || end < 0) {
+      throw new Error("استجابة غير صحيحة");
+    }
+
+    const data = JSON.parse(raw.slice(start,end + 1));
     const rows = data.table.rows || [];
 
-    const record = rows.find(row => {
-      const cells = row.c || [];
-      const cellId = cells[0]?.v;
-      return String(cellId ?? "").trim() === String(id).trim();
-    });
+    const records = rows.map(row => ({
+      id:getCell(row,0),
+      image:getCell(row,1),
+      name:getCell(row,2),
+      channel:getCell(row,3),
+      audio:getCell(row,4),
+      translation:getCell(row,5)
+    })).filter(item =>
+      String(item.id).trim() !== "" &&
+      String(item.name).trim() !== "" &&
+      String(item.audio).trim() !== ""
+    );
 
-    if (!record) {
-      showMessage("لم نعثر على الشارة المطلوبة", true);
+    playersList.innerHTML = "";
+
+    if (!records.length) {
+      playersList.innerHTML =
+        '<div class="page-status">لا توجد شارات مكتملة في ورقة Player.</div>';
       return;
     }
 
-    const cells = record.c || [];
-    const imageUrl = cells[1]?.v || "";
-    audioUrl = cells[4]?.v || "";
-    const translationData = cells[5]?.v || "";
-
-    if (imageUrl) {
-      const image = document.getElementById("coverImage");
-      image.src = imageUrl;
-      image.style.display = "block";
-    }
-
-    if (!audioUrl) throw new Error("Audio URL is missing");
-
-    audio.src = audioUrl;
-    translationLines = parseTranslation(translationData);
-
-    if (translationLines.length) {
-      text.textContent = "جاهز للاستماع";
-      text.classList.remove("empty");
-      status.textContent = "تم تحميل الشارة والترجمة";
-    } else {
-      showMessage("لا توجد ترجمة متزامنة لهذه الشارة بعد");
-    }
+    records.forEach(record => createPlayer(record));
 
   } catch(error) {
-    console.error(error);
-    showMessage("تعذر الاتصال بالجدول. تأكد من إتاحة العرض العام واسم ورقة Player.", true);
+    console.error("Player loading error:",error);
+
+    playersList.innerHTML =
+      '<div class="page-status">تعذر تحميل البيانات من Google Sheets. تأكد من إتاحة الجدول للعرض العام واسم الورقة Player.</div>';
   }
 }
 
-document.getElementById("playBtn").addEventListener("click", () => {
-  if (audio.paused) audio.play().catch(() => {
-    status.textContent = "تعذر تشغيل الصوت";
-  });
-  else audio.pause();
-});
-
-audio.addEventListener("play", () => {
-  playIcon.className = "fa-solid fa-pause";
-});
-
-audio.addEventListener("pause", () => {
-  playIcon.className = "fa-solid fa-play";
-});
-
-audio.addEventListener("loadedmetadata", () => {
-  document.getElementById("duration").textContent = formatTime(audio.duration);
-});
-
-audio.addEventListener("timeupdate", () => {
-  const current = audio.currentTime;
-  const duration = audio.duration || 0;
-
-  progress.style.width = duration ? (current / duration * 100) + "%" : "0%";
-  document.getElementById("current").textContent = formatTime(current);
-
-  const line = translationLines.find(item =>
-    current >= item.start && current < item.end
-  );
-
-  if (line) {
-    text.textContent = line.text;
-    text.classList.remove("empty");
-  } else if (translationLines.length) {
-    text.textContent = "";
-  }
-});
-
-document.getElementById("forward").onclick = () => {
-  audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 10);
-};
-
-document.getElementById("backward").onclick = () => {
-  audio.currentTime = Math.max(0, audio.currentTime - 10);
-};
-
-timeline.addEventListener("click", event => {
-  if (!audio.duration) return;
-  const rect = timeline.getBoundingClientRect();
-  const ratio = (rect.right - event.clientX) / rect.width;
-  audio.currentTime = Math.max(0, Math.min(1, ratio)) * audio.duration;
-});
-
-document.getElementById("loopBtn").onclick = event => {
-  audio.loop = !audio.loop;
-  event.currentTarget.classList.toggle("active", audio.loop);
-};
-
-const speedBtn = document.getElementById("speedBtn");
-const speedMenu = document.getElementById("speedMenu");
-
-speedBtn.onclick = event => {
-  event.stopPropagation();
-  speedMenu.style.display =
-    speedMenu.style.display === "flex" ? "none" : "flex";
-};
-
-speedMenu.querySelectorAll("button").forEach(button => {
-  button.onclick = () => {
-    const speed = Number(button.dataset.speed);
-    audio.playbackRate = speed;
-    speedBtn.textContent = speed + "x";
-    speedMenu.style.display = "none";
-  };
-});
-
-document.addEventListener("click", () => {
-  speedMenu.style.display = "none";
-});
-
-document.getElementById("larger").onclick = () => {
-  currentFontSize = Math.min(48, currentFontSize + 2);
-  text.style.fontSize = currentFontSize + "px";
-};
-
-document.getElementById("smaller").onclick = () => {
-  currentFontSize = Math.max(14, currentFontSize - 2);
-  text.style.fontSize = currentFontSize + "px";
-};
-
-document.getElementById("fullscreen").onclick = async () => {
-  const box = document.getElementById("translationBox");
-  try {
-    if (!document.fullscreenElement) await box.requestFullscreen();
-    else await document.exitFullscreen();
-  } catch(e) {
-    status.textContent = "ملء الشاشة غير مدعوم في هذا المتصفح";
-  }
-};
-
-document.getElementById("downloadBtn").onclick = async () => {
-  if (!audioUrl) return;
-  try {
-    const response = await fetch(audioUrl);
-    if (!response.ok) throw new Error("Download failed");
-    const blob = await response.blob();
-    const blobUrl = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = blobUrl;
-    link.download = "audio.mp3";
-    link.click();
-    URL.revokeObjectURL(blobUrl);
-  } catch(e) {
-    window.open(audioUrl, "_blank");
-  }
-};
-
-document.addEventListener("keydown", event => {
-  if (["INPUT","TEXTAREA"].includes(event.target.tagName)) return;
-
-  if (event.key === "ArrowLeft") {
-    event.preventDefault();
-    audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 10);
-  } else if (event.key === "ArrowRight") {
-    event.preventDefault();
-    audio.currentTime = Math.max(0, audio.currentTime - 10);
-  } else if (event.code === "Space") {
-    event.preventDefault();
-    if (audio.paused) audio.play();
-    else audio.pause();
-  }
-});
-
-loadPlayer();
+loadAllPlayers();
 </script>
 </body>
 </html>
