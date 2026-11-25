@@ -328,6 +328,14 @@ body {
   display:flex;
 }
 
+.transcript-list{display:flex;flex-direction:column;gap:8px;max-height:340px;overflow:auto;padding:2px;overscroll-behavior:contain}
+.transcript-line{display:grid;grid-template-columns:64px minmax(0,1fr);align-items:start;gap:12px;width:100%;padding:12px 14px;border:1px solid rgba(255,255,255,.07);border-radius:12px;background:rgba(255,255,255,.035);color:#e2e8f0;text-align:right;font:inherit;cursor:pointer;transition:background .18s,border-color .18s}
+.transcript-line:hover,.transcript-line.active{background:rgba(2,132,199,.16);border-color:rgba(56,189,248,.5)}
+.transcript-time{direction:ltr;text-align:center;color:#38bdf8;font-weight:800;font-size:.9rem;font-variant-numeric:tabular-nums}
+.transcript-words{line-height:1.75;overflow-wrap:anywhere}
+.transcript-empty{padding:12px;color:var(--text-muted);text-align:center;font-size:.9rem}
+button:focus-visible,.timeline:focus-visible{outline:2px solid #38bdf8;outline-offset:3px}
+
 .translation-text {
   min-height:105px;
   display:flex;
@@ -387,9 +395,19 @@ body {
   }
 
   .page-container {
-    padding:20px;
-    gap:18px;
+    padding:16px;
+    gap:16px;
+    border-radius:18px;
   }
+
+  .translation-text{font-size:20px;min-height:88px}
+  .transcript-list{max-height:48vh}
+  .transcript-line{grid-template-columns:58px minmax(0,1fr);padding:11px 10px;gap:9px}
+  .player-controls{gap:8px}
+  .btn-skip{width:34px;height:34px}
+  .btn-play-pause{width:48px;height:48px}
+  .player-extra-actions{gap:8px}
+  .translation-toggle,.embed-toggle,.transcribe-toggle{min-width:0;padding:11px 8px;font-size:.9rem}
 
   .top-meta-bar {
     gap:12px;
@@ -625,47 +643,50 @@ function createPlayer(record) {
   embedButton.hidden = !isEmbedAdmin;
   const transcribeButton = card.querySelector(".transcribe-toggle");
   transcribeButton.hidden = !isEmbedAdmin;
-  transcribeButton.addEventListener("click", async () => {
-    const original = transcribeButton.innerHTML;
-    transcribeButton.disabled = true;
-    transcribeButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جارٍ تفريغ الصوت...';
-    try {
-      const response = await fetch("https://majd-drama-ai.sultan2021alamoudi.workers.dev/player/transcribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ audioUrl: record.audio })
+  transcribeButton.addEventListener("click", () => {
+    // استخدم الترجمة الموجودة أصلًا في العمود السادس من Google Sheets.
+    translationArea.classList.add("visible");
+    translationButton.innerHTML = '<i class="fa-solid fa-eye-slash"></i> إخفاء الترجمة';
+    let list = translationArea.querySelector(".transcript-list");
+    if (!list) {
+      list = document.createElement("div");
+      list.className = "transcript-list";
+      translationArea.appendChild(list);
+    }
+    list.replaceChildren();
+    if (translation.lines.length) {
+      translationText.textContent = "اختر أي توقيت للانتقال إليه في الشارة، أو شغّل الصوت لمتابعة الترجمة تلقائيًا.";
+      translationText.classList.remove("empty");
+      translation.lines.forEach((line, index) => {
+        const item = document.createElement("button");
+        item.type = "button";
+        item.className = "transcript-line";
+        const stamp = document.createElement("span");
+        stamp.className = "transcript-time";
+        stamp.textContent = formatTime(line.start);
+        const words = document.createElement("span");
+        words.className = "transcript-words";
+        words.textContent = line.text;
+        item.append(stamp, words);
+        item.addEventListener("click", () => {
+          audio.currentTime = Math.max(0, line.start);
+          audio.play().catch(() => {});
+          list.querySelectorAll(".transcript-line").forEach(row => row.classList.remove("active"));
+          item.classList.add("active");
+        });
+        list.appendChild(item);
       });
-      const result = await response.json();
-      if (!response.ok || !result.ok) throw new Error(result.error || "تعذر تفريغ الصوت");
-      const timedLines = Array.isArray(result.segments) ? result.segments
-        .map(item => ({
-          start: Number(item.start),
-          end: Number(item.end),
-          text: String(item.text || "").trim()
-        }))
-        .filter(item => Number.isFinite(item.start) && Number.isFinite(item.end) && item.end > item.start && item.text)
-        : [];
-      if (timedLines.length) {
-        translation.lines = timedLines;
-        translation.plain = "";
-      } else if (result.vtt) {
-        translation.lines = parseVtt(result.vtt);
-        translation.plain = result.text || "";
-      } else {
-        translation.plain = result.text || "";
-      }
-      translationArea.classList.add("visible");
-      translationButton.innerHTML = '<i class="fa-solid fa-eye-slash"></i> إخفاء الترجمة';
-      translationText.textContent = translation.lines.length
-        ? "تم استخراج النص بالتوقيت. شغّل الصوت لمتابعة المقاطع."
-        : (translation.plain || "لم يرجع النموذج نصًا.");
-      translationText.classList.toggle("empty", !translation.lines.length && !translation.plain);
-      transcribeButton.innerHTML = '<i class="fa-solid fa-check"></i> اكتمل التفريغ (غير محفوظ)';
-    } catch (error) {
-      transcribeButton.innerHTML = original;
-      alert("تعذر التفريغ: " + error.message);
-    } finally {
-      transcribeButton.disabled = false;
+      transcribeButton.innerHTML = '<i class="fa-solid fa-check"></i> عرض الترجمة والتوقيت';
+    } else if (translation.plain.trim()) {
+      translationText.textContent = translation.plain;
+      translationText.classList.remove("empty");
+      list.innerHTML = '<div class="transcript-empty">الترجمة محفوظة كنص عادي دون توقيتات قابلة للنقر.</div>';
+      transcribeButton.innerHTML = '<i class="fa-solid fa-check"></i> عرض الترجمة';
+    } else {
+      translationText.textContent = "لا توجد ترجمة محفوظة في العمود السادس لهذه الشارة.";
+      translationText.classList.add("empty");
+      list.innerHTML = '<div class="transcript-empty">أضف الترجمة في العمود السادس بورقة Player.</div>';
+      transcribeButton.innerHTML = '<i class="fa-solid fa-circle-info"></i> لا توجد ترجمة محفوظة';
     }
   });
   embedButton.addEventListener("click", async () => {
