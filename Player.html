@@ -696,7 +696,7 @@ function createPlayer(record) {
 
   function updateTranslationPanel() {
     translationArea.classList.toggle("visible", captionsEnabled || transcriptEnabled);
-    translationText.style.display = captionsEnabled ? "flex" : "none";
+    translationText.style.display = captionsEnabled ? "block" : "none";
     const list = translationArea.querySelector(".transcript-list");
     if (list) list.classList.toggle("visible", transcriptEnabled);
     translationButton.classList.toggle("active", captionsEnabled);
