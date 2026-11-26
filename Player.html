@@ -438,6 +438,10 @@ button:focus-visible,.timeline:focus-visible{outline:2px solid #38bdf8;outline-o
   background:linear-gradient(to left,#fb5b24 0%,#fb5b24 var(--word-progress,0%),#fff var(--word-progress,0%),#fff 100%);
   -webkit-background-clip:text;
   background-clip:text;
+  /* توسيع مساحة الخلفية عموديًا حتى تشمل نقاط الحروف والهمزات (ش، ث، إ...) */
+  padding-block:.45em;
+  -webkit-box-decoration-break:clone;
+  box-decoration-break:clone;
   filter:drop-shadow(0 0 4px rgba(251,91,36,.10));
 }
 .karaoke-word.done{--word-progress:100%}
