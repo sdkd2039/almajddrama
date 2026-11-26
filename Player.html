@@ -317,6 +317,9 @@ body {
 .player-extra-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
 .embed-toggle{flex:1;min-width:140px;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:#111c30;color:#cbd5e1;font:inherit;cursor:pointer}
 .embed-toggle:hover{border-color:var(--primary-color);color:#38bdf8}
+.transcript-toggle{flex:1;min-width:140px;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:#111c30;color:#cbd5e1;font:inherit;cursor:pointer}
+.transcript-toggle:hover{border-color:var(--primary-color);color:#38bdf8}
+.transcript-toggle.active{border-color:rgba(56,189,248,.55);color:#38bdf8;background:rgba(2,132,199,.14)}
 .translation-area {
   display:none;
   background:var(--player-bg);
@@ -428,7 +431,7 @@ button:focus-visible,.timeline:focus-visible{outline:2px solid #38bdf8;outline-o
   .btn-skip{width:34px;height:34px}
   .btn-play-pause{width:48px;height:48px}
   .player-extra-actions{gap:8px}
-  .translation-toggle,.embed-toggle{min-width:0;padding:11px 8px;font-size:.9rem}
+  .translation-toggle,.embed-toggle,.transcript-toggle{min-width:0;padding:11px 8px;font-size:.9rem}
 
   .top-meta-bar {
     gap:12px;
@@ -625,7 +628,7 @@ function createPlayer(record) {
       <i class="fa-solid fa-closed-captioning"></i>
       إظهار الترجمة المتزامنة
     </button>
-      <button class="transcript-toggle embed-toggle" type="button" aria-pressed="false">
+      <button class="transcript-toggle" type="button" aria-pressed="false">
         <i class="fa-solid fa-list"></i> عرض النص والتوقيت
       </button>
       <button class="embed-toggle" type="button"><i class="fa-solid fa-code"></i> نسخ كود التضمين</button>
@@ -660,7 +663,7 @@ function createPlayer(record) {
   const loopButton = card.querySelector(".btn-loop");
   const downloadButton = card.querySelector(".downloadBtn");
 
-  const embedButton = card.querySelector(".embed-toggle");
+  const embedButton = card.querySelector("button.embed-toggle");
   // واجهة التضمين لا تظهر للزوار العاديين؛ افتح لوحة النسخ بإضافة ?admin=1.
   const isEmbedAdmin = new URLSearchParams(location.search).get("admin") === "1";
   embedButton.hidden = !isEmbedAdmin;
