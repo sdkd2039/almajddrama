@@ -423,14 +423,21 @@ button:focus-visible,.timeline:focus-visible{outline:2px solid #38bdf8;outline-o
   font-weight:500;
 }
 
-/* تمييز كلمات الشارة بالتتابع مثل ترجمة الكاريوكي */
-.karaoke-sweep{
+/* تمييز الكلمات كلمةً كلمة من اليمين إلى اليسار */
+.karaoke-sweep{display:inline;direction:rtl;unicode-bidi:isolate}
+.karaoke-word{
   display:inline;
   color:transparent;
-  background:linear-gradient(to left,#fb5b24 0%,#fb5b24 var(--karaoke-progress,0%),#fff var(--karaoke-progress,0%),#fff 100%);
+  background:linear-gradient(to left,#fb5b24 0%,#fb5b24 var(--word-progress,0%),#fff var(--word-progress,0%),#fff 100%);
   -webkit-background-clip:text;
   background-clip:text;
-  filter:drop-shadow(0 0 5px rgba(251,91,36,.12));
+  filter:drop-shadow(0 0 4px rgba(251,91,36,.10));
+}
+.karaoke-word.done{--word-progress:100%}
+.translation-area:fullscreen .karaoke-word,
+.translation-area.translation-focus .karaoke-word{
+  background-image:linear-gradient(to left,#fbbf24 0%,#fbbf24 var(--word-progress,0%),#dbeafe var(--word-progress,0%),#dbeafe 100%);
+  -webkit-background-clip:text;background-clip:text;
 }
 .transcript-list {display:none}
 .transcript-list.visible {display:flex}
@@ -960,7 +967,7 @@ function createPlayer(record) {
   let captionsEnabled = false;
   let transcriptEnabled = false;
   let fontSize = 24;
-  let lastRenderedLine = -1;
+  let lastRenderedLine = -1;\n  let lastActiveTranscriptLine = -2;
 
   function updateTranslationPanel() {
     translationArea.classList.toggle("visible", captionsEnabled || transcriptEnabled);
@@ -981,18 +988,32 @@ function createPlayer(record) {
 
   function renderKaraokeLine(line, current) {
     const duration = Math.max(0.001, line.end - line.start);
-    const progress = Math.max(0, Math.min(1, (current - line.start) / duration));
-    const percent = (progress * 100).toFixed(2) + "%";
-    let sweep = translationText.querySelector(".karaoke-sweep");
-    if (!sweep || translationText.dataset.renderedLine !== line.text) {
+    const progress = Math.max(0, Math.min(0.999999, (current - line.start) / duration));
+    const words = String(line.text || "").trim().split(/\\s+/).filter(Boolean);
+    const position = progress * Math.max(1, words.length);
+    const activeWord = Math.min(words.length - 1, Math.floor(position));
+    const activeProgress = (position - activeWord) * 100;
+
+    if (translationText.dataset.renderedLine !== line.text) {
       translationText.replaceChildren();
-      sweep = document.createElement("span");
+      const sweep = document.createElement("span");
       sweep.className = "karaoke-sweep";
-      sweep.textContent = line.text;
+      words.forEach((word, index) => {
+        if (index) sweep.appendChild(document.createTextNode(" "));
+        const wordNode = document.createElement("span");
+        wordNode.className = "karaoke-word";
+        wordNode.textContent = word;
+        sweep.appendChild(wordNode);
+      });
       translationText.appendChild(sweep);
       translationText.dataset.renderedLine = line.text;
     }
-    sweep.style.setProperty("--karaoke-progress", percent);
+
+    translationText.querySelectorAll(".karaoke-word").forEach((wordNode, index) => {
+      wordNode.classList.toggle("done", index < activeWord);
+      wordNode.style.setProperty("--word-progress",
+        index < activeWord ? "100%" : index === activeWord ? activeProgress.toFixed(2) + "%" : "0%");
+    });
     translationText.classList.remove("empty");
   }
 
@@ -1062,7 +1083,10 @@ function createPlayer(record) {
           row.classList.toggle("active", index === lineIndex);
         });
         const activeRow = lineIndex >= 0 ? transcriptRows[lineIndex] : null;
-        if (activeRow) activeRow.scrollIntoView({block:"nearest",behavior:"smooth"});
+        if (activeRow && lineIndex !== lastActiveTranscriptLine) {
+          activeRow.scrollIntoView({block:"nearest",behavior:"smooth"});
+        }
+        lastActiveTranscriptLine = lineIndex;
       }
     }
   });
