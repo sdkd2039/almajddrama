@@ -709,7 +709,7 @@ function createPlayer(record) {
   }
 
   function renderKaraokeLine(line, current) {
-    const words = line.text.trim().split(/\\s+/).filter(Boolean);
+    const words = line.text.trim().split(/\s+/).filter(Boolean);
     const duration = Math.max(0.001, line.end - line.start);
     const progress = Math.max(0, Math.min(0.999999, (current - line.start) / duration));
     const activeIndex = Math.min(words.length - 1, Math.floor(progress * words.length));
@@ -758,6 +758,14 @@ function createPlayer(record) {
     currentLabel.textContent = formatTime(current);
 
     if (!captionsEnabled && !transcriptEnabled) return;
+
+    if (!translation.lines.length) {
+      if (captionsEnabled && translation.plain.trim()) {
+        translationText.textContent = translation.plain;
+        translationText.classList.remove("empty");
+      }
+      return;
+    }
 
     if (translation.lines.length) {
       const lineIndex = translation.lines.findIndex(item =>
