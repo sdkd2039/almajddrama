@@ -46,13 +46,32 @@ body.is-embedded #playersList {
   padding:0;
   gap:0;
 }
-body.is-embedded .page-container {
+body.is-embedded .page-container,
+body.is-standalone-player .page-container {
   max-width:none;
   width:100%;
   min-height:0;
   margin:0;
   border-radius:clamp(12px,2vw,22px);
   box-shadow:none;
+}
+body.is-standalone-player {
+  min-height:100svh;
+  padding:clamp(10px,2vw,22px);
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+}
+body.is-standalone-player #playersList {
+  max-width:900px;
+  width:100%;
+}
+body.is-standalone-player .page-container {
+  max-width:900px;
+  padding:clamp(16px,3vw,30px);
+}
+body.is-standalone-player .top-meta-bar {
+  gap:16px;
 }
 
 #playersList {
@@ -573,6 +592,17 @@ button:focus-visible,.timeline:focus-visible{outline:2px solid #38bdf8;outline-o
   color:#67e8f9;
 }
 body.translation-focus-lock { overflow:hidden; }
+body.translation-focus-lock .translation-area.translation-focus {
+  position:fixed !important;
+  inset:0 !important;
+  width:100vw !important;
+  height:100vh !important;
+  height:100dvh !important;
+  max-height:none !important;
+  border-radius:0 !important;
+  overflow:hidden !important;
+  z-index:2147483000 !important;
+}
 .translation-area .fullscreen i { color:#38bdf8; }
 @media(max-width:600px) {
   .translation-area:fullscreen,
@@ -700,7 +730,11 @@ const SHEET_ID = "1rL5l72HK8KccymCdpfQE1eITLv-d-MNl0I-fIcpNgPA";
 const SHEET_NAME = "Player";
 
 const playersList = document.getElementById("playersList");
+const pageParams = new URLSearchParams(location.search);
+const requestedId = pageParams.get("id");
+const standaloneMode = pageParams.get("view") === "standalone";
 if (window.self !== window.top) document.body.classList.add("is-embedded");
+if (standaloneMode) document.body.classList.add("is-standalone-player");
 
 function getCell(row,index) {
   const cell = row.c?.[index];
@@ -895,11 +929,13 @@ function createPlayer(record) {
   embedButton.addEventListener("click", async () => {
     const embedUrl = new URL("Player.html", location.href);
     embedUrl.searchParams.set("id", String(record.id));
+    embedUrl.searchParams.set("view", "standalone");
     const title = String(record.name || "مشغل الشارة").replace(/["<>]/g, "");
     const snippet = '<iframe src="' + embedUrl.href + '" title="' + title +
       '" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen ' +
       'webkitallowfullscreen mozallowfullscreen ' +
-      'style="display:block;width:100%;max-width:100%;height:clamp(500px,72vw,680px);min-height:460px;border:0;border-radius:18px;overflow:hidden"></iframe>';
+      'style="display:block;width:100%;height:680px;min-height:520px;border:0;border-radius:18px;overflow:hidden" ' +
+      'scrolling="no"></iframe>';
     try {
       await navigator.clipboard.writeText(snippet);
       embedButton.innerHTML = '<i class="fa-solid fa-check"></i> تم نسخ التضمين';
@@ -1292,7 +1328,6 @@ async function loadAllPlayers() {
       String(item.audio).trim() !== ""
     );
 
-    const requestedId = new URLSearchParams(location.search).get("id");
     const visibleRecords = requestedId
       ? records.filter(item => String(item.id).trim() === requestedId.trim())
       : records;
