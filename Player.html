@@ -359,6 +359,24 @@ button:focus-visible,.timeline:focus-visible{outline:2px solid #38bdf8;outline-o
   font-weight:500;
 }
 
+/* تمييز كلمات الشارة بالتتابع مثل ترجمة الكاريوكي */
+.karaoke-word {
+  display:inline;
+  color:#fff;
+  transition:color .12s ease,text-shadow .12s ease;
+}
+.karaoke-word.active {
+  color:#fb923c;
+  text-shadow:0 0 14px rgba(251,146,60,.28);
+}
+.transcript-list {display:none}
+.transcript-list.visible {display:flex}
+.transcript-toggle.active {
+  border-color:rgba(56,189,248,.55);
+  color:#38bdf8;
+  background:rgba(2,132,199,.14);
+}
+
 .translation-tools {
   display:flex;
   justify-content:center;
@@ -603,10 +621,13 @@ function createPlayer(record) {
     </div>
 
     <div class="player-extra-actions">
-      <button class="translation-toggle">
-      <i class="fa-solid fa-language"></i>
-      إظهار الترجمة
+      <button class="translation-toggle" type="button" aria-pressed="false">
+      <i class="fa-solid fa-closed-captioning"></i>
+      إظهار الترجمة المتزامنة
     </button>
+      <button class="transcript-toggle embed-toggle" type="button" aria-pressed="false">
+        <i class="fa-solid fa-list"></i> عرض النص والتوقيت
+      </button>
       <button class="embed-toggle" type="button"><i class="fa-solid fa-code"></i> نسخ كود التضمين</button>
     </div>
 
@@ -660,11 +681,48 @@ function createPlayer(record) {
   });
 
   const translationButton = card.querySelector(".translation-toggle");
+  const transcriptButton = card.querySelector(".transcript-toggle");
   const translationArea = card.querySelector(".translation-area");
   const translationText = card.querySelector(".translation-text");
 
   const translation = parseTranslation(record.translation);
+  let captionsEnabled = false;
+  let transcriptEnabled = false;
   let fontSize = 24;
+  let lastRenderedLine = -1;
+
+  function updateTranslationPanel() {
+    translationArea.classList.toggle("visible", captionsEnabled || transcriptEnabled);
+    translationText.style.display = captionsEnabled ? "flex" : "none";
+    const list = translationArea.querySelector(".transcript-list");
+    if (list) list.classList.toggle("visible", transcriptEnabled);
+    translationButton.classList.toggle("active", captionsEnabled);
+    transcriptButton.classList.toggle("active", transcriptEnabled);
+    translationButton.setAttribute("aria-pressed", String(captionsEnabled));
+    transcriptButton.setAttribute("aria-pressed", String(transcriptEnabled));
+    translationButton.innerHTML = captionsEnabled
+      ? '<i class="fa-solid fa-closed-captioning"></i> إيقاف الترجمة المتزامنة'
+      : '<i class="fa-solid fa-closed-captioning"></i> إظهار الترجمة المتزامنة';
+    transcriptButton.innerHTML = transcriptEnabled
+      ? '<i class="fa-solid fa-list"></i> إخفاء النص والتوقيت'
+      : '<i class="fa-solid fa-list"></i> عرض النص والتوقيت';
+  }
+
+  function renderKaraokeLine(line, current) {
+    const words = line.text.trim().split(/\\s+/).filter(Boolean);
+    const duration = Math.max(0.001, line.end - line.start);
+    const progress = Math.max(0, Math.min(0.999999, (current - line.start) / duration));
+    const activeIndex = Math.min(words.length - 1, Math.floor(progress * words.length));
+    translationText.replaceChildren();
+    words.forEach((word, index) => {
+      if (index) translationText.appendChild(document.createTextNode(" "));
+      const span = document.createElement("span");
+      span.className = "karaoke-word" + (index === activeIndex ? " active" : "");
+      span.textContent = word;
+      translationText.appendChild(span);
+    });
+    translationText.classList.remove("empty");
+  }
 
   audio.src = record.audio;
 
@@ -699,27 +757,32 @@ function createPlayer(record) {
 
     currentLabel.textContent = formatTime(current);
 
-    if (!translationArea.classList.contains("visible")) return;
+    if (!captionsEnabled && !transcriptEnabled) return;
 
     if (translation.lines.length) {
       const lineIndex = translation.lines.findIndex(item =>
         current >= item.start && current < item.end
       );
       const line = lineIndex >= 0 ? translation.lines[lineIndex] : null;
-      if (line) {
-        translationText.textContent = line.text;
-        translationText.classList.remove("empty");
-      } else {
-        translationText.textContent = "";
-        translationText.classList.add("empty");
+
+      if (captionsEnabled) {
+        if (line) {
+          renderKaraokeLine(line, current);
+          lastRenderedLine = lineIndex;
+        } else {
+          translationText.textContent = "";
+          translationText.classList.add("empty");
+          lastRenderedLine = -1;
+        }
       }
-      const transcriptRows = translationArea.querySelectorAll(".transcript-line");
-      transcriptRows.forEach((row, index) => {
-        row.classList.toggle("active", index === lineIndex);
-      });
-      const activeRow = lineIndex >= 0 ? transcriptRows[lineIndex] : null;
-      if (activeRow && translationArea.classList.contains("visible")) {
-        activeRow.scrollIntoView({block:"nearest",behavior:"smooth"});
+
+      if (transcriptEnabled) {
+        const transcriptRows = translationArea.querySelectorAll(".transcript-line");
+        transcriptRows.forEach((row, index) => {
+          row.classList.toggle("active", index === lineIndex);
+        });
+        const activeRow = lineIndex >= 0 ? transcriptRows[lineIndex] : null;
+        if (activeRow) activeRow.scrollIntoView({block:"nearest",behavior:"smooth"});
       }
     }
   });
@@ -778,53 +841,54 @@ function createPlayer(record) {
     };
   });
 
-  // إظهار وإخفاء الترجمة
-  translationButton.onclick = () => {
-    const visible = translationArea.classList.toggle("visible");
+  // إنشاء قائمة النص والتوقيت مرة واحدة، بشكل مستقل عن الترجمة المتزامنة
+  function buildTranscriptList() {
+    let list = translationArea.querySelector(".transcript-list");
+    if (list) return list;
+    list = document.createElement("div");
+    list.className = "transcript-list";
+    translationArea.appendChild(list);
 
-    translationButton.innerHTML = visible
-      ? '<i class="fa-solid fa-eye-slash"></i> إخفاء الترجمة'
-      : '<i class="fa-solid fa-language"></i> إظهار الترجمة';
-
-    if (visible) {
-      let list = translationArea.querySelector(".transcript-list");
-      if (!list) {
-        list = document.createElement("div");
-        list.className = "transcript-list";
-        translationArea.appendChild(list);
-      }
-      list.replaceChildren();
-      if (translation.lines.length) {
-        translationText.textContent = "تظهر كلمات الشارة تلقائيًا مع توقيتها أثناء التشغيل.";
-        translationText.classList.remove("empty");
-        translation.lines.forEach((line, index) => {
-          const item = document.createElement("button");
-          item.type = "button";
-          item.className = "transcript-line";
-          const stamp = document.createElement("span");
-          stamp.className = "transcript-time";
-          stamp.textContent = formatTime(line.start);
-          const words = document.createElement("span");
-          words.className = "transcript-words";
-          words.textContent = line.text;
-          item.append(stamp, words);
-          item.addEventListener("click", () => {
-            audio.currentTime = line.start;
-            audio.play().catch(() => {});
-          });
-          list.appendChild(item);
+    if (translation.lines.length) {
+      translation.lines.forEach(line => {
+        const item = document.createElement("button");
+        item.type = "button";
+        item.className = "transcript-line";
+        const stamp = document.createElement("span");
+        stamp.className = "transcript-time";
+        stamp.textContent = formatTime(line.start);
+        const words = document.createElement("span");
+        words.className = "transcript-words";
+        words.textContent = line.text;
+        item.append(stamp, words);
+        item.addEventListener("click", () => {
+          audio.currentTime = line.start;
+          audio.play().catch(() => {});
         });
-        audio.dispatchEvent(new Event("timeupdate"));
-      } else if (translation.plain.trim()) {
-        translationText.textContent = translation.plain;
-        translationText.classList.remove("empty");
-        list.innerHTML = '<div class="transcript-empty">هذه الترجمة نص متصل ولا تحتوي على توقيتات للمزامنة.</div>';
-      } else {
-        translationText.textContent = "لا توجد ترجمة محفوظة لهذه الشارة بعد";
-        translationText.classList.add("empty");
-        list.innerHTML = '<div class="transcript-empty">أضف كلمات الشارة وتوقيت كل مقطع في العمود السادس بورقة Player.</div>';
-      }
+        list.appendChild(item);
+      });
+    } else {
+      const message = document.createElement("div");
+      message.className = "transcript-empty";
+      message.textContent = translation.plain.trim()
+        ? "هذه الترجمة نص متصل ولا تحتوي على توقيتات للمزامنة."
+        : "لا توجد ترجمة محفوظة لهذه الشارة بعد.";
+      list.appendChild(message);
     }
+    return list;
+  }
+
+  translationButton.onclick = () => {
+    captionsEnabled = !captionsEnabled;
+    updateTranslationPanel();
+    if (captionsEnabled) audio.dispatchEvent(new Event("timeupdate"));
+  };
+
+  transcriptButton.onclick = () => {
+    transcriptEnabled = !transcriptEnabled;
+    if (transcriptEnabled) buildTranscriptList();
+    updateTranslationPanel();
+    if (transcriptEnabled) audio.dispatchEvent(new Event("timeupdate"));
   };
 
   // تكبير وتصغير
