@@ -806,6 +806,9 @@ function parseTranslation(value) {
     // النص العادي يعرض عند فتح الترجمة
   }
 
+  const timed = parseVtt(value).sort((a,b) => a.start - b.start);
+  if (timed.length) return {lines:timed, plain:""};
+
   return {lines:[],plain:String(value)};
 }
 
@@ -998,9 +1001,12 @@ function createPlayer(record) {
       : '<i class="fa-solid fa-list"></i> عرض النص والتوقيت';
   }
 
+  // نسبة من مدة السطر يكتمل خلالها التمييز البرتقالي (أصغر = أسرع)
+  const KARAOKE_SPEED = 0.65;
+
   function renderKaraokeLine(line, current) {
     const duration = Math.max(0.001, line.end - line.start);
-    const progress = Math.max(0, Math.min(0.999999, (current - line.start) / duration));
+    const progress = Math.max(0, Math.min(0.999999, (current - line.start) / (duration * KARAOKE_SPEED)));
     const words = String(line.text || "").trim().split(/\s+/).filter(Boolean);
     const position = progress * Math.max(1, words.length);
     const activeWord = Math.min(words.length - 1, Math.floor(position));
@@ -1040,7 +1046,17 @@ function createPlayer(record) {
     }
   };
 
+  let syncFrame = 0;
+  function syncLoop() {
+    audio.dispatchEvent(new Event("timeupdate"));
+    syncFrame = (!audio.paused && captionsEnabled) ? requestAnimationFrame(syncLoop) : 0;
+  }
+  function startSyncLoop() {
+    if (!syncFrame && !audio.paused && captionsEnabled) syncFrame = requestAnimationFrame(syncLoop);
+  }
+
   audio.addEventListener("play", () => {
+    startSyncLoop();
     playIcon.className = "fa-solid fa-pause";
   });
 
@@ -1241,13 +1257,14 @@ function createPlayer(record) {
         : "لا توجد ترجمة محفوظة لهذه الشارة بعد.";
       rowsContainer.appendChild(message);
     }
+    translationText.insertAdjacentElement("afterend", list);
     return list;
   }
 
   translationButton.onclick = () => {
     captionsEnabled = !captionsEnabled;
     updateTranslationPanel();
-    if (captionsEnabled) audio.dispatchEvent(new Event("timeupdate"));
+    if (captionsEnabled) { audio.dispatchEvent(new Event("timeupdate")); startSyncLoop(); }
   };
 
   transcriptButton.onclick = () => {
