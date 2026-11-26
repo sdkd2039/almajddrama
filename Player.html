@@ -431,7 +431,7 @@ button:focus-visible,.timeline:focus-visible{outline:2px solid #38bdf8;outline-o
   cursor:pointer;
 }
 
-/* وضع ملء الشاشة للترجمة فقط مع شريط صوت مصغر */
+/* تجربة عرض الترجمة بكامل الشاشة: مساحة قراءة + خلفية حية + مشغل ثابت */
 .translation-area:fullscreen,
 .translation-area.translation-focus {
   position:fixed;
@@ -443,17 +443,39 @@ button:focus-visible,.timeline:focus-visible{outline:2px solid #38bdf8;outline-o
   max-height:none;
   min-height:0;
   margin:0;
-  padding:clamp(14px,3vw,32px);
+  padding:clamp(14px,3vw,34px);
   border:0;
   border-radius:0;
-  overflow-y:auto;
-  overflow-x:hidden;
-  display:flex;
-  flex-direction:column;
-  justify-content:flex-start;
+  overflow:hidden;
+  display:grid;
+  grid-template-rows:minmax(0,1fr) auto auto;
+  align-items:stretch;
   gap:clamp(12px,2vh,22px);
-  background:#0b1220;
+  isolation:isolate;
+  background:
+    radial-gradient(ellipse at 15% 18%,rgba(8,145,178,.19),transparent 44%),
+    radial-gradient(ellipse at 88% 82%,rgba(124,58,237,.20),transparent 42%),
+    linear-gradient(145deg,#071426,#101a35 48%,#101629);
   box-shadow:none;
+}
+.translation-area.translation-focus::before,
+.translation-area:fullscreen::before {
+  content:"";
+  position:absolute;
+  inset:-35%;
+  z-index:-1;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 28% 30%,rgba(14,165,233,.22),transparent 27%),
+    radial-gradient(circle at 70% 68%,rgba(168,85,247,.18),transparent 30%),
+    radial-gradient(circle at 50% 50%,rgba(20,184,166,.10),transparent 42%);
+  filter:blur(28px);
+  animation:translationAura 18s ease-in-out infinite alternate;
+}
+@keyframes translationAura {
+  0% { transform:translate3d(-4%,-2%,0) rotate(0deg) scale(1); }
+  50% { transform:translate3d(3%,4%,0) rotate(9deg) scale(1.08); }
+  100% { transform:translate3d(-2%,2%,0) rotate(-7deg) scale(1.03); }
 }
 .page-container.translation-focus-card .top-meta-bar,
 .page-container.translation-focus-card .player-extra-actions {
@@ -461,35 +483,125 @@ button:focus-visible,.timeline:focus-visible{outline:2px solid #38bdf8;outline-o
 }
 .translation-area:fullscreen .translation-text,
 .translation-area.translation-focus .translation-text {
-  flex:1 0 auto;
-  min-height:clamp(120px,30vh,300px);
-  font-size:clamp(25px,4.5vw,52px);
-  max-width:1200px;
-  width:100%;
-  margin-inline:auto;
+  grid-row:1;
+  align-self:center;
+  justify-self:center;
+  width:min(100%,1200px);
+  min-height:0;
+  max-height:100%;
+  padding:clamp(12px,3vw,38px);
+  margin:0 auto;
   display:block;
   align-content:center;
+  text-align:center;
+  font-size:clamp(28px,5vw,62px);
+  line-height:1.9;
+  overflow-wrap:normal;
+  word-break:normal;
+  text-wrap:balance;
+  border:1px solid rgba(148,163,184,.14);
+  border-radius:clamp(18px,3vw,34px);
+  background:linear-gradient(145deg,rgba(20,34,58,.68),rgba(10,21,40,.56));
+  box-shadow:0 24px 80px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.04);
+  backdrop-filter:blur(14px);
+}
+.translation-area:fullscreen .karaoke-word,
+.translation-area.translation-focus .karaoke-word {
+  color:#dbeafe;
+  transition:color .18s ease,text-shadow .18s ease;
+}
+.translation-area:fullscreen .karaoke-word.active,
+.translation-area.translation-focus .karaoke-word.active {
+  color:#fbbf24;
+  text-shadow:0 0 18px rgba(251,191,36,.3);
 }
 .translation-area:fullscreen .transcript-list,
 .translation-area.translation-focus .transcript-list {
-  width:100%;
-  max-height:38vh;
+  grid-row:2;
+  width:min(100%,1000px);
+  max-height:min(26vh,220px);
+  margin:0 auto;
   overflow-y:auto;
+  background:rgba(9,20,38,.55);
+  border:1px solid rgba(148,163,184,.14);
+  border-radius:16px;
+  padding:8px;
+  backdrop-filter:blur(12px);
 }
 .translation-area:fullscreen .audio-player,
 .translation-area.translation-focus .audio-player {
-  order:3;
-  flex:0 0 auto;
-  width:100%;
+  grid-row:3;
+  width:min(100%,900px);
   max-width:900px;
   margin:0 auto;
-  padding:clamp(12px,2vw,20px);
-  border:1px solid rgba(255,255,255,.08);
+  padding:clamp(10px,1.7vw,16px);
+  border:1px solid rgba(148,163,184,.17);
+  border-radius:18px;
+  background:rgba(12,24,43,.88);
+  box-shadow:0 14px 40px rgba(0,0,0,.25);
+  backdrop-filter:blur(14px);
+}
+.translation-area:fullscreen .audio-player .progress-container,
+.translation-area.translation-focus .audio-player .progress-container {
+  margin-bottom:10px;
+}
+.translation-area:fullscreen .audio-player .btn-play-pause,
+.translation-area.translation-focus .audio-player .btn-play-pause {
+  width:46px;
+  height:46px;
 }
 .translation-area:fullscreen .translation-tools,
-.translation-area.translation-focus .translation-tools { order:4; }
+.translation-area.translation-focus .translation-tools {
+  position:absolute;
+  top:12px;
+  left:14px;
+  z-index:5;
+  gap:6px;
+}
+.translation-area:fullscreen .translation-tools button,
+.translation-area.translation-focus .translation-tools button {
+  min-width:42px;
+  min-height:40px;
+  padding:7px 10px;
+  background:rgba(10,23,42,.68);
+  border-color:rgba(148,163,184,.22);
+  color:#dbeafe;
+}
+.translation-area:fullscreen .translation-tools .fullscreen,
+.translation-area.translation-focus .translation-tools .fullscreen {
+  order:-1;
+  color:#67e8f9;
+}
 body.translation-focus-lock { overflow:hidden; }
 .translation-area .fullscreen i { color:#38bdf8; }
+@media(max-width:600px) {
+  .translation-area:fullscreen,
+  .translation-area.translation-focus {
+    padding:12px 10px max(12px,env(safe-area-inset-bottom));
+    gap:10px;
+  }
+  .translation-area:fullscreen .translation-text,
+  .translation-area.translation-focus .translation-text {
+    width:100%;
+    padding:18px 12px;
+    font-size:clamp(25px,7vw,38px);
+    line-height:1.85;
+  }
+  .translation-area:fullscreen .transcript-list,
+  .translation-area.translation-focus .transcript-list {
+    max-height:24vh;
+    padding:6px;
+  }
+  .translation-area:fullscreen .audio-player,
+  .translation-area.translation-focus .audio-player {
+    padding:9px 10px;
+  }
+  .translation-area:fullscreen .translation-tools,
+  .translation-area.translation-focus .translation-tools {
+    top:8px;
+    left:8px;
+  }
+}
 
 .page-status {
   color:var(--text-muted);
@@ -830,6 +942,8 @@ function createPlayer(record) {
     const duration = Math.max(0.001, line.end - line.start);
     const progress = Math.max(0, Math.min(0.999999, (current - line.start) / duration));
     const activeIndex = Math.min(words.length - 1, Math.floor(progress * words.length));
+    if (translationText.dataset.renderedLine === line.text &&
+        translationText.dataset.activeWord === String(activeIndex)) return;
     translationText.replaceChildren();
     words.forEach((word, index) => {
       if (index) translationText.appendChild(document.createTextNode(" "));
@@ -838,6 +952,8 @@ function createPlayer(record) {
       span.textContent = word;
       translationText.appendChild(span);
     });
+    translationText.dataset.renderedLine = line.text;
+    translationText.dataset.activeWord = String(activeIndex);
     translationText.classList.remove("empty");
   }
 
