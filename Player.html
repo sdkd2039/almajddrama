@@ -989,7 +989,7 @@ function createPlayer(record) {
   function renderKaraokeLine(line, current) {
     const duration = Math.max(0.001, line.end - line.start);
     const progress = Math.max(0, Math.min(0.999999, (current - line.start) / duration));
-    const words = String(line.text || "").trim().split(/\\s+/).filter(Boolean);
+    const words = String(line.text || "").trim().split(/\s+/).filter(Boolean);
     const position = progress * Math.max(1, words.length);
     const activeWord = Math.min(words.length - 1, Math.floor(position));
     const activeProgress = (position - activeWord) * 100;
