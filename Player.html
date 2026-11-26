@@ -423,14 +423,13 @@ button:focus-visible,.timeline:focus-visible{outline:2px solid #38bdf8;outline-o
 }
 
 /* تمييز كلمات الشارة بالتتابع مثل ترجمة الكاريوكي */
-.karaoke-word {
+.karaoke-sweep{
   display:inline;
-  color:#fff;
-  transition:color .12s ease,text-shadow .12s ease;
-}
-.karaoke-word.active {
-  color:#fb923c;
-  text-shadow:0 0 14px rgba(251,146,60,.28);
+  color:transparent;
+  background:linear-gradient(to left,#fb5b24 0%,#fb5b24 var(--karaoke-progress,0%),#fff var(--karaoke-progress,0%),#fff 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  filter:drop-shadow(0 0 5px rgba(251,91,36,.12));
 }
 .transcript-list {display:none}
 .transcript-list.visible {display:flex}
@@ -529,15 +528,10 @@ button:focus-visible,.timeline:focus-visible{outline:2px solid #38bdf8;outline-o
   box-shadow:0 24px 80px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.04);
   backdrop-filter:blur(14px);
 }
-.translation-area:fullscreen .karaoke-word,
-.translation-area.translation-focus .karaoke-word {
-  color:#dbeafe;
-  transition:color .18s ease,text-shadow .18s ease;
-}
-.translation-area:fullscreen .karaoke-word.active,
-.translation-area.translation-focus .karaoke-word.active {
-  color:#fbbf24;
-  text-shadow:0 0 18px rgba(251,191,36,.3);
+.translation-area:fullscreen .karaoke-sweep,
+.translation-area.translation-focus .karaoke-sweep{
+  background:linear-gradient(to left,#fbbf24 0%,#fbbf24 var(--karaoke-progress,0%),#dbeafe var(--karaoke-progress,0%),#dbeafe 100%);
+  -webkit-background-clip:text;background-clip:text;
 }
 .translation-area:fullscreen .transcript-list,
 .translation-area.translation-focus .transcript-list {
@@ -638,6 +632,12 @@ body.translation-focus-lock .translation-area.translation-focus {
   }
 }
 
+.players-search-wrap{grid-column:1/-1;width:100%;max-width:760px;justify-self:center;position:relative;margin:0 auto 2px}
+.players-search{width:100%;padding:14px 48px 14px 16px;border-radius:14px;border:1px solid rgba(148,163,184,.22);background:#1e293b;color:#f8fafc;font:inherit;font-size:1rem;outline:none;box-shadow:0 8px 24px rgba(0,0,0,.16)}
+.players-search:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,248,.13)}
+.players-search::placeholder{color:#94a3b8}
+.players-search-icon{position:absolute;right:17px;top:50%;transform:translateY(-50%);color:#38bdf8;pointer-events:none}
+.players-search-count{display:block;color:#94a3b8;font-size:.85rem;margin:7px 5px 0}
 .page-status {
   color:var(--text-muted);
   text-align:center;
@@ -914,7 +914,7 @@ function createPlayer(record) {
   `;
 
   playersList.appendChild(card);
-
+  // إعادة البطاقة إلى المستدعي لتمكين البحث دون إعادة إنشاء المشغل.
   const audio = card.querySelector("audio");
   const playButton = card.querySelector(".btn-play-pause");
   const playIcon = playButton.querySelector("i");
@@ -979,22 +979,19 @@ function createPlayer(record) {
   }
 
   function renderKaraokeLine(line, current) {
-    const words = line.text.trim().split(/\s+/).filter(Boolean);
     const duration = Math.max(0.001, line.end - line.start);
-    const progress = Math.max(0, Math.min(0.999999, (current - line.start) / duration));
-    const activeIndex = Math.min(words.length - 1, Math.floor(progress * words.length));
-    if (translationText.dataset.renderedLine === line.text &&
-        translationText.dataset.activeWord === String(activeIndex)) return;
-    translationText.replaceChildren();
-    words.forEach((word, index) => {
-      if (index) translationText.appendChild(document.createTextNode(" "));
-      const span = document.createElement("span");
-      span.className = "karaoke-word" + (index === activeIndex ? " active" : "");
-      span.textContent = word;
-      translationText.appendChild(span);
-    });
-    translationText.dataset.renderedLine = line.text;
-    translationText.dataset.activeWord = String(activeIndex);
+    const progress = Math.max(0, Math.min(1, (current - line.start) / duration));
+    const percent = (progress * 100).toFixed(2) + "%";
+    let sweep = translationText.querySelector(".karaoke-sweep");
+    if (!sweep || translationText.dataset.renderedLine !== line.text) {
+      translationText.replaceChildren();
+      sweep = document.createElement("span");
+      sweep.className = "karaoke-sweep";
+      sweep.textContent = line.text;
+      translationText.appendChild(sweep);
+      translationText.dataset.renderedLine = line.text;
+    }
+    sweep.style.setProperty("--karaoke-progress", percent);
     translationText.classList.remove("empty");
   }
 
@@ -1343,6 +1340,7 @@ function createPlayer(record) {
       else audio.pause();
     }
   });
+  return card;
 }
 
 async function loadAllPlayers() {
@@ -1395,7 +1393,46 @@ async function loadAllPlayers() {
       return;
     }
 
-    visibleRecords.forEach(record => createPlayer(record));
+    if (!requestedId) {
+      const searchWrap = document.createElement("div");
+      searchWrap.className = "players-search-wrap";
+      searchWrap.innerHTML = '<i class="fa-solid fa-magnifying-glass players-search-icon"></i><input class="players-search" type="search" placeholder="ابحث عن مسلسل أو شارة..." aria-label="البحث عن مسلسل أو شارة"><span class="players-search-count" aria-live="polite"></span>';
+      playersList.appendChild(searchWrap);
+      const searchInput = searchWrap.querySelector(".players-search");
+      const searchCount = searchWrap.querySelector(".players-search-count");
+      const normalizeTitle = value => String(value || "")
+        .toLocaleLowerCase("ar")
+        .normalize("NFD")
+        .replace(/[\u064B-\u065F\u0670]/g, "")
+        .replace(/[أإآ]/g, "ا").replace(/ى/g, "ي").trim();
+      const cards = visibleRecords.map(record => {
+        const card = createPlayer(record);
+        card.dataset.searchText = normalizeTitle(record.name + " " + record.channel);
+        return card;
+      });
+      const filterPlayers = () => {
+        const query = normalizeTitle(searchInput.value);
+        let shown = 0;
+        cards.forEach(card => {
+          const match = !query || card.dataset.searchText.includes(query);
+          card.hidden = !match;
+          if (match) shown++;
+        });
+        searchCount.textContent = query ? shown + " نتيجة من " + cards.length : cards.length + " مسلسل / شارة";
+        let empty = playersList.querySelector(".players-search-empty");
+        if (!empty) {
+          empty = document.createElement("div");
+          empty.className = "page-status players-search-empty";
+          empty.textContent = "ما لقينا نتائج مطابقة لبحثك.";
+          playersList.appendChild(empty);
+        }
+        empty.hidden = shown !== 0;
+      };
+      searchInput.addEventListener("input", filterPlayers);
+      filterPlayers();
+    } else {
+      visibleRecords.forEach(record => createPlayer(record));
+    }
 
   } catch(error) {
     console.error("Player loading error:",error);
