@@ -431,19 +431,45 @@ button:focus-visible,.timeline:focus-visible{outline:2px solid #38bdf8;outline-o
   cursor:pointer;
 }
 
-.translation-area:fullscreen {
-  background:#0b1220;
-  min-height:100vh;
+/* تكبير المشغل بالكامل، وليس صندوق الترجمة فقط */
+.page-container:fullscreen,
+.page-container.player-expanded {
   width:100vw;
-  justify-content:center;
-  padding:clamp(18px,4vw,48px);
+  max-width:none;
+  height:100vh;
+  height:100dvh;
+  min-height:100vh;
+  margin:0;
+  padding:clamp(14px,3vw,32px);
+  border:0;
+  border-radius:0;
+  overflow-y:auto;
+  overflow-x:hidden;
+  background:#0b1220;
+  box-shadow:none;
+  z-index:2147483000;
 }
-
-.translation-area:fullscreen .translation-text {
-  font-size:clamp(25px,5vw,56px);
-  max-width:1100px;
+.page-container:fullscreen {
+  display:flex;
+}
+.page-container:fullscreen .translation-area,
+.page-container.player-expanded .translation-area {
+  flex:1;
+  min-height:180px;
+}
+.page-container:fullscreen .translation-text,
+.page-container.player-expanded .translation-text {
+  font-size:clamp(25px,4vw,48px);
+  max-width:1200px;
   margin-inline:auto;
 }
+.page-container.player-expanded {
+  position:fixed;
+  inset:0;
+}
+body.player-expanded-lock { overflow:hidden; }
+.page-container:fullscreen .fullscreen i,
+.page-container.player-expanded .fullscreen i { color:#38bdf8; }
 
 .page-status {
   color:var(--text-muted);
@@ -739,8 +765,9 @@ function createPlayer(record) {
     embedUrl.searchParams.set("id", String(record.id));
     const title = String(record.name || "مشغل الشارة").replace(/["<>]/g, "");
     const snippet = '<iframe src="' + embedUrl.href + '" title="' + title +
-      '" loading="lazy" allow="autoplay; fullscreen" allowfullscreen ' +
-      'style="display:block;width:100%;max-width:100%;height:clamp(460px,70vw,620px);min-height:420px;border:0;border-radius:18px;overflow:hidden"></iframe>';
+      '" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen ' +
+      'webkitallowfullscreen mozallowfullscreen ' +
+      'style="display:block;width:100%;max-width:100%;height:clamp(500px,72vw,680px);min-height:460px;border:0;border-radius:18px;overflow:hidden"></iframe>';
     try {
       await navigator.clipboard.writeText(snippet);
       embedButton.innerHTML = '<i class="fa-solid fa-check"></i> تم نسخ التضمين';
@@ -980,18 +1007,44 @@ function createPlayer(record) {
     translationText.style.fontSize = fontSize + "px";
   };
 
-  // ملء الشاشة
-  card.querySelector(".fullscreen").onclick = async () => {
+  // تكبير المشغل كاملًا داخل الصفحة أو في ملء الشاشة الحقيقي داخل التضمين
+  const fullscreenButton = card.querySelector(".fullscreen");
+  function setExpandedState(expanded) {
+    card.classList.toggle("player-expanded", expanded);
+    document.body.classList.toggle("player-expanded-lock", expanded);
+    const icon = fullscreenButton.querySelector("i");
+    if (icon) icon.className = expanded ? "fa-solid fa-compress" : "fa-solid fa-expand";
+    fullscreenButton.setAttribute("aria-label", expanded ? "تصغير المشغل" : "تكبير المشغل");
+    fullscreenButton.title = expanded ? "تصغير المشغل" : "تكبير المشغل";
+  }
+
+  fullscreenButton.onclick = async () => {
     try {
-      if (!document.fullscreenElement) {
-        await translationArea.requestFullscreen();
-      } else {
+      if (document.fullscreenElement === card) {
         await document.exitFullscreen();
+        return;
+      }
+      if (card.classList.contains("player-expanded")) {
+        setExpandedState(false);
+        return;
+      }
+      if (document.fullscreenElement) await document.exitFullscreen();
+      if (card.requestFullscreen) {
+        await card.requestFullscreen();
+      } else {
+        setExpandedState(true);
       }
     } catch(error) {
-      console.error(error);
+      // إذا منع المتصفح ملء الشاشة داخل iframe، استخدم وضع تكبير احتياطي داخل الإطار.
+      console.warn("Fullscreen permission unavailable; using expanded player mode.", error);
+      setExpandedState(true);
     }
   };
+
+  document.addEventListener("fullscreenchange", () => {
+    if (document.fullscreenElement !== card) setExpandedState(false);
+    else setExpandedState(true);
+  });
 
   // التحميل
   downloadButton.onclick = async () => {
