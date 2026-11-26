@@ -809,7 +809,7 @@ function parseVtt(vtt) {
     const lines = block.split("\\n");
     const timing = lines.find(line => line.includes("-->"));
     if (!timing) return null;
-    const [start, end] = timing.split("-->").map(part => toSeconds(part.trim().split(/\\s+/)[0]));
+    const [start, end] = timing.split("-->").map(part => toSeconds(part.trim().split(/\s+/)[0]));
     const text = lines.slice(lines.indexOf(timing) + 1).join(" ").replace(/<[^>]*>/g, "").trim();
     return { start, end, text };
   }).filter(item => item && Number.isFinite(item.start) && Number.isFinite(item.end) && item.end > item.start && item.text);
