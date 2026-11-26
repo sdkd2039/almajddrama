@@ -431,45 +431,65 @@ button:focus-visible,.timeline:focus-visible{outline:2px solid #38bdf8;outline-o
   cursor:pointer;
 }
 
-/* تكبير المشغل بالكامل، وليس صندوق الترجمة فقط */
-.page-container:fullscreen,
-.page-container.player-expanded {
+/* وضع ملء الشاشة للترجمة فقط مع شريط صوت مصغر */
+.translation-area:fullscreen,
+.translation-area.translation-focus {
+  position:fixed;
+  inset:0;
+  z-index:2147483000;
   width:100vw;
-  max-width:none;
   height:100vh;
   height:100dvh;
-  min-height:100vh;
+  max-height:none;
+  min-height:0;
   margin:0;
   padding:clamp(14px,3vw,32px);
   border:0;
   border-radius:0;
   overflow-y:auto;
   overflow-x:hidden;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  gap:clamp(12px,2vh,22px);
   background:#0b1220;
   box-shadow:none;
-  z-index:2147483000;
 }
-.page-container:fullscreen {
-  display:flex;
+.page-container.translation-focus-card .top-meta-bar,
+.page-container.translation-focus-card .player-extra-actions {
+  display:none !important;
 }
-.page-container:fullscreen .translation-area,
-.page-container.player-expanded .translation-area {
-  flex:1;
-  min-height:180px;
-}
-.page-container:fullscreen .translation-text,
-.page-container.player-expanded .translation-text {
-  font-size:clamp(25px,4vw,48px);
+.translation-area:fullscreen .translation-text,
+.translation-area.translation-focus .translation-text {
+  flex:1 0 auto;
+  min-height:clamp(120px,30vh,300px);
+  font-size:clamp(25px,4.5vw,52px);
   max-width:1200px;
+  width:100%;
   margin-inline:auto;
+  display:block;
+  align-content:center;
 }
-.page-container.player-expanded {
-  position:fixed;
-  inset:0;
+.translation-area:fullscreen .transcript-list,
+.translation-area.translation-focus .transcript-list {
+  width:100%;
+  max-height:38vh;
+  overflow-y:auto;
 }
-body.player-expanded-lock { overflow:hidden; }
-.page-container:fullscreen .fullscreen i,
-.page-container.player-expanded .fullscreen i { color:#38bdf8; }
+.translation-area:fullscreen .audio-player,
+.translation-area.translation-focus .audio-player {
+  order:3;
+  flex:0 0 auto;
+  width:100%;
+  max-width:900px;
+  margin:0 auto;
+  padding:clamp(12px,2vw,20px);
+  border:1px solid rgba(255,255,255,.08);
+}
+.translation-area:fullscreen .translation-tools,
+.translation-area.translation-focus .translation-tools { order:4; }
+body.translation-focus-lock { overflow:hidden; }
+.translation-area .fullscreen i { color:#38bdf8; }
 
 .page-status {
   color:var(--text-muted);
@@ -1007,43 +1027,63 @@ function createPlayer(record) {
     translationText.style.fontSize = fontSize + "px";
   };
 
-  // تكبير المشغل كاملًا داخل الصفحة أو في ملء الشاشة الحقيقي داخل التضمين
+  // ملء شاشة الترجمة فقط؛ ننقل شريط الصوت داخلها مؤقتًا ونخفي بيانات الشارة
   const fullscreenButton = card.querySelector(".fullscreen");
-  function setExpandedState(expanded) {
-    card.classList.toggle("player-expanded", expanded);
-    document.body.classList.toggle("player-expanded-lock", expanded);
+  const audioPlayer = card.querySelector(".audio-player");
+  const audioPlayerPlaceholder = document.createComment("audio-player-position");
+  let translationFocus = false;
+
+  function setTranslationFocus(enabled) {
+    translationFocus = enabled;
+    card.classList.toggle("translation-focus-card", enabled);
+    translationArea.classList.toggle("translation-focus", enabled);
+    document.body.classList.toggle("translation-focus-lock", enabled);
+
+    if (enabled) {
+      if (audioPlayer.parentElement !== translationArea) {
+        audioPlayer.parentNode.insertBefore(audioPlayerPlaceholder, audioPlayer);
+        translationArea.insertBefore(audioPlayer, translationArea.querySelector(".translation-tools"));
+      }
+    } else {
+      if (audioPlayerPlaceholder.parentNode) {
+        audioPlayerPlaceholder.parentNode.insertBefore(audioPlayer, audioPlayerPlaceholder);
+        audioPlayerPlaceholder.remove();
+      }
+    }
+
     const icon = fullscreenButton.querySelector("i");
-    if (icon) icon.className = expanded ? "fa-solid fa-compress" : "fa-solid fa-expand";
-    fullscreenButton.setAttribute("aria-label", expanded ? "تصغير المشغل" : "تكبير المشغل");
-    fullscreenButton.title = expanded ? "تصغير المشغل" : "تكبير المشغل";
+    if (icon) icon.className = enabled ? "fa-solid fa-compress" : "fa-solid fa-expand";
+    fullscreenButton.setAttribute("aria-label", enabled ? "إنهاء ملء الشاشة" : "ملء شاشة الترجمة");
+    fullscreenButton.title = enabled ? "إنهاء ملء الشاشة" : "ملء شاشة الترجمة";
   }
 
   fullscreenButton.onclick = async () => {
     try {
-      if (document.fullscreenElement === card) {
+      if (document.fullscreenElement === translationArea) {
         await document.exitFullscreen();
         return;
       }
-      if (card.classList.contains("player-expanded")) {
-        setExpandedState(false);
+      if (translationFocus) {
+        setTranslationFocus(false);
         return;
       }
-      if (document.fullscreenElement) await document.exitFullscreen();
-      if (card.requestFullscreen) {
-        await card.requestFullscreen();
-      } else {
-        setExpandedState(true);
+      setTranslationFocus(true);
+      if (translationArea.requestFullscreen) {
+        await translationArea.requestFullscreen();
       }
     } catch(error) {
-      // إذا منع المتصفح ملء الشاشة داخل iframe، استخدم وضع تكبير احتياطي داخل الإطار.
-      console.warn("Fullscreen permission unavailable; using expanded player mode.", error);
-      setExpandedState(true);
+      // وضع ملء شاشة بديل داخل التضمين إذا منع المتصفح Fullscreen API
+      console.warn("Fullscreen API unavailable; using translation focus mode.", error);
+      setTranslationFocus(true);
     }
   };
 
   document.addEventListener("fullscreenchange", () => {
-    if (document.fullscreenElement !== card) setExpandedState(false);
-    else setExpandedState(true);
+    if (document.fullscreenElement !== translationArea && translationFocus) {
+      setTranslationFocus(false);
+    } else if (document.fullscreenElement === translationArea) {
+      setTranslationFocus(true);
+    }
   });
 
   // التحميل
