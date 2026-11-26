@@ -385,6 +385,11 @@ body.is-standalone-player .top-meta-bar {
   display:flex;
 }
 
+.transcript-search-wrap{display:flex;gap:8px;align-items:center;width:100%;position:sticky;top:0;z-index:2;padding:2px 0 8px;background:var(--player-bg)}
+.transcript-search{width:100%;min-width:0;padding:12px 14px;border-radius:10px;border:1px solid rgba(148,163,184,.22);background:#0f1b30;color:#f8fafc;font:inherit;outline:none}
+.transcript-search:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,248,.12)}
+.transcript-search::placeholder{color:#94a3b8}
+.transcript-search-count{flex-shrink:0;color:#94a3b8;font-size:.85rem;white-space:nowrap}
 .transcript-list{display:flex;flex-direction:column;gap:8px;max-height:340px;overflow:auto;padding:2px;overscroll-behavior:contain}
 .transcript-line{display:grid;grid-template-columns:64px minmax(0,1fr);align-items:start;gap:12px;width:100%;padding:12px 14px;border:1px solid rgba(255,255,255,.07);border-radius:12px;background:rgba(255,255,255,.035);color:#e2e8f0;text-align:right;font:inherit;cursor:pointer;transition:background .18s,border-color .18s}
 .transcript-line:hover,.transcript-line.active{background:rgba(2,132,199,.16);border-color:rgba(56,189,248,.5)}
@@ -1124,7 +1129,24 @@ function createPlayer(record) {
     if (list) return list;
     list = document.createElement("div");
     list.className = "transcript-list";
-    translationArea.appendChild(list);
+
+    const searchWrap = document.createElement("div");
+    searchWrap.className = "transcript-search-wrap";
+    const searchInput = document.createElement("input");
+    searchInput.type = "search";
+    searchInput.className = "transcript-search";
+    searchInput.placeholder = "ابحث في كلمات الشارة...";
+    searchInput.setAttribute("aria-label", "البحث في نص الشارة");
+    const searchCount = document.createElement("span");
+    searchCount.className = "transcript-search-count";
+    searchCount.setAttribute("aria-live", "polite");
+    searchWrap.append(searchInput, searchCount);
+    list.appendChild(searchWrap);
+
+    const rowsContainer = document.createElement("div");
+    rowsContainer.className = "transcript-rows";
+    rowsContainer.style.cssText = "display:flex;flex-direction:column;gap:8px";
+    list.appendChild(rowsContainer);
 
     if (translation.lines.length) {
       translation.lines.forEach(line => {
@@ -1142,15 +1164,48 @@ function createPlayer(record) {
           audio.currentTime = line.start;
           audio.play().catch(() => {});
         });
-        list.appendChild(item);
+        rowsContainer.appendChild(item);
       });
+
+      const normalizeSearch = value => String(value || "")
+        .toLocaleLowerCase("ar")
+        .normalize("NFD")
+        .replace(/[\\u064B-\\u065F\\u0670]/g, "")
+        .replace(/[أإآ]/g, "ا")
+        .replace(/ى/g, "ي")
+        .trim();
+
+      const filterRows = () => {
+        const query = normalizeSearch(searchInput.value);
+        let shown = 0;
+        rowsContainer.querySelectorAll(".transcript-line").forEach(row => {
+          const match = !query || normalizeSearch(row.dataset.searchText).includes(query);
+          row.hidden = !match;
+          if (match) shown++;
+        });
+        searchCount.textContent = query ? shown + " من " + translation.lines.length : translation.lines.length + " مقطع";
+        const noResults = rowsContainer.querySelector(".transcript-no-results");
+        if (noResults) noResults.hidden = shown !== 0;
+      };
+
+      rowsContainer.querySelectorAll(".transcript-line").forEach(row => {
+        row.dataset.searchText = row.querySelector(".transcript-words").textContent;
+      });
+      const noResults = document.createElement("div");
+      noResults.className = "transcript-empty transcript-no-results";
+      noResults.textContent = "لا توجد نتائج مطابقة لبحثك.";
+      noResults.hidden = true;
+      rowsContainer.appendChild(noResults);
+      searchInput.addEventListener("input", filterRows);
+      filterRows();
     } else {
+      searchWrap.hidden = true;
       const message = document.createElement("div");
       message.className = "transcript-empty";
       message.textContent = translation.plain.trim()
         ? "هذه الترجمة نص متصل ولا تحتوي على توقيتات للمزامنة."
         : "لا توجد ترجمة محفوظة لهذه الشارة بعد.";
-      list.appendChild(message);
+      rowsContainer.appendChild(message);
     }
     return list;
   }
