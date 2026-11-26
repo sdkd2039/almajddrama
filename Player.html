@@ -424,9 +424,17 @@ button:focus-visible,.timeline:focus-visible{outline:2px solid #38bdf8;outline-o
 }
 
 /* تمييز الكلمات كلمةً كلمة من اليمين إلى اليسار */
-.karaoke-sweep{display:inline;direction:rtl;unicode-bidi:isolate}
+.karaoke-sweep{
+  display:inline;
+  direction:rtl;
+  unicode-bidi:isolate;
+  white-space:pre-wrap;
+  word-spacing:normal;
+  letter-spacing:normal;
+}
 .karaoke-word{
   display:inline;
+  white-space:pre;
   color:transparent;
   background:linear-gradient(to left,#fb5b24 0%,#fb5b24 var(--word-progress,0%),#fff var(--word-progress,0%),#fff 100%);
   -webkit-background-clip:text;
@@ -1376,10 +1384,23 @@ async function loadAllPlayers() {
       "/gviz/tq?tqx=out:json&headers=0&sheet=" +
       encodeURIComponent(SHEET_NAME);
 
-    const response = await fetch(url);
+    // لا نترك الصفحة معلّقة إلى ما لا نهاية إذا تأخر Google Sheets
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+    let response;
+    try {
+      response = await fetch(url, { signal: controller.signal, cache: "no-store" });
+    } catch (networkError) {
+      if (networkError.name === "AbortError") {
+        throw new Error("استغرق تحميل البيانات وقتًا طويلًا. تحقق من الاتصال ثم أعد المحاولة.");
+      }
+      throw new Error("تعذر الاتصال بمصدر الشارات. تحقق من الإنترنت ثم أعد المحاولة.");
+    } finally {
+      clearTimeout(timeoutId);
+    }
 
     if (!response.ok) {
-      throw new Error("تعذر الوصول إلى Google Sheets");
+      throw new Error("مصدر الشارات أعاد خطأ (" + response.status + "). أعد المحاولة لاحقًا.");
     }
 
     const raw = await response.text();
@@ -1462,8 +1483,24 @@ async function loadAllPlayers() {
   } catch(error) {
     console.error("Player loading error:",error);
 
-    playersList.innerHTML =
-      '<div class="page-status">تعذر تحميل البيانات من Google Sheets. تأكد من إتاحة الجدول للعرض العام واسم الورقة Player.</div>';
+    const message = error && error.message
+      ? error.message
+      : "تعذر تحميل الشارات حاليًا.";
+    playersList.innerHTML = "";
+    const status = document.createElement("div");
+    status.className = "page-status";
+    status.textContent = message;
+    const retry = document.createElement("button");
+    retry.type = "button";
+    retry.className = "translation-toggle";
+    retry.style.maxWidth = "260px";
+    retry.style.margin = "0 auto";
+    retry.textContent = "إعادة تحميل الشارات";
+    retry.addEventListener("click", () => {
+      playersList.innerHTML = '<div class="page-status">جاري إعادة تحميل الشارات...</div>';
+      loadAllPlayers();
+    });
+    playersList.append(status, retry);
   }
 }
 
