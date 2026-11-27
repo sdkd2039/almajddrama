@@ -769,24 +769,18 @@ function getCellRaw(row,index) {
 // or one SRT line per spreadsheet row in the translation column.
 function collectSrtFromRows(rows,startIndex) {
   const fragments = [];
-  let active = false;
 
   for (let i = startIndex; i < rows.length; i++) {
     const row = rows[i];
-    const value = String(getCellRaw(row,5) ?? "").trim();
     const hasRecord = [0,1,2,3,4].some(index =>
       String(getCellRaw(row,index) ?? "").trim() !== ""
     );
 
-    // Stop at the next actual player record, not at a continuation row.
-    if (hasRecord && i !== startIndex) break;
-    if (!value) {
-      if (active) fragments.push("");
-      continue;
-    }
+    // The current row is the player record. Stop only when the next player begins.
+    if (i > startIndex && hasRecord) break;
 
-    active = true;
-    fragments.push(value);
+    const value = String(getCellRaw(row,5) ?? "");
+    if (value !== "") fragments.push(value);
   }
 
   return fragments.join("\n").trim();
@@ -811,10 +805,7 @@ function escapeHTML(value) {
 
 function parseTranslation(value) {
   if (!value) return {lines:[], plain:""};
-
-  // SRT is the only supported timed-caption format.
-  const lines = parseSrt(value);
-  return {lines, plain:""};
+  return {lines:parseSrt(value), plain:""};
 }
 
 function parseSrt(srt) {
@@ -832,24 +823,28 @@ function parseSrt(srt) {
     return hours * 3600 + minutes * 60 + seconds + milliseconds / 1000;
   };
 
-  return source.split(/\\n\\s*\\n+/).map(block => {
-    const rows = block.split("\\n").map(line => line.trim()).filter(Boolean);
-    const timingIndex = rows.findIndex(line => line.includes("-->"));
-    if (timingIndex < 0) return null;
+  // Parse by timing lines, not blank blocks: Sheets may remove blank separator rows.
+  const rows = source.split("\n").map(line => line.trim());
+  const lines = [];
+  for (let i = 0; i < rows.length; i++) {
+    if (!rows[i].includes("-->")) continue;
+    const timing = rows[i].split("-->");
+    if (timing.length !== 2) continue;
 
-    const timing = rows[timingIndex].split("-->");
-    if (timing.length !== 2) return null;
     const start = toSeconds(timing[0]);
     const end = toSeconds(timing[1].split(/\\s+/)[0]);
-    const text = rows.slice(timingIndex + 1)
-      .join(" ")
-      .replace(/<[^>]*>/g, "")
-      .replace(/\\{\\\\an[1-9]\\}/g, "")
-      .trim();
+    if (!Number.isFinite(start) || !Number.isFinite(end) || end <= start) continue;
 
-    if (!Number.isFinite(start) || !Number.isFinite(end) || end <= start || !text) return null;
-    return {start, end, text};
-  }).filter(Boolean).sort((a,b) => a.start - b.start);
+    const textParts = [];
+    for (let j = i + 1; j < rows.length && !rows[j].includes("-->"); j++) {
+      if (rows[j] && !/^\\d+$/.test(rows[j])) {
+        textParts.push(rows[j].replace(/<[^>]*>/g, "").trim());
+      }
+    }
+    const text = textParts.join(" ").trim();
+    if (text) lines.push({start,end,text});
+  }
+  return lines.sort((a,b) => a.start - b.start);
 }
 
 function createPlayer(record) {
@@ -1420,9 +1415,7 @@ async function loadAllPlayers() {
       channel:getCell(row,3),
       audio:getCell(row,4),
       // If SRT is split over multiple rows in column F, collect its continuation rows.
-      translation: String(getCell(row,5) ?? "").includes("-->")
-        ? collectSrtFromRows(rows,index)
-        : getCell(row,5)
+      translation: collectSrtFromRows(rows,index)
     })).filter(item =>
       String(item.id).trim() !== "" &&
       String(item.name).trim() !== "" &&
