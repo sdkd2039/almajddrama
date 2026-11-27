@@ -765,24 +765,19 @@ function getCellRaw(row,index) {
   return cell?.v ?? cell?.f ?? "";
 }
 
-// Supports either one complete SRT document in a single cell,
-// or one SRT line per spreadsheet row in the translation column.
+// تجميع ترجمة SRT من العمود F: إما خلية واحدة تحوي الملف كاملًا،
+// أو سطر SRT في كل صف (صفوف تكملة أعمدتها A–E فارغة) حتى بداية الشارة التالية.
+// الصفوف الفارغة تُحفظ كسطر فارغ حتى يبقى ترتيب المقاطع وفواصلها كما هي.
 function collectSrtFromRows(rows,startIndex) {
   const fragments = [];
-
   for (let i = startIndex; i < rows.length; i++) {
     const row = rows[i];
     const hasRecord = [0,1,2,3,4].some(index =>
       String(getCellRaw(row,index) ?? "").trim() !== ""
     );
-
-    // The current row is the player record. Stop only when the next player begins.
     if (i > startIndex && hasRecord) break;
-
-    const value = String(getCellRaw(row,5) ?? "");
-    if (value !== "") fragments.push(value);
+    fragments.push(String(getCellRaw(row,5) ?? ""));
   }
-
   return fragments.join("\n").trim();
 }
 
@@ -804,45 +799,88 @@ function escapeHTML(value) {
 }
 
 function parseTranslation(value) {
-  if (!value) return {lines:[], plain:""};
-  return {lines:parseSrt(value), plain:""};
+  const source = String(value ?? "").trim();
+  if (!source) return {lines:[], plain:""};
+
+  // التنسيق المعتمد: SRT
+  const srtLines = parseSrt(source);
+  if (srtLines.length) return {lines:srtLines, plain:""};
+
+  // قراءة مؤقتة للصفوف القديمة المحفوظة بصيغة JSON حتى يتم تحويلها إلى SRT في الشيت.
+  // يمكن حذف هذا الجزء بعد تحويل كل خلايا العمود F.
+  if (source.startsWith("[")) {
+    try {
+      const parsed = JSON.parse(source);
+      if (Array.isArray(parsed)) {
+        const lines = parsed.map(item => ({
+          start:Number(item.start), end:Number(item.end), text:String(item.text || "").trim()
+        })).filter(item =>
+          Number.isFinite(item.start) && Number.isFinite(item.end) && item.end > item.start && item.text
+        ).sort((a,b) => a.start - b.start);
+        if (lines.length) return {lines, plain:""};
+      }
+    } catch(error) { /* ليس JSON */ }
+  }
+
+  if (source.includes("-->")) {
+    console.warn("SRT: لم يُقرأ أي مقطع صالح من الترجمة.", source.slice(0,200));
+    return {lines:[], plain:""};
+  }
+  // نص بلا توقيتات (مثل "غير متوفر") يُعرض كما هو
+  return {lines:[], plain:source};
 }
 
+// تحويل توقيت SRT إلى ثوانٍ. يقبل:
+// 00:00:02,400  00:00:02.400  00:02,400  0:02.4  00:00:02:400  00:00:02 (بلا أجزاء ثانية)
+function srtTimeToSeconds(value) {
+  const clean = String(value || "")
+    .replace(/[\u0660-\u0669]/g, d => String(d.charCodeAt(0) - 0x0660))
+    .replace(/[\u06F0-\u06F9]/g, d => String(d.charCodeAt(0) - 0x06F0))
+    .trim();
+  const match = clean.match(/^(?:(\d{1,2}):)?(\d{1,2}):(\d{1,2})(?:[,.:](\d{1,3}))?$/);
+  if (!match) return NaN;
+  const hours = Number(match[1] || 0);
+  const minutes = Number(match[2]);
+  const seconds = Number(match[3]);
+  const fraction = match[4] ? Number((match[4] + "00").slice(0,3)) / 1000 : 0;
+  if (minutes > 59 || seconds > 59) return NaN;
+  return hours * 3600 + minutes * 60 + seconds + fraction;
+}
+
+const SRT_TIME = "[0-9\u0660-\u0669\u06F0-\u06F9]{1,2}(?::[0-9\u0660-\u0669\u06F0-\u06F9]{1,2}){1,2}(?:[,.:][0-9\u0660-\u0669\u06F0-\u06F9]{1,3})?";
+const SRT_TIMING_LINE = new RegExp("^(" + SRT_TIME + ")\\s*-{1,2}>\\s*(" + SRT_TIME + ")(?:\\s.*)?$");
+
 function parseSrt(srt) {
-  const source = String(srt || "").replace(/^\uFEFF/, "").replace(/\r/g, "").trim();
-  if (!source) return [];
+  const rows = String(srt || "")
+    .replace(/^\uFEFF/, "")
+    .replace(/\r\n?|\u2028|\u2029/g, "\n")
+    .split("\n")
+    // إزالة علامات الاتجاه غير المرئية والمسافات غير القابلة للكسر التي قد يضيفها النسخ
+    .map(line => line.replace(/[\u200E\u200F\u202A-\u202E\u2066-\u2069]/g, "").replace(/\u00A0/g, " ").trim());
 
-  const toSeconds = value => {
-    const match = String(value).trim().match(/^(?:(\d+):)?(\d{2}):(\d{2})[,.](\d{1,3})$/);
-    if (!match) return NaN;
-    const hours = Number(match[1] || 0);
-    const minutes = Number(match[2]);
-    const seconds = Number(match[3]);
-    const milliseconds = Number((match[4] + "00").slice(0,3));
-    if (minutes > 59 || seconds > 59) return NaN;
-    return hours * 3600 + minutes * 60 + seconds + milliseconds / 1000;
+  const timingAt = index => {
+    const match = index < rows.length ? rows[index].match(SRT_TIMING_LINE) : null;
+    return match ? {start:srtTimeToSeconds(match[1]), end:srtTimeToSeconds(match[2])} : null;
   };
+  // رقم المقطع = سطر أرقام فقط يليه مباشرة سطر توقيت (حتى لو بلا سطر فارغ بين المقاطع)
+  const isCueIndex = index => /^[0-9\u0660-\u0669\u06F0-\u06F9]+$/.test(rows[index]) && !!timingAt(index + 1);
 
-  // Parse by timing lines, not blank blocks: Sheets may remove blank separator rows.
-  const rows = source.split("\n").map(line => line.trim());
   const lines = [];
   for (let i = 0; i < rows.length; i++) {
-    if (!rows[i].includes("-->")) continue;
-    const timing = rows[i].split("-->");
-    if (timing.length !== 2) continue;
-
-    const start = toSeconds(timing[0]);
-    const end = toSeconds(timing[1].split(/\s+/)[0]);
-    if (!Number.isFinite(start) || !Number.isFinite(end) || end <= start) continue;
-
+    const timing = timingAt(i);
+    if (!timing) continue;
     const textParts = [];
-    for (let j = i + 1; j < rows.length && !rows[j].includes("-->"); j++) {
-      if (rows[j] && !/^\d+$/.test(rows[j])) {
-        textParts.push(rows[j].replace(/<[^>]*>/g, "").trim());
-      }
+    let j = i + 1;
+    for (; j < rows.length && !timingAt(j); j++) {
+      if (!rows[j] || isCueIndex(j)) continue;
+      const text = rows[j].replace(/<[^>]*>/g, "").replace(/\{\\[^}]*\}/g, "").trim();
+      if (text) textParts.push(text);
     }
-    const text = textParts.join(" ").trim();
-    if (text) lines.push({start,end,text});
+    const text = textParts.join(" ").replace(/\s+/g, " ").trim();
+    if (Number.isFinite(timing.start) && Number.isFinite(timing.end) && timing.end > timing.start && text) {
+      lines.push({start:timing.start, end:timing.end, text});
+    }
+    i = j - 1;
   }
   return lines.sort((a,b) => a.start - b.start);
 }
@@ -1414,7 +1452,7 @@ async function loadAllPlayers() {
       name:getCell(row,2),
       channel:getCell(row,3),
       audio:getCell(row,4),
-      // If SRT is split over multiple rows in column F, collect its continuation rows.
+      // العمود F: SRT في خلية واحدة أو موزع على صفوف التكملة أسفل الشارة
       translation: collectSrtFromRows(rows,index)
     })).filter(item =>
       String(item.id).trim() !== "" &&
