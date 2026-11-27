@@ -760,6 +760,38 @@ function getCell(row,index) {
   return cell?.v ?? cell?.f ?? "";
 }
 
+function getCellRaw(row,index) {
+  const cell = row.c?.[index];
+  return cell?.v ?? cell?.f ?? "";
+}
+
+// Supports either one complete SRT document in a single cell,
+// or one SRT line per spreadsheet row in the translation column.
+function collectSrtFromRows(rows,startIndex) {
+  const fragments = [];
+  let active = false;
+
+  for (let i = startIndex; i < rows.length; i++) {
+    const row = rows[i];
+    const value = String(getCellRaw(row,5) ?? "").trim();
+    const hasRecord = [0,1,2,3,4].some(index =>
+      String(getCellRaw(row,index) ?? "").trim() !== ""
+    );
+
+    // Stop at the next actual player record, not at a continuation row.
+    if (hasRecord && i !== startIndex) break;
+    if (!value) {
+      if (active) fragments.push("");
+      continue;
+    }
+
+    active = true;
+    fragments.push(value);
+  }
+
+  return fragments.join("\n").trim();
+}
+
 function formatTime(seconds) {
   if (!Number.isFinite(seconds)) return "0:00";
   const min = Math.floor(seconds / 60);
@@ -1381,13 +1413,16 @@ async function loadAllPlayers() {
     const data = JSON.parse(raw.slice(start,end + 1));
     const rows = data.table.rows || [];
 
-    const records = rows.map(row => ({
+    const records = rows.map((row,index) => ({
       id:getCell(row,0),
       image:getCell(row,1),
       name:getCell(row,2),
       channel:getCell(row,3),
       audio:getCell(row,4),
-      translation:getCell(row,5)
+      // If SRT is split over multiple rows in column F, collect its continuation rows.
+      translation: String(getCell(row,5) ?? "").includes("-->")
+        ? collectSrtFromRows(rows,index)
+        : getCell(row,5)
     })).filter(item =>
       String(item.id).trim() !== "" &&
       String(item.name).trim() !== "" &&
