@@ -52,6 +52,25 @@
             box-sizing: border-box;
         }
 
+        /* شعار رأس صفحة تفاصيل بواري فقط */
+        .details-site-header {
+            width: 100%;
+            max-width: 900px;
+            min-height: 82px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 12px;
+            padding: 8px 12px;
+        }
+        .details-site-header img {
+            display: block;
+            width: auto;
+            max-width: min(180px, 55vw);
+            max-height: 76px;
+            object-fit: contain;
+        }
+
         /* حاوية الكارت الرئيسية */
         .cinema-card {
             background: var(--glass-bg);
@@ -314,6 +333,10 @@
     </style>
 </head>
 <body>
+
+    <header class="details-site-header">
+        <img src="https://i.ibb.co/cXvqtHks/Almajdrama.png" alt="شعار دراما المجد">
+    </header>
 
     <div class="cinema-card">
         <!-- 1. عنوان المسلسل (يمين) -->
