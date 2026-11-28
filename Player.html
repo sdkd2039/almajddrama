@@ -361,6 +361,10 @@ body.is-standalone-player .top-meta-bar {
 .player-extra-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;width:100%;margin-top:4px}
 .player-extra-actions button{min-width:0;min-height:48px;line-height:1.45;white-space:normal}
 .player-extra-actions .embed-toggle[hidden]{display:none}
+/* زر النص والتوقيت يأخذ عرض زر الترجمة بالكامل في الصفحة العامة */
+.player-extra-actions .transcript-toggle{grid-column:1/-1;width:100%}
+.player-extra-actions:has(.embed-toggle:not([hidden])) .transcript-toggle{grid-column:auto}
+.player-extra-actions:has(.embed-toggle:not([hidden])) .translation-toggle{grid-column:1/-1}
 .player-extra-actions:has(.embed-toggle[hidden]){grid-template-columns:repeat(2,minmax(0,1fr))}
 .player-extra-actions:has(.translation-toggle:only-child){grid-template-columns:1fr}
 .player-extra-actions .translation-toggle{grid-column:1/-1}
@@ -733,7 +737,8 @@ body.translation-focus-lock .translation-area.translation-focus {
   .center-playback-group { gap:6px; }
   .btn-speed { width:54px; padding:7px 8px; }
   .player-extra-actions { grid-template-columns:1fr; }
-  .player-extra-actions .translation-toggle { grid-column:auto; }
+  .player-extra-actions .translation-toggle,
+  .player-extra-actions .transcript-toggle { grid-column:1/-1; }
 }
 </style>
 </head>
