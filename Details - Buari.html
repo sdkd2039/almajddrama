@@ -20,48 +20,78 @@
         }
 
         :root {
-            --bg-dark: #0a0e17;
-            --glass-bg: #111827;
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --item-card-bg: rgba(255, 255, 255, 0.04);
-            --item-card-border: rgba(255, 255, 255, 0.08);
-            --text-main: #ffffff;
-            --text-muted: #94a3b8;
-            --primary-accent: #0284c7;
-            --btn-hadif-bg: linear-gradient(135deg, #1f2937 0%, #111827 100%);
-            --btn-hadif-border: rgba(255, 255, 255, 0.15);
-            --btn-promo-bg: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
-            --btn-promo-border: rgba(239, 68, 68, 0.3);
+            color-scheme: dark;
+            --bg-dark: #080d18;
+            --glass-bg: rgba(17, 27, 45, 0.88);
+            --glass-border: rgba(169, 205, 235, 0.13);
+            --item-card-bg: linear-gradient(145deg, rgba(31, 49, 73, 0.72), rgba(13, 24, 41, 0.82));
+            --item-card-border: rgba(160, 196, 225, 0.13);
+            --text-main: #f8fafc;
+            --text-muted: #a8bbce;
+            --primary-accent: #36a9d6;
+            --gold-accent: #d9b76e;
+            --btn-hadif-bg: linear-gradient(135deg, #263c57 0%, #111d30 100%);
+            --btn-hadif-border: rgba(180, 207, 230, 0.2);
+            --btn-promo-bg: linear-gradient(135deg, #e13d48 0%, #9f202e 100%);
+            --btn-promo-border: rgba(239, 68, 68, 0.38);
         }
 
         html, body {
             margin: 0 !important;
             padding: 0 !important;
             width: 100% !important;
-            background-color: var(--bg-dark);
+            min-height: 100%;
+            background: var(--bg-dark);
             color: var(--text-main);
             font-family: 'Majd2Bold', sans-serif;
             -webkit-text-size-adjust: 100%;
         }
 
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            padding: 12px !important;
-            box-sizing: border-box;
+        html { background: #080d18; }
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(ellipse at 12% 8%, rgba(24, 112, 157, 0.24), transparent 38%),
+                radial-gradient(ellipse at 88% 32%, rgba(178, 139, 66, 0.13), transparent 34%),
+                radial-gradient(ellipse at 50% 100%, rgba(21, 75, 112, 0.18), transparent 45%);
         }
+
+        body {
+            position: relative;
+            isolation: isolate;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 18px 12px 30px !important;
+            box-sizing: border-box;
+            background-image: linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+            background-size: 34px 34px;
+        }
+
+        body > * { position: relative; z-index: 1; }
 
         /* شعار رأس صفحة تفاصيل بواري فقط */
         .details-site-header {
             width: 100%;
             max-width: 900px;
-            min-height: 82px;
+            min-height: 86px;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 0 auto 12px;
-            padding: 8px 12px;
+            margin: 0 auto 14px;
+            padding: 10px 14px;
+            box-sizing: border-box;
+            border: 1px solid rgba(190, 216, 235, 0.12);
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(25, 43, 65, 0.72), rgba(10, 20, 35, 0.48));
+            box-shadow: 0 12px 35px rgba(0,0,0,0.22), inset 0 1px rgba(255,255,255,0.06);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
         }
         .details-site-header img {
             display: block;
@@ -69,36 +99,65 @@
             max-width: min(180px, 55vw);
             max-height: 76px;
             object-fit: contain;
+            filter: drop-shadow(0 5px 12px rgba(0,0,0,0.32));
         }
 
         /* حاوية الكارت الرئيسية */
         .cinema-card {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(145deg, rgba(20, 34, 54, 0.96), rgba(10, 19, 33, 0.97));
+            border: 1px solid rgba(174, 207, 231, 0.16);
+            border-radius: 24px;
+            box-shadow: 0 24px 65px rgba(0, 0, 0, 0.48), 0 4px 18px rgba(13, 95, 137, 0.12), inset 0 1px rgba(255,255,255,0.07);
             width: 100%;
             max-width: 900px;
             display: flex;
             flex-direction: column;
-            padding: 16px;
-            gap: 14px;
+            padding: 20px;
+            gap: 18px;
             box-sizing: border-box;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .cinema-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 8%;
+            width: 42%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold-accent), #55b9df, transparent);
+            opacity: 0.9;
         }
 
         /* عنوان المسلسل محاذاة لليمين */
         .header-title {
+            position: relative;
             text-align: right;
-            border-bottom: 1px solid var(--glass-border);
-            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(177, 207, 229, 0.13);
+            padding: 2px 0 14px;
             width: 100%;
+        }
+        .header-title::after {
+            content: "";
+            display: block;
+            width: 76px;
+            height: 3px;
+            margin-top: 10px;
+            border-radius: 8px;
+            background: linear-gradient(90deg, var(--gold-accent), var(--primary-accent));
+            box-shadow: 0 0 14px rgba(54,169,214,0.28);
         }
 
         .series-title {
-            font-size: 1.6rem;
+            font-size: clamp(1.55rem, 4vw, 2rem);
             font-weight: 900;
             color: #ffffff;
             margin: 0;
+            letter-spacing: 0.1px;
+            text-shadow: 0 3px 18px rgba(0,0,0,0.34);
             font-family: 'Majd2Bold', sans-serif;
         }
 
@@ -112,14 +171,16 @@
 
         /* قسم البوستر */
         .poster-box {
+            position: relative;
             width: 100%;
-            border-radius: 12px;
+            border-radius: 18px;
             overflow: hidden;
-            background-color: #050811;
+            background: linear-gradient(145deg, #17283d, #050a13);
             display: flex;
             justify-content: center;
             align-items: center;
-            border: 1px solid var(--glass-border);
+            border: 1px solid rgba(191, 216, 235, 0.2);
+            box-shadow: 0 18px 38px rgba(0,0,0,0.34), 0 0 0 5px rgba(255,255,255,0.018);
         }
 
         .poster-box img {
@@ -127,7 +188,9 @@
             height: auto;
             display: block;
             object-fit: contain;
+            transition: transform 0.55s ease, filter 0.55s ease;
         }
+        .poster-box:hover img { transform: scale(1.018); filter: saturate(1.06); }
 
         /* قسم التفاصيل */
         .details-box {
@@ -139,25 +202,26 @@
 
         /* صندوق قصة المسلسل */
         .description-box {
-            background: var(--item-card-bg);
-            border: 1px solid var(--item-card-border);
+            background: linear-gradient(135deg, rgba(31, 59, 82, 0.58), rgba(15, 29, 47, 0.76));
+            border: 1px solid rgba(120, 184, 215, 0.16);
             border-right: 4px solid var(--primary-accent);
-            padding: 10px 12px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            line-height: 1.5;
-            color: #cbd5e1;
+            padding: 14px 15px;
+            border-radius: 13px;
+            font-size: 0.9rem;
+            line-height: 1.75;
+            color: #d7e2ed;
+            box-shadow: inset 0 1px rgba(255,255,255,0.035);
             font-family: 'Majd2Bold', sans-serif;
         }
 
         .desc-label {
-            font-size: 0.8rem;
+            font-size: 0.86rem;
             font-weight: 700;
-            color: var(--text-muted);
-            margin-bottom: 4px;
+            color: #c0d2e2;
+            margin: 2px 0 7px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
 
         .desc-label i {
@@ -174,12 +238,20 @@
         .info-card {
             background: var(--item-card-bg);
             border: 1px solid var(--item-card-border);
-            border-radius: 8px;
-            padding: 8px 12px;
+            border-radius: 12px;
+            padding: 11px 13px;
             display: flex;
             align-items: center;
             justify-content: flex-start;
-            gap: 6px;
+            gap: 8px;
+            min-width: 0;
+            box-shadow: inset 0 1px rgba(255,255,255,0.035);
+            transition: transform 0.22s ease, border-color 0.22s ease, background 0.22s ease;
+        }
+        .info-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(90, 180, 218, 0.3);
+            background: linear-gradient(145deg, rgba(38, 65, 91, 0.76), rgba(14, 29, 47, 0.88));
         }
 
         .info-card.full-width {
@@ -203,8 +275,9 @@
         }
 
         .info-label i {
-            color: #38bdf8;
-            font-size: 0.85rem;
+            color: #65c7eb;
+            font-size: 0.9rem;
+            filter: drop-shadow(0 0 5px rgba(56,189,248,0.24));
         }
 
         .info-value {
@@ -243,12 +316,13 @@
         }
 
         .actor-tag {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            color: #e2e8f0;
+            background: linear-gradient(135deg, rgba(53, 84, 111, 0.42), rgba(22, 39, 58, 0.7));
+            border: 1px solid rgba(164, 202, 228, 0.16);
+            padding: 6px 10px;
+            border-radius: 9px;
+            font-size: 0.77rem;
+            color: #e7f0f7;
+            box-shadow: inset 0 1px rgba(255,255,255,0.04);
             font-family: 'Majd2Bold', sans-serif;
         }
 
@@ -266,16 +340,19 @@
             justify-content: center;
             gap: 10px;
             text-decoration: none;
-            padding: 10px 18px;
-            border-radius: 10px;
+            padding: 13px 18px;
+            border-radius: 13px;
             font-weight: 700;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            font-size: 1rem;
+            transition: transform 0.22s ease, box-shadow 0.22s ease, filter 0.22s ease;
+            box-shadow: 0 9px 22px rgba(0, 0, 0, 0.28), inset 0 1px rgba(255,255,255,0.12);
             width: 100%;
             box-sizing: border-box;
             font-family: 'Majd2Bold', sans-serif;
         }
+        .watch-btn:hover { transform: translateY(-2px); filter: brightness(1.08); box-shadow: 0 13px 27px rgba(0,0,0,0.34); }
+        .watch-btn:active { transform: translateY(0) scale(0.99); }
+        .watch-btn:focus-visible { outline: 2px solid #8bd8f3; outline-offset: 3px; }
 
         .btn-promo {
             background: var(--btn-promo-bg);
@@ -318,17 +395,19 @@
         }
 
         @media (max-width: 500px) {
-            body {
-                padding: 6px !important;
-            }
+            body { padding: 10px 7px 22px !important; }
+            .details-site-header { min-height: 72px; margin-bottom: 10px; border-radius: 16px; }
+            .details-site-header img { max-height: 64px; }
+            .cinema-card { padding: 13px; gap: 14px; border-radius: 19px; }
+            .main-content, .details-box { gap: 12px; }
+            .poster-box { border-radius: 14px; }
+            .info-grid { grid-template-columns: 1fr; gap: 7px; }
+            .info-card.full-width { grid-column: span 1; }
+            .info-card { padding: 10px 11px; }
+        }
 
-            .info-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .info-card.full-width {
-                grid-column: span 1;
-            }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
         }
     </style>
 </head>
